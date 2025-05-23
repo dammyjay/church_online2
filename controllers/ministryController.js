@@ -2,7 +2,7 @@ const pool = require('../models/db');
 
 exports.showForm = async (req, res) => {
   const result = await pool.query('SELECT * FROM ministry_info LIMIT 1');
-  res.render('admin/ministry', { info: result.rows[0] });
+  res.render('admin/ministry', { info: result.rows[0], title: 'Ministry info'  });
 };
 
 exports.saveInfo = async (req, res) => {
@@ -37,7 +37,7 @@ exports.showForm = async (req, res) => {
     const result = await pool.query('SELECT * FROM ministry_info ORDER BY id DESC LIMIT 1');
     const info = result.rows[0] || {};
 
-    res.render('admin/ministry', { info });
+    res.render('admin/ministry', { info, title: 'Ministry info'  });
   } catch (error) {
     console.error(error);
     res.status(500).send('Server Error');

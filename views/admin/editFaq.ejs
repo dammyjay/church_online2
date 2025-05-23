@@ -9,6 +9,24 @@
     <script src="https://cdn.ckeditor.com/4.22.1/standard/ckeditor.js"></script>
   </head>
   <body>
+    <header class="header">
+      <div class="logo-title">
+       <a href="/"> <img src="/logo.png" alt="Logo" /></a>
+  
+        <p>C&S Church Online</p>
+      </div>
+  
+      <nav>
+        <a href="/admin/dashboard">Dashboard</a>
+        <a href="/articles">Articles</a>
+        <a href="/videos">Videos</a>
+        <a href="#mission-vision">About</a>
+        <!-- Assuming About refers to Mission & Vision -->
+        <a href="/admin/logout" class="logout-button">Logout</a>
+        <!-- Login remains a page link -->
+        
+      </nav>
+    </header>
     <h2>Edit FAQ</h2>
     <form action="/admin/faqs/update/<%= faq.id %>" method="POST">
       <p><strong>Question:</strong> <%- faq.question %></p>

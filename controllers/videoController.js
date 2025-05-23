@@ -26,6 +26,7 @@ if (search) {
 
 res.render('admin/videos', {
   info,
+  title: 'All Videos',
   videos: result.rows,
   search // ✅ This allows <%= search %> to work in videos.ejs
 });

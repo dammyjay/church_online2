@@ -41,7 +41,11 @@ app.use((req, res, next) => {
   next();
   });
 
-
+  app.use((req, res, next) => {
+    res.locals.title = 'Ministry'; // Default title
+    next();
+  });
+    
 // Routes
 // app.get('/', (req, res) => {
 //   res.render('home');
@@ -63,7 +67,7 @@ app.use('/', userRoutes);
 const subscribeRoutes = require('./routes/subscribeRoutes');
 app.use('/', subscribeRoutes);
 
-const publicFaqRoutes = require('./routes/publicFaqRoutes');
+const publicFaqRoutes = require('./routes/publicFaqRoutesjs');
 app.use('/', publicFaqRoutes);
 
 const adminFaqRoutes = require('./routes/adminFaqRoutes');

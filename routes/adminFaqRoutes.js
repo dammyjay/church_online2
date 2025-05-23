@@ -8,13 +8,13 @@ const { sendFaqAnswerEmail } = require('../utils/sendEmail');
 // Show all FAQs
 router.get('/admin/faqs', async (req, res) => {
 const result = await pool.query('SELECT * FROM faqs ORDER BY created_at DESC');
-res.render('admin/manageFaqs', { faqs: result.rows });
+res.render('admin/manageFaqs', { faqs: result.rows, title: 'Manage FAQ' });
 });
 
 // Show edit form
 router.get('/admin/faqs/edit/:id', async (req, res) => {
 const result = await pool.query('SELECT * FROM faqs WHERE id = $1', [req.params.id]);
-res.render('admin/editFaq', { faq: result.rows[0] });
+res.render('admin/editFaq', { faq: result.rows[0], title: 'Edit FAQ'  });
 });
 
 // Handle update

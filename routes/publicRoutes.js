@@ -51,7 +51,7 @@ router.get('/', async (req, res) => {
       });
       console.log(videos.map(v => ({ title: v.title, embed_url: v.embed_url })));
 
-    res.render('home', { info, articles, videos, faqs,  subscribed: req.query.subscribed });
+    res.render('home', { info, title:'Ministry Home', articles, videos, faqs,  subscribed: req.query.subscribed });
   } catch (err) {
     console.error('Error fetching homepage data:', err);
     res.status(500).send('Server Error');
@@ -103,7 +103,7 @@ router.get('/home2', async (req, res) => {
       });
       console.log(videos.map(v => ({ title: v.title, embed_url: v.embed_url })));
 
-    res.render('home', { info, articles, videos });
+    res.render('home', { info, articles, videos, title: 'Home' });
   } catch (err) {
     console.error('Error fetching homepage data:', err);
     res.status(500).send('Server Error');
@@ -131,7 +131,8 @@ router.get('/articles', async (req, res) => {
     res.render('allArticles', {
       articles: result.rows,
       search, // ⬅️ pass search value to EJS
-      subscribed: req.query.subscribed
+      subscribed: req.query.subscribed,
+      title: 'All article' 
     });
   } catch (err) {
     console.error('Error fetching public articles:', err);
@@ -173,7 +174,7 @@ router.get('/videos', async (req, res) => {
 router.get('/signup', async (req, res) => {
   // const result = await pool.query('SELECT * FROM videos4 ORDER BY created_at3 DESC'); 
   
-  res.render('signup', { error: null });
+  res.render('signup', { error: null, title: 'Signup'  });
 });
 
 router.post('/faq/ask', async (req, res) => {

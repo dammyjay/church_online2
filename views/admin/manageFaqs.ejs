@@ -7,6 +7,21 @@
     <script src="https://cdn.ckeditor.com/4.22.1/standard/ckeditor.js"></script>
   </head>
   <body>
+    <header class="header">
+      <div class="logo-title">
+        <img src="/logo.png" alt="Logo" />
+        <p>C&S Church Online</p>
+      </div>
+      <nav>
+        <a href="/admin/dashboard">Dashboard</a>
+        <a href="/admin/articles">Articles</a>
+        <a href="/admin/videos">Videos</a>
+        <a href="/admin/ministry">About</a>
+        <a class="active" href="/admin/faqs">FAQ</a>
+        <a href="/admin/logout"  class="logout-button">Logout</a> <!-- Login remains a page link -->
+        
+      </nav>
+    </header>
     <h2>Manage Frequently Asked Questions</h2>
     <div class="article-card">
       <% faqs.forEach(faq => { %>

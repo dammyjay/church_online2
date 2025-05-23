@@ -3,7 +3,7 @@ const bcrypt = require('bcrypt');
 
 
 exports.showLogin = (req, res) => {
-  res.render('admin/login', { error: null });
+  res.render('admin/login', { error: null, title: 'Login'  });
 };
 
 exports.login = async (req, res) => {

@@ -25,6 +25,7 @@ exports.showSearchArticles = async (req, res) => {
 
     res.render('admin/articles', {
       info,
+      title: 'All Articles',
       articles: articlesResult.rows,
       search, // Pass back to template for input field value
     });
@@ -56,7 +57,7 @@ exports.showEditForm = async (req, res) => {
     if (result.rows.length === 0) {
       return res.status(404).send('Article not found');
     }
-    res.render('admin/editArticle', { article: result.rows[0] });
+    res.render('admin/editArticle', { article: result.rows[0], title: 'Edit article'  });
   };
   
   exports.updateArticle = async (req, res) => {
@@ -96,7 +97,7 @@ exports.showEditForm = async (req, res) => {
       const articlesResult = await pool.query('SELECT * FROM articles ORDER BY created_at3 DESC');
       const articles = articlesResult.rows;
   
-      res.render('admin/articles', { info, articles });
+      res.render('admin/articles', { info, articles, title: 'Article'  });
     } catch (err) {
       console.error(err);
       res.status(500).send('Server Error');
