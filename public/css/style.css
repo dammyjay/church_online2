@@ -558,6 +558,31 @@ nav a:hover {
     /* dark gold */
 }
 
+.card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+    }
+    
+    .card {
+    background-color: #fff;
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.05);
+    transition: 0.3s;
+    }
+    
+    .card:hover {
+    transform: translateY(-4px);
+    }
+
+        .card-grid2 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 50px;
+        }
+
+
 .login-button {
     padding: 6px 12px;
     background-color: #bfa046;

@@ -65,4 +65,33 @@ exports.deleteVideo = async (req, res) => {
   res.redirect('/admin/videos');
 };
 
+exports.showSingleVideo = async (req, res) => {
+  const id = req.params.id;
+  const result = await pool.query('SELECT * FROM videos4 WHERE id = $1', [id]);
+  if (result.rows.length === 0) return res.status(404).send('Video not found');
+  
+  const video = result.rows[0];
+  let embedUrl = '';
+  
+  if (video.youtube_url) {
+  if (video.youtube_url.includes('watch?v=')) {
+  embedUrl = video.youtube_url.replace('watch?v=', 'embed/');
+  } else if (video.youtube_url.includes('/shorts/')) {
+  const vid = video.youtube_url.split('/shorts/')[1].split('?')[0];
+  embedUrl = 'https://www.youtube.com/embed/' + vid;
+  } else if (video.youtube_url.includes('youtu.be/')) {
+  const vid = video.youtube_url.split('youtu.be/')[1].split('?')[0];
+  embedUrl = 'https://www.youtube.com/embed/' + vid;
+  } else {
+  embedUrl = video.youtube_url;
+  }
+  }
+  
+  res.render('video', {
+  video,
+  embedUrl,
+  title: video.title
+  });
+  };
+
 

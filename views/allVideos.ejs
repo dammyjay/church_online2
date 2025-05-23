@@ -65,7 +65,7 @@
         "https://www.youtube.com/embed/" + id; } else { embedUrl =
         video.youtube_url; } } %>
 
-        <div class="card">
+        <!-- <div class="card">
           <h3><%= video.title %></h3>
 
           <% if (embedUrl) { %>
@@ -84,7 +84,33 @@
 
           <p><%= video.description %></p>
           <small><%= new Date(video.created_at3).toLocaleString() %></small>
+        </div> -->
+
+        <div class="card"> 
+          <a href="/videos/<%= video.id %>" style="text-decoration: none; color: inherit;"> 
+            <h3><%= video.title %></h3> 
+            <% if (embedUrl) { %> 
+              <!-- <iframe width="100%" height="300" src="<%= embedUrl %>" frameborder="0" allowfullscreen> </iframe>  -->
+              <div class="video-hover-container" 
+           data-embed="<%= embedUrl %>">
+        <iframe 
+          width="100%" 
+          height="300" 
+          src="<%= embedUrl %>?autoplay=0" 
+          frameborder="0" 
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowfullscreen>
+        </iframe>
+      </div>
+              <% } else { %>
+                 <p>Invalid or missing video URL</p> 
+                 <% } %> 
+                 
+                 <p><%= video.description %>...</p> 
+                 <small><%= new Date(video.created_at3).toLocaleString() %></small> 
+          </a> 
         </div>
+
         <% }) %>
       </div>
     </section>
@@ -138,5 +164,18 @@
         </form>
       </div>
     </footer>
+
+    <script>
+      document.querySelectorAll('.video-hover-container').forEach(function(container) {
+        const iframe = container.querySelector('iframe');
+        const baseSrc = container.dataset.embed;
+        container.addEventListener('mouseenter', function() {
+          iframe.src = baseSrc + '?autoplay=1';
+        });
+        container.addEventListener('mouseleave', function() {
+          iframe.src = baseSrc + '?autoplay=0';
+        });
+      });
+    </script>
   </body>
 </html>

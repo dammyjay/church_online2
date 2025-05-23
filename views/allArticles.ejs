@@ -40,7 +40,7 @@
       />
       <button type="submit" style="padding: 8px">Search</button>
     </form>
-    <section class="section">
+    <!-- <section class="section">
       <h2>All Articles</h2>
       
       <% articles.forEach(article => { %>
@@ -65,7 +65,6 @@
           <div class="article-text">
             <h3><%= article.title %></h3>
 
-            <!-- <p style="word-wrap: break-word"><%= article.content %></p> -->
             <div class="article-body"> <%- article.content %> </div>
             <small
               >Posted on <%= new Date(article.created_at3).toLocaleString()
@@ -75,7 +74,24 @@
         </div>
       </div>
       <% }) %>
-    </section>
+    </section> -->
+    
+    <section class="section"> 
+      <h2>All Articles</h2> 
+      <div class="card-grid2"> 
+        <% articles.forEach(article => { %> 
+          <div class="card"> 
+            <a href="/articles/<%= article.id %>" style="text-decoration: none; color: inherit;"> 
+              <h3><%- article.title %></h3> 
+              <% if (article.image_url) { %> 
+                <img src="<%= article.image_url %>" alt="Article Image" style="max-width: 100%; height: auto; object-fit: cover; border-radius: 8px;" /> <% } %> 
+                <div class="article-body"> <%- article.content.substring(0, 500) %>... </div> 
+                <small>Posted on <%= new Date(article.created_at3).toLocaleString() %></small> 
+              </a> 
+            </div> <% }) %> 
+          </div> 
+        </section>
+    
     <footer class="site-footer">
       <div class="footer-container"> 
         <div class="footer-about"> 

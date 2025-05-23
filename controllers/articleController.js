@@ -104,3 +104,12 @@ exports.showEditForm = async (req, res) => {
     }
   };
   
+  exports.showSingleArticle = async (req, res) => {
+    const id = req.params.id;
+    const result = await pool.query('SELECT * FROM articles WHERE id = $1', [id]);
+    if (result.rows.length === 0) return res.status(404).send('Article not found');
+    res.render('article', {
+    article: result.rows[0],
+    title: result.rows[0].title
+    });
+    };

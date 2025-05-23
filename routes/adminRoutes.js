@@ -29,6 +29,7 @@ router.post('/ministry', upload.single('logo'), ministryController.saveInfo);
 // router.get('/articles', articleController.showArticles);
 router.get('/articles', articleController.showSearchArticles);
 router.post('/articles', upload.single('image'), articleController.saveArticle);
+// router.get('/articles/:id', articleController.showSingleArticle);
 
 router.get('/articles/edit/:id', articleController.showEditForm);
 router.post('/articles/edit/:id', upload.single('image'), articleController.updateArticle);

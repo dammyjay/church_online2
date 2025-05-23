@@ -73,6 +73,12 @@ app.use('/', publicFaqRoutes);
 const adminFaqRoutes = require('./routes/adminFaqRoutes');
 app.use('/', adminFaqRoutes);
 
+const publicArticleRoutes = require('./routes/publicArticleRoutes');
+app.use('/', publicArticleRoutes);
+
+const publicVideoRoutes = require('./routes/publicVideoRoutes');
+app.use('/', publicVideoRoutes);
+
 // // Example in your routes file
 // router.get('/login', (req, res) => {
 //   res.render('admin/login'); // note: include 'admin/' because login.ejs is inside admin folder

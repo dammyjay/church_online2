@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title><%= title %></title>
+    <link rel="stylesheet" href="/css/style.css" />
+  </head>
+  <body>
+    <div style="margin-top: 20px">
+      <a href="/articles" class="login-button">← Back to All Articles</a>
+    </div>
+    <section class="section">
+      <h2><%= article.title %></h2>
+      <% if (article.image_url) { %>
+      <img
+        src="<%= article.image_url %>"
+        alt="Article Image"
+        style="max-width: 100%; border-radius: 8px"
+      />
+      <% } %>
+      <div class="article-body" style="margin-top: 20px">
+        <%- article.content %>
+      </div>
+      <small
+        >Posted on <%= new Date(article.created_at3).toLocaleString() %></small
+      >
+      <div style="margin-top: 20px">
+        <a href="/articles" class="login-button">← Back to All Articles</a>
+      </div>
+    </section>
+  </body>
+</html>
