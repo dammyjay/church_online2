@@ -1,0 +1,108 @@
+<!-- views/partials/adminLayout.ejs -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <!-- <title><%= title || "Admin Panel" %></title> -->
+  <title><%= typeof title !== 'undefined' ? title : 'Admin Panel' %></title>
+  <link rel="stylesheet" href="/css/style.css" />
+  <link rel="icon" href="/logo.png" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <!-- <style>
+    .admin-layout {
+      display: flex;
+      min-height: 100vh;
+    }
+
+    .sidebar {
+      background: #4d3b00;
+      color: white;
+      width: 250px;
+      padding: 20px;
+      flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .sidebar a {
+      color: white;
+      text-decoration: none;
+      padding: 10px 0;
+      font-weight: bold;
+    }
+
+    .sidebar a:hover {
+      text-decoration: underline;
+    }
+
+    .main-content {
+      flex-grow: 1;
+      padding: 30px;
+      background: #f9f9f9;
+    }
+
+    .mobile-header {
+      display: none;
+      background: #4d3b00;
+      color: white;
+      padding: 15px;
+    }
+
+    .hamburger {
+      font-size: 24px;
+      cursor: pointer;
+    }
+
+    @media (max-width: 768px) {
+      .sidebar {
+        display: none;
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 100%;
+        z-index: 10;
+      }
+
+      .sidebar.show {
+        display: flex;
+      }
+
+      .mobile-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .admin-layout {
+        flex-direction: column;
+      }
+
+      .main-content {
+        padding: 15px;
+      }
+    }
+  </style> -->
+</head>
+<body>
+  <div class="mobile-header">
+    <span class="hamburger" onclick="toggleSidebar()">☰</span>
+    <strong><%= title || 'Admin Panel' %></strong>
+  </div>
+
+  <div class="admin-layout">
+    <div class="sidebar" id="adminSidebar">
+      <% include('adminSidebar') %>
+    </div>
+
+    <div class="main-content">
+      <%- body %>
+    </div>
+  </div>
+
+  <script>
+    function toggleSidebar() {
+      document.getElementById('adminSidebar').classList.toggle('show');
+    }
+  </script>
+</body>
+</html>

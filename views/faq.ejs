@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>FAQs</title>
+    <link rel="icon" type="image/x-icon" href="/logo.png" />
+    <script src="https://cdn.ckeditor.com/4.22.1/standard/ckeditor.js"></script>
+    <link rel="stylesheet" href="/css/style.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="sha512-..." crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  </head>
+  <body>
+    <section class="section">
+      <h3>Have a Question?</h3>
+      <form action="/faq/ask" method="POST" class="faq-form">
+        <textarea
+          name="question"
+          id="content"
+          placeholder="Type your question..."
+          required
+        ></textarea>
+        <!-- <input
+          type="text"
+          name="question"
+          placeholder="Type your question..."
+          required
+        /> -->
+        <input
+          style="width: 100%; height: auto"
+          type="email"
+          name="email"
+          placeholder="Your email "
+          required
+        />
+        <button type="submit">Submit</button>
+      </form>
+
+      <hr style="margin: 40px 0" />
+    </section>
+    <!-- <section class="section">
+      <h2>Frequently Asked Questions</h2>
+      <div class="faq-list">
+        <% faqs.forEach(faq => { %>
+        <div class="faq-item">
+          <h4>Q: <%- faq.question %></h4>
+          <% if (faq.answer) { %>
+          <p><strong>A:</strong> <%- faq.answer %></p>
+          <% } else { %>
+          <p><em>Answer coming soon...</em></p>
+          <% } %>
+        </div>
+        <% }) %>
+      </div>
+    </section> -->
+    <section class="section">
+      <h2>Frequently Asked Questions</h2>
+      <div class="faq-list">
+        <% faqs.forEach((faq, index) => { %>
+        <div class="faq-item">
+          <div class="faq-question" onclick="toggleFaq(<%- index %>)">
+            <h4>Q: <%- faq.question %></h4>
+            <i id="icon-<%= index %>" class="fas fa-plus"></i>
+          </div>
+          <div id="answer-<%= index %>" class="faq-answer hidden">
+            <% if (faq.answer) { %>
+            <p><strong>A:</strong> <%- faq.answer %></p>
+            <% } else { %>
+            <p><em>Answer coming soon...</em></p>
+            <% } %>
+          </div>
+        </div>
+        <% }) %>
+      </div>
+    </section>
+    <script>
+      CKEDITOR.replace("content");
+    </script>
+    <script> 
+        function toggleFaq(index) { 
+          const answer = document.getElementById(`answer-${index}`); 
+          const icon = document.getElementById(`icon-${index}`); 
+          if (answer.classList.contains('hidden')) {
+          answer.classList.remove('hidden'); 
+            icon.classList.remove('fa-plus'); 
+            icon.classList.add('fa-minus'); } 
+          else { 
+            answer.classList.add('hidden'); 
+            icon.classList.remove('fa-minus'); 
+            icon.classList.add('fa-plus'); 
+          } 
+        } 
+      </script>
+  </body>
+</html>

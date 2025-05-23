@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Manage Videos</title>
+    <link rel="stylesheet" href="/css/style.css" />
+    <link rel="icon" type="image/x-icon" href="/logo.png" />
+  </head>
+  <body>
+    <header class="header">
+      <div class="logo-title">
+        <% info = info || {}; %> <% if (info.logo_url) { %>
+        <img src="<%= info.logo_url %>" alt="Logo" />
+        <% } %>
+        <p><%= info?.name || 'C&S Church Online' %></p>
+      </div>
+      <nav>
+        <a href="/admin/dashboard">Dashboard</a>
+        <a href="/admin/articles">Articles</a>
+        <a href="/admin/videos">Videos</a>
+        <a href="/admin/ministry">About</a>
+        <a href="/admin/faqs">FAQ</a>
+        <a href="/admin/logout"  class="logout-button">Logout</a> <!-- Login remains a page link -->
+        
+      </nav>
+    </header>
+    <form class="search-form" method="GET" action="/admin/videos" style="margin-bottom: 20px">
+      <input
+        type="text"
+        name="search"
+        placeholder="Search by title..."
+        value="<%= search || '' %>"
+        style="padding: 8px; width: 60%; max-width: 400px"
+      />
+      <button type="submit" style="padding: 8px">Search</button>
+    </form>
+
+    <h2>Add New Video</h2>
+    <form method="POST" action="/admin/videos">
+      <label>Title:</label><br />
+      <input type="text" name="title" required /><br /><br />
+
+      <label>Description:</label><br />
+      <textarea name="description" rows="4" cols="50"></textarea><br /><br />
+
+      <label>YouTube URL:</label><br />
+      <input
+        type="url"
+        name="youtube_url"
+        placeholder="https://www.youtube.com/watch?v=VIDEO_ID"
+        required
+      /><br /><br />
+
+      <button type="submit">Add Video</button>
+    </form>
+
+    <h2>Existing Videos</h2>
+
+    <% videos.forEach(video => { const regExp =
+    /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/; const
+    match = video.youtube_url.match(regExp); const videoId = (match &&
+    match[2].length == 11) ? match[2] : null; %>
+
+    <div class="video-card">
+      <h3><%= video.title %></h3>
+      <% if (videoId) { %>
+      <div class="video-container">
+        <iframe
+          src="https://www.youtube.com/embed/<%= videoId %>"
+          frameborder="0"
+          allowfullscreen
+        ></iframe>
+      </div>
+      <p><%= video.description %></p>
+      <small
+        >Posted on <%= new Date(video.created_at3).toLocaleString() %></small
+      >
+      <% } else { %>
+      <p>Invalid YouTube URL</p>
+      <% } %>
+
+      <div class="video-buttons">
+        <a href="/admin/videos/edit/<%= video.id %>">Edit</a>
+        <form
+          action="/admin/videos/delete/<%= video.id %>"
+          method="POST"
+          onsubmit="return confirm('Delete this video?');"
+        >
+          <button type="submit">Delete</button>
+        </form>
+      </div>
+    </div>
+
+    <% }) %>
+
+    <a href="/admin/dashboard">Back to Dashboard</a>
+  </body>
+</html>

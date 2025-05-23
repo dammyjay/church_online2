@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Manage Articles</title>
+    <link rel="stylesheet" href="/css/style.css" />
+    <link rel="icon" type="image/x-icon" href="/logo.png" />
+    <script src="https://cdn.ckeditor.com/4.22.1/standard/ckeditor.js"></script>
+  </head>
+  <body>
+    <!-- Header -->
+    <header class="header">
+      <div class="logo-title">
+        <% info = info || {}; %> <% if (info.logo_url) { %>
+        <img src="<%= info.logo_url %>" alt="Logo" />
+        <% } %>
+        <p><%= info?.name || 'C&S Church Online' %></p>
+      </div>
+      <nav>
+        <a href="/admin/dashboard">Dashboard</a>
+        <a href="/admin/articles">Articles</a>
+        <a href="/admin/videos">Videos</a>
+        <a href="/admin/ministry">About</a>
+        <a href="/admin/faqs">FAQ</a>
+        <a href="/admin/logout"  class="logout-button">Logout</a> <!-- Login remains a page link -->
+        
+      </nav>
+    </header>
+    
+    <h2>Create New Article</h2>
+    <form method="POST" action="/admin/articles" enctype="multipart/form-data">
+      <label>Title:</label><br />
+      <input type="text" name="title" required /><br /><br />
+
+      <label>Content:</label><br />
+      <textarea name="content" id="content" required></textarea><br /><br />
+
+      <label>Image (optional):</label><br />
+      <input type="file" name="image" /><br /><br />
+
+      <button type="submit">Save Article</button>
+    </form>
+
+    <form method="GET" action="/admin/articles" style="margin-top: 20px">
+      <input
+        type="text"
+        name="search"
+        placeholder="Search by title..."
+        value="<%= search || '' %>"
+      />
+      <button type="submit">Search</button>
+    </form>
+    <h2>Existing Articles</h2>
+    <% articles.forEach(article => { %>
+    <div class="article-card">
+      <h3><%= article.title %></h3>
+      <% if (article.image_url) { %>
+      <img src="<%= article.image_url %>" alt="Article Image" />
+      <% } %>
+      <!-- <p><%= article.content %></p> -->
+      <div class="article-body"> <%- article.content %> </div>
+      <small
+        >Posted on <%= new Date(article.created_at3).toLocaleString() %></small
+      >
+
+      <div class="article-buttons">
+        <a href="/admin/articles/edit/<%= article.id %>">Edit</a>
+        <form
+          action="/admin/articles/delete/<%= article.id %>"
+          method="POST"
+          onsubmit="return confirm('Are you sure you want to delete this article?');"
+        >
+          <button type="submit">Delete</button>
+        </form>
+      </div>
+    </div>
+    <% }) %>
+
+    <a href="/admin/dashboard">Back to Dashboard</a>
+    <script> CKEDITOR.replace('content'); </script>
+  </body>
+</html>

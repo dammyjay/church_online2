@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Edit Video</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="icon" type="image/x-icon" href="/logo.png">
+</head>
+<body>
+  <header class="header">
+    <div class="logo-title">
+     <a href="/"> <img src="/logo.png" alt="Logo" /></a>
+
+      <p>C&S Church Online</p>
+    </div>
+
+    <nav>
+      <a href="/admin/dashboard">Dashboard</a>
+      <a href="/articles">Articles</a>
+      <a href="/videos">Videos</a>
+      <a href="#mission-vision">About</a>
+      <a href="/admin/faqs">FAQ</a>
+      <!-- Assuming About refers to Mission & Vision -->
+      <a href="/admin/logout" class="logout-button">Logout</a>
+      <!-- Login remains a page link -->
+      
+    </nav>
+  </header>
+  <h2>Edit Video</h2>
+
+  <form method="POST" action="/admin/videos/edit/<%= video.id %>">
+    <label>Title:</label><br>
+    <input type="text" name="title" value="<%= video.title %>" required><br><br>
+
+    <label>YouTube URL:</label><br>
+    <input type="url" name="youtube_url" value="<%= video.youtube_url %>" required><br><br>
+
+    <button type="submit">Update Video</button>
+  </form>
+
+  <br>
+  <a href="/admin/videos">Back to Videos</a>
+</body>
+</html>

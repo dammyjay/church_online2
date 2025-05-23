@@ -1,0 +1,23 @@
+const express = require('express');
+const router = express.Router();
+const pool = require('../models/db');
+
+// Show FAQ page
+router.get('/faq', async (req, res) => {
+const result = await pool.query('SELECT * FROM faqs WHERE is_published = true ORDER BY created_at DESC');
+res.render('faq', { faqs: result.rows });
+});
+
+// Handle question submission
+router.post('/faq/ask', async (req, res) => {
+const { question } = req.body;
+
+if (!question || question.trim() === '') {
+return res.redirect('/faq');
+}
+const created_at = new Date(); // Create timestamp in JS
+await pool.query('INSERT INTO faqs (question, created_at) VALUES ($1, $2)', [question, created_at]);
+res.redirect('/faq');
+});
+
+module.exports = router;

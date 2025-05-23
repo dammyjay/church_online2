@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Edit Article</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="icon" type="image/x-icon" href="/logo.png">
+  <script src="https://cdn.ckeditor.com/4.22.1/standard/ckeditor.js"></script>
+</head>
+<body>
+  <header class="header">
+    <div class="logo-title">
+     <a href="/"> <img src="/logo.png" alt="Logo" /></a>
+
+      <p>C&S Church Online</p>
+    </div>
+
+    <nav>
+      <a href="/admin/dashboard">Dashboard</a>
+      <a href="/articles">Articles</a>
+      <a href="/videos">Videos</a>
+      <a href="#mission-vision">About</a>
+      <!-- Assuming About refers to Mission & Vision -->
+      <a href="/admin/logout" class="logout-button">Logout</a>
+      <!-- Login remains a page link -->
+      
+    </nav>
+  </header>
+  <h2>Edit Article</h2>
+
+  <form method="POST" action="/admin/articles/edit/<%= article.id %>" enctype="multipart/form-data">
+    <label>Title:</label><br>
+    <input type="text" name="title" value="<%= article.title %>" required><br><br>
+
+    <label>Content:</label><br>
+    <textarea name="content" id="content" required><%= article.content %></textarea><br><br>
+
+    <label>Current Image:</label><br>
+    <% if (article.image_url) { %>
+      <img src="<%= article.image_url %>" alt="Article Image" style="max-width: 200px;"><br><br>
+    <% } else { %>
+      <p>No image uploaded.</p><br>
+    <% } %>
+
+    <label>Replace Image (optional):</label><br>
+    <input type="file" name="image"><br><br>
+
+    <button type="submit">Update Article</button>
+  </form>
+
+  <br>
+  <a href="/admin/articles">Back to Articles</a>
+  <script> CKEDITOR.replace('content'); </script>
+</body>
+</html>

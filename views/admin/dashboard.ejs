@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" href="/css/style.css" />
+    <link rel="icon" type="image/x-icon" href="/logo.png" />
+  </head>
+  <body>
+    <!-- Header -->
+    <header class="header">
+      <div class="logo-title">
+        <% info = info || {}; %> <% if (info?.logo_url) { %>
+        <img src="<%= info.logo_url %>" alt="Logo" />
+        <% } %>
+        <p><%= info?.name || 'C&S Church Online' %></p>
+      </div>
+      <nav>
+        <!-- <a href="/">Home</a> -->
+        <a href="/admin/articles">Articles</a>
+        <a href="/admin/videos">Videos</a>
+        <a href="/admin/ministry">Ministry</a>
+        <a href="/admin/faqs">FAQ</a>
+        <a href="/admin/logout" class="logout-button">Logout</a>
+        <!-- Login remains a page link -->
+      </nav>
+    </header>
+
+    <h1>Welcome Admin</h1>
+    <p>You are logged in.</p>
+    <!-- <a href="/admin/logout">Logout</a> -->
+    <h2>All Registered Users</h2>
+    <div class="table-responsive">
+      <table
+        class="user-table"
+        style="width: 80%; border-collapse: collapse; margin-top: 20px"
+      >
+        <thead>
+          <tr>
+            <th>Profile Picture</th>
+            <th>Full Name</th>
+            <th>Email</th>
+            <th>Phone</th>
+            <th>Gender</th>
+            <th>Role</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% users.forEach(user => { %>
+          <tr>
+            <td>
+              <img
+                src="<%= user.profile_picture || '/profile.webp' %>"
+                alt="Profile"
+                style="
+                  width: 50px;
+                  height: 50px;
+                  border-radius: 50%;
+                  object-fit: cover;
+                "
+              />
+            </td>
+            <td><%= user.fullname %></td>
+            <td><%= user.email %></td>
+            <td><%= user.phone %></td>
+            <td><%= user.gender %></td>
+            <td><%= user.role %></td>
+            <td style="display: flex; gap: 10px; justify-content: center; align-items: center;">
+              <!-- <a href="/admin/users/edit/<%= user.id %>">Edit</a> | -->
+              <button class="btn-edit" onclick="window.location.href='/admin/users/edit/<%= user.id %>'">Edit</button>
+
+              <!-- <form
+                action="/admin/users/delete/<%= user.id %>"
+                method="POST"
+                style="display: inline"
+                onsubmit="return confirm('Delete this user?');"
+              >
+                <button type="submit" style="color: red">Delete</button>
+              </form> -->
+              <button class="btn-delete" onclick="confirmDelete('<%= user.id %>')">
+                Delete
+              </button>
+            </td>
+          </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </div>
+
+    <script>
+      function confirmDelete(userId) {
+        if (!confirm("Delete this user?")) return;
+
+        fetch(`/admin/users/delete/${userId}`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            // add CSRF token here if you use one
+          },
+          body: JSON.stringify({ id: userId }), // optional, since id is in URL
+        })
+          .then((res) => {
+            if (res.ok) {
+              alert("User deleted successfully");
+              location.reload(); // reload page to refresh user list
+            } else {
+              alert("Failed to delete user");
+            }
+          })
+          .catch((err) => {
+            console.error(err);
+            alert("Error deleting user");
+          });
+      }
+    </script>
+  </body>
+</html>

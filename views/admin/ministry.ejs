@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Edit Ministry Info</title>
+    <link rel="stylesheet" href="/css/style.css" />
+    <link rel="icon" type="image/x-icon" href="/logo.png" />
+  </head>
+  <body>
+    <!-- Header -->
+    <header class="header">
+      <div class="logo-title">
+        <% info = info || {}; %> <% if (info.logo_url) { %>
+        <img src="<%= info.logo_url %>" alt="Logo" />
+        <% } %>
+        <p><%= info?.name || 'C&S Church Online' %></p>
+      </div>
+      <nav>
+        <a href="/admin/dashboard">Dashboard</a>
+        <a href="/admin/articles">Articles</a>
+        <a href="/admin/videos">Videos</a>
+        <a href="/admin/ministry">About</a>
+        <a href="/admin/faqs">FAQ</a>
+        <a href="/admin/logout class="logout-button">Logout</a>
+        <!-- Login is a page link -->
+      </nav>
+    </header>
+    <h2>Ministry Info</h2>
+    <form method="POST" action="/admin/ministry" enctype="multipart/form-data">
+      <label>Logo URL:</label><br />
+      <!-- <input type="text" name="logo_url" value="<%= info?.logo_url || '' %>"><br><br> -->
+      <input type="file" name="logo" /><br /><br />
+      <% if (info?.logo_url) { %>
+      <img
+        src="<%= info.logo_url %>"
+        alt="Ministry Logo"
+        style="max-width: 200px"
+      />
+      <% } %><br /><br />
+
+
+      <label>Vision:</label><br />
+      <textarea name="vision"><%= info?.vision || '' %></textarea><br /><br />
+
+      <label>Mission:</label><br />
+      <textarea name="mission"><%= info?.mission || '' %></textarea><br /><br />
+
+      <label>History:</label><br />
+      <textarea name="history"><%= info?.history || '' %></textarea><br /><br />
+
+      <button type="submit">Save</button>
+    </form>
+
+    <br />
+
+    <a href="/admin/dashboard">Back to Dashboard</a>
+  </body>
+</html>

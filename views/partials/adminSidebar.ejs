@@ -1,0 +1,14 @@
+<!-- views/partials/adminSidebar.ejs -->
+<div class="logo-title" style="margin-bottom: 30px;">
+    <% if (info?.logo_url) { %>
+      <img src="<%= info.logo_url %>" alt="Logo" style="height: 50px;">
+    <% } %>
+    <p style="margin: 10px 0;"><%= info?.name || 'C&S Admin' %></p>
+  </div>
+  
+  <a href="/admin/dashboard">Dashboard</a>
+  <a href="/admin/articles">Articles</a>
+  <a href="/admin/videos">Videos</a>
+  <a href="/admin/ministry">Ministry Info</a>
+  <a href="/admin/logout">Logout</a>
+  
