@@ -85,7 +85,7 @@
               <h3><%- article.title %></h3> 
               <% if (article.image_url) { %> 
                 <img src="<%= article.image_url %>" alt="Article Image" style="max-width: 100%; height: auto; object-fit: cover; border-radius: 8px;" /> <% } %> 
-                <div class="article-body"> <%- article.content.substring(0, 500) %>... </div> 
+                <div class="article-body"> <%- article.content.substring(0, 100) %>... </div> 
                 <small>Posted on <%= new Date(article.created_at3).toLocaleString() %></small> 
               </a> 
             </div> <% }) %> 

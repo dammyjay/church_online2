@@ -354,7 +354,15 @@ form button {
 .article-body {
     line-height: 1.6;
     font-size: 1rem;
-    margin-bottom: 10px;   }
+    margin-bottom: 10px;   
+    word-break: break-word;
+    overflow-wrap: break-word;
+
+}
+
+        .article-body a {
+            word-break: break-all;
+            overflow-wrap: break-word;     }
 
 /* Video card styling */
 .video-card {
@@ -930,6 +938,11 @@ nav a:hover {
             gap: 3rem;
             margin-top: 1rem;
             margin-bottom: 5rem;   }
+
+                        .card-grid2 {
+                            display: grid;
+                            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+                            gap: 50px;   }
         
                         .footer-container {
                             flex-direction: column;
