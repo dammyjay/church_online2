@@ -166,6 +166,14 @@
     </footer>
 
     <script>
+      function stopAllVideos(exceptIframe) {
+        document.querySelectorAll('.video-hover-container iframe').forEach(function(iframe) {
+          if (iframe !== exceptIframe) {
+            const baseSrc = iframe.parentElement.dataset.embed;
+            iframe.src = baseSrc + '?autoplay=0';
+          }
+        });
+      }
       document.querySelectorAll('.video-hover-container').forEach(function(container) {
         const iframe = container.querySelector('iframe');
         const baseSrc = container.dataset.embed;
@@ -174,6 +182,11 @@
         });
         container.addEventListener('mouseleave', function() {
           iframe.src = baseSrc + '?autoplay=0';
+        });
+        container.addEventListener('click', function(e) {
+          e.preventDefault();
+          stopAllVideos(iframe);
+          iframe.src = baseSrc + '?autoplay=1';
         });
       });
     </script>
