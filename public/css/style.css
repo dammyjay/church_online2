@@ -357,6 +357,7 @@ form button {
     margin-bottom: 10px;   
     word-break: break-word;
     overflow-wrap: break-word;
+    
 
 }
 /* .article-body img {
@@ -557,10 +558,20 @@ nav a:hover {
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
 }
 
-.card img {
+/* .card img {
     max-width: 100%;
     height: auto;
     border-radius: 5px;
+} */
+
+.card img {
+    display: block;
+    margin: 0 auto;
+    max-width: 200px;
+    height: 100px;
+    width: 100%;
+    object-fit: cover;
+    border-radius: 8px;
 }
 
 .card iframe {
