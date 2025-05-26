@@ -6,10 +6,34 @@
     <link rel="icon" type="image/x-icon" href="/logo.png" />
     <script src="https://cdn.ckeditor.com/4.22.1/standard/ckeditor.js"></script>
     <link rel="stylesheet" href="/css/style.css" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="sha512-..." crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+      integrity="sha512-..."
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   </head>
   <body>
+    <header class="header">
+      <div class="logo-title">
+        <a href="/home2"> <img src="/logo.png" alt="Logo" /></a>
+
+        <p>C&S Church Online</p>
+      </div>
+      <button class="nav-toggle" onclick="toggleNav()">☰</button>
+      <nav id="main-nav">
+        <a href="/home2">Home</a>
+        <a href="/articles">Articles</a>
+        <a href="/videos">Videos</a>
+        <a href="#mission-vision">About</a>
+        <a class="active" href="/faq">FAQ</a>
+        <!-- Assuming About refers to Mission & Vision -->
+        <a href="/admin/logout" class="logout-button">Logout</a>
+        <!-- Login remains a page link -->
+      </nav>
+    </header>
     <section class="section">
       <h3>Have a Question?</h3>
       <form action="/faq/ask" method="POST" class="faq-form">
@@ -75,20 +99,29 @@
     <script>
       CKEDITOR.replace("content");
     </script>
-    <script> 
-        function toggleFaq(index) { 
-          const answer = document.getElementById(`answer-${index}`); 
-          const icon = document.getElementById(`icon-${index}`); 
-          if (answer.classList.contains('hidden')) {
-          answer.classList.remove('hidden'); 
-            icon.classList.remove('fa-plus'); 
-            icon.classList.add('fa-minus'); } 
-          else { 
-            answer.classList.add('hidden'); 
-            icon.classList.remove('fa-minus'); 
-            icon.classList.add('fa-plus'); 
-          } 
-        } 
-      </script>
+    <script>
+      function toggleFaq(index) {
+        const answer = document.getElementById(`answer-${index}`);
+        const icon = document.getElementById(`icon-${index}`);
+        if (answer.classList.contains("hidden")) {
+          answer.classList.remove("hidden");
+          icon.classList.remove("fa-plus");
+          icon.classList.add("fa-minus");
+        } else {
+          answer.classList.add("hidden");
+          icon.classList.remove("fa-minus");
+          icon.classList.add("fa-plus");
+        }
+      }
+    </script>
+
+    <script>
+      function toggleNav() {
+        var nav = document.getElementById("main-nav");
+        nav.classList.toggle("open");
+      }
+    </script>
+
+    
   </body>
 </html>

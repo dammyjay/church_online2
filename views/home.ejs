@@ -40,6 +40,7 @@
         <a href="#articles">Articles</a>
         <a href="#videos">Videos</a>
         <a href="#mission-vision">About</a>
+        <a href="#faq">FAQ</a>
         <% if (isLoggedIn) { %>
           <% if (profilePic) { %>
             <img src="<%= profilePic %>" alt="Profile" style="width:32px;height:32px;border-radius:50%;vertical-align:middle;margin-right:8px;">
@@ -136,7 +137,7 @@
     </section>
 
      <!-- Frequently Asked Questions -->    
-    <section class="section"> 
+    <section id="faq" class="section"> 
       <h2>Frequently Asked Questions</h2> 
       <div class="faq-list"> 
         <% faqs.forEach((faq, index) => { %> 
@@ -155,6 +156,9 @@
                 </div> 
               </div> <% }) %> 
       </div> 
+      <div style="text-align: center; margin-top: 20px">
+        <a href="/faq" class="login-button">Ask a question</a>
+      </div>
     </section>
     
     <% if (subscribed === 'success') { %>
@@ -243,7 +247,8 @@
   document.addEventListener('DOMContentLoaded', function() {
     const articlesBtn = document.querySelector('a[href="/articles"]');
     const videosBtn = document.querySelector('a[href="/videos"]');
-
+    const faqBtn = document.querySelector('a[href="/faq"]');
+    
     if (articlesBtn) {
       articlesBtn.addEventListener('click', function(e) {
         handleProtectedLink(e, '/articles');
@@ -252,6 +257,11 @@
     if (videosBtn) {
       videosBtn.addEventListener('click', function(e) {
         handleProtectedLink(e, '/videos');
+      });
+    }
+    if (faqBtn) {
+      faqBtn.addEventListener('click', function(e) {
+        handleProtectedLink(e, '/faq');
       });
     }
   });
