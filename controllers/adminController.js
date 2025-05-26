@@ -2,58 +2,61 @@ const pool = require('../models/db');
 const bcrypt = require('bcrypt');
 
 
+// exports.showLogin = (req, res) => {
+//   res.render('admin/login', { error: null, title: 'Login'  });
+// };
+
 exports.showLogin = (req, res) => {
-  res.render('admin/login', { error: null, title: 'Login'  });
+  res.render("admin/login", {
+    error: null,
+    title: "Login",
+    redirect: req.query.redirect || "",
+  });
 };
 
 exports.login = async (req, res) => {
   const { email, password } = req.body;
-  const result = await pool.query('SELECT * FROM users2 WHERE email = $1 AND password = $2', [email, password]);
+  const redirectUrl = req.query.redirect;
+  const result = await pool.query(
+    "SELECT * FROM users2 WHERE email = $1 AND password = $2",
+    [email, password]
+  );
 
-  // if (result.rows.length > 0) {
-  //   // req.session.admin = true;
-  //   // res.redirect('/admin/dashboard');
-
-  //   const user = result.rows[0];  
-  //   req.session.user = {
-  //     id: user.id,
-  //     email: user.email,
-  //     role: user.role,
-  //   };
-  //   // Check if the user is an admin
-  //   if (user.role === 'admin') {
-  //     return res.redirect('/admin/dashboard');
-  //   } else {
-  //     return res.redirect('/');
-  //   }
-    
-  // } else {
-  //   res.render('admin/login', { error: 'Invalid credentials' });
+  // if (result.rows.length === 0) {
+  //   return res.render("admin/login", { error: "Invalid credentials" });
   // }
-  
+
   if (result.rows.length === 0) {
-    return res.render('admin/login', { error: 'Invalid credentials' });
+    return res.render("admin/login", {
+      error: "Invalid credentials",
+      title: "Login",
+      redirect: redirectUrl || "", // Always pass redirect!
+    });
   }
-  
+
   const user = result.rows[0];
-  
+
   // Save session
   req.session.user = {
     id: user.id,
     email: user.email,
     role: user.role,
+    profile_pic: user.profile_picture, 
   };
-  
-  // Redirect based on role
-  if (user.role === 'admin') {
-    console.log('Admin login successful');
-    return res.redirect('/admin/dashboard');
-  } else {
-    console.log('User login successful');
-    return res.redirect('/');
+
+  // Redirect to intended page if present, else default
+  if (redirectUrl) {
+    return res.redirect(redirectUrl);
   }
-  
-  
+
+  // Redirect based on role
+  if (user.role === "admin") {
+    console.log("Admin login successful");
+    return res.redirect("/admin/dashboard");
+  } else {
+    console.log("User login successful");
+    return res.redirect("/home2");
+  }
 };
 
 // exports.login = async (req, res) => {
@@ -124,14 +127,22 @@ exports.dashboard = async (req, res) => {
     }
 
   try {
-    const infoResult = await pool.query('SELECT * FROM ministry_info ORDER BY id DESC LIMIT 1');
-    const usersResult = await pool.query('SELECT * FROM users2 ORDER BY created_at DESC');
+    const infoResult = await pool.query(
+      "SELECT * FROM ministry_info ORDER BY id DESC LIMIT 1"
+    );
+    const usersResult = await pool.query(
+      "SELECT * FROM users2 ORDER BY created_at DESC"
+    );
     const users = usersResult.rows;
 
     const info = infoResult.rows[0];
-
-    console.log('info:', info, 'users:', users);
-    res.render('admin/dashboard', { info, users }); // ← Pass users to EJS
+    // Get profilePic from session
+    const profilePic = req.session.user ? req.session.user.profile_picture : null;
+    console.log("User session:", req.session.user);
+    console.log("Profile picture:", profilePic);
+    
+    console.log("info:", info, "users:", users);
+    res.render("admin/dashboard", { info, users, profilePic }); // ← Pass users to EJS
   } catch (error) {
     console.error(error);
     res.status(500).send('Server Error');

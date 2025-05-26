@@ -14,7 +14,7 @@
     <header class="header">
       <div class="logo-title">
         <% if (info?.logo_url) { %>
-        <a href="/"><img src="<%= info.logo_url %>" alt="Logo" /></a>
+        <a href="/home2"><img src="<%= info.logo_url %>" alt="Logo" /></a>
         <% } %>
         <p><%= info?.name || 'C&S Church Online' %></p>
       </div>
@@ -37,12 +37,12 @@
       <button class="nav-toggle" onclick="toggleNav()">☰</button>
       <nav id="main-nav">
         <a class="active" href="#mission-vision">Home</a>
-        <a href="#articles">Articles</a>
-        <a href="#videos">Videos</a>
-        <a href="#mission-vision">About</a>
+        <a href="/articles">Articles</a>
+        <a href="/videos">Videos</a>
+        <a href="">About</a>
         <% if (isLoggedIn) { %>
           <% if (profilePic) { %>
-            <img src="<%= profilePic %>" alt="Profile" style="width:32px;height:32px;border-radius:50%;vertical-align:middle;margin-right:8px;">
+            <img src="<%= profilePic ? profilePic : '/profile.webp' %>" alt="Profile" style="width:32px;height:32px;border-radius:50%;vertical-align:middle;margin-right:8px;">
           <% } %>
           <a style="background-color: red;" href="/admin/logout" class="login-button">Logout</a>
         <% } else { %>
@@ -258,10 +258,10 @@
 </script>
 
 <script>
-  function toggleNav() {
-    var nav = document.getElementById("main-nav");
-    nav.classList.toggle("open");
-  }
-</script>
+    function toggleNav() {
+      var nav = document.getElementById("main-nav");
+      nav.classList.toggle("open");
+    }
+  </script>
   </body>
 </html>

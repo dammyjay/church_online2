@@ -15,8 +15,8 @@
   
         <p>C&S Church Online</p>
       </div>
-  
-      <nav>
+      <button class="nav-toggle" onclick="toggleNav()">☰</button>
+      <nav id="main-nav">
         <a href="/admin/dashboard">Dashboard</a>
         <a href="/articles">Articles</a>
         <a href="/videos">Videos</a>
@@ -43,5 +43,11 @@
       
     </form>
     <script> CKEDITOR.replace('content'); </script>
+    <script>
+      function toggleNav() {
+        var nav = document.getElementById("main-nav");
+        nav.classList.toggle("open");
+      }
+    </script>
   </body>
 </html>

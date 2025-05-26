@@ -14,13 +14,13 @@
   <body>
     <header class="header">
       <div class="logo-title">
-       <a href="/"> <img src="/logo.png" alt="Logo" /></a>
+       <a href="/home2"> <img src="/logo.png" alt="Logo" /></a>
 
         <p>C&S Church Online</p>
       </div>
-
-      <nav>
-        <a href="/admin/dashboard">Dashboard</a>
+      <button class="nav-toggle" onclick="toggleNav()">☰</button>
+      <nav id="main-nav">
+        <a href="/home2">Home</a>
         <a href="/articles">Articles</a>
         <a class="active" href="/videos">Videos</a>
         <a href="#mission-vision">About</a>
@@ -190,5 +190,12 @@
         });
       });
     </script>
+
+  <script>
+    function toggleNav() {
+      var nav = document.getElementById("main-nav");
+      nav.classList.toggle("open");
+    }
+  </script>
   </body>
 </html>

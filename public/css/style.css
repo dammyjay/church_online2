@@ -359,6 +359,13 @@ form button {
     overflow-wrap: break-word;
 
 }
+/* .article-body img {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 100%;
+    height: auto;
+} */
 
         .article-body a {
             word-break: break-all;
@@ -843,6 +850,38 @@ nav a:hover {
 /* Optional: reduce padding on very small screens */
 @media screen and (max-width: 480px) {
 
+
+    .nav-toggle {
+            display: block;
+            background: none;
+            border: none;
+            font-size: 2rem;
+            margin: 10px;
+            cursor: pointer;
+            color: #fff;
+        }
+    
+        #main-nav {
+            display: none;
+            flex-direction: column;
+            background: #222;
+            position: absolute;
+            top: 60px;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+        }
+    
+        #main-nav.open {
+            display: flex;
+        }
+    
+        #main-nav a,
+        #main-nav img {
+            margin: 10px 0;
+            display: block;   
+            color: #de2f2f;}
+
     .table-responsive {
             width: 100%;
             overflow-x: auto;
@@ -904,7 +943,7 @@ nav a:hover {
     
         nav a {
             /* margin: 0 1rem; */
-            color: #fff;
+            color: #b4801e;
             text-decoration: none;
             font-weight: bold;
             padding: 5px;
@@ -922,6 +961,63 @@ nav a:hover {
 
 /* Responsive Design */
 @media (max-width: 768px) {
+    .nav-toggle {
+            display: block;
+            background: none;
+            border: none;
+            font-size: 2rem;
+            margin: 10px;
+            cursor: pointer;
+            color: #fff;
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            z-index: 2001;
+        }
+    
+                #main-nav {
+                    display: block;
+                    position: fixed;
+                    left: -250px;
+                    top: 0;
+                    width: 220px;
+                    height: 100%;
+                    background: #222;
+                    flex-direction: column;
+                    padding-top: 60px;
+                    transition: left 0.3s ease;
+                    z-index: 2000;
+                    box-shadow: 2px 0 8px rgba(0, 0, 0, 0.2);       }
+    
+                                        #main-nav.open {
+                                            left: 0;                   }
+    
+        #main-nav a,
+        #main-nav img {
+            margin: 20px 0 0 20px;
+            /* margin: 10px 0; */
+            display: block;   
+            color: #deab1d;
+        }
+            
+                 /* Optional: overlay for closing sidebar */
+                 .sidebar-overlay {
+                     display: none;
+                     position: fixed;
+                     top: 0;
+                     left: 0;
+                     width: 100vw;
+                     height: 100vh;
+                     background: rgba(75, 57, 10, 0.3);
+                     z-index: 1999;
+                 }
+        
+                 .sidebar-overlay.active {
+                     display: block;
+                     color: #080808;
+                     
+                 }
+
     .table-responsive {
             width: 100%;
             overflow-x: auto;
@@ -965,6 +1061,25 @@ nav a:hover {
                                                         }
 }
 
+/* Desktop: show nav, hide hamburger */
+@media (min-width: 769px) {
+    .nav-toggle {
+        display: none;
+    }
+
+    #main-nav {
+        display: flex !important;
+        position: static;
+        flex-direction: row;
+        background: none;
+        width: auto;
+    }
+
+    #main-nav a,
+    #main-nav img {
+        margin: 0 10px;
+        display: inline-block;
+    } }
 
 @media (max-width: 600px) {
     .table-responsive {

@@ -15,14 +15,38 @@
         <% } %>
         <p><%= info?.name || 'C&S Church Online' %></p>
       </div>
-      <nav>
-        <!-- <a href="/">Home</a> -->
+      <!-- <button class="nav-toggle" onclick="toggleNav()">☰</button> -->
+      <!-- <nav id="main-nav">
         <a href="/admin/articles">Articles</a>
         <a href="/admin/videos">Videos</a>
         <a href="/admin/ministry">Ministry</a>
         <a href="/admin/faqs">FAQ</a>
+        <% if (profilePic) { %>
+        <img
+          src="<%= profilePic ? profilePic : '/profile.webp' %>"
+          alt="Profile"
+          style="
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            vertical-align: middle;
+            margin-right: 8px;
+          "
+        />
+        <% } %>
         <a href="/admin/logout" class="logout-button">Logout</a>
-        <!-- Login remains a page link -->
+        
+      </nav> -->
+      <button class="nav-toggle" onclick="toggleNav()">☰</button>
+      <nav id="main-nav">
+        <a href="/admin/articles">Articles</a>
+        <a href="/admin/videos">Videos</a>
+        <a href="/admin/ministry">Ministry</a>
+        <a href="/admin/faqs">FAQ</a>
+        <% if (profilePic) { %>
+          <img src="<%= profilePic %>" alt="Profile" style="width:32px;height:32px;border-radius:50%;vertical-align:middle;margin-right:8px;">
+        <% } %>
+        <a href="/admin/logout" class="logout-button">Logout</a>
       </nav>
     </header>
 
@@ -66,9 +90,21 @@
             <td><%= user.phone %></td>
             <td><%= user.gender %></td>
             <td><%= user.role %></td>
-            <td style="display: flex; gap: 10px; justify-content: center; align-items: center;">
+            <td
+              style="
+                display: flex;
+                gap: 10px;
+                justify-content: center;
+                align-items: center;
+              "
+            >
               <!-- <a href="/admin/users/edit/<%= user.id %>">Edit</a> | -->
-              <button class="btn-edit" onclick="window.location.href='/admin/users/edit/<%= user.id %>'">Edit</button>
+              <button
+                class="btn-edit"
+                onclick="window.location.href='/admin/users/edit/<%= user.id %>'"
+              >
+                Edit
+              </button>
 
               <!-- <form
                 action="/admin/users/delete/<%= user.id %>"
@@ -78,7 +114,10 @@
               >
                 <button type="submit" style="color: red">Delete</button>
               </form> -->
-              <button class="btn-delete" onclick="confirmDelete('<%= user.id %>')">
+              <button
+                class="btn-delete"
+                onclick="confirmDelete('<%= user.id %>')"
+              >
                 Delete
               </button>
             </td>
@@ -112,6 +151,13 @@
             console.error(err);
             alert("Error deleting user");
           });
+      }
+    </script>
+
+    <script>
+      function toggleNav() {
+        var nav = document.getElementById("main-nav");
+        nav.classList.toggle("open");
       }
     </script>
   </body>
