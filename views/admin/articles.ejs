@@ -55,7 +55,11 @@
     <div class="article-card">
       <h3><%= article.title %></h3>
       <% if (article.image_url) { %>
-      <img src="<%= article.image_url %>" alt="Article Image" style="object-fit: cover; height: auto;" />
+      <img
+        src="<%= article.image_url %>"
+        alt="Article Image"
+        style="object-fit: cover; height: auto"
+      />
       <% } %>
       <!-- <p><%= article.content %></p> -->
       <
@@ -97,25 +101,59 @@
       }
     </script>
 
-<script>
-  // Store the full content for each article in a JS object
-  const articleContents = {
-    <% articles.forEach(article => { %>
-      <%= article.id %>: `<%- article.content.replace(/`/g, '\\`') %>`,
-    <% }) %>
-  };
+    <script>
+      document.querySelectorAll(".article-body").forEach(function (el) {
+        el.addEventListener("contextmenu", function (e) {
+          e.preventDefault();
+        });
+        el.addEventListener("copy", function (e) {
+          e.preventDefault();
+        });
+      });
+    </script>
 
-  function toggleArticle(id) {
-    const bodyDiv = document.getElementById('article-body-' + id);
-    const link = bodyDiv.nextElementSibling;
-    if (link.innerText === 'Show More') {
-      bodyDiv.innerHTML = articleContents[id];
-      link.innerText = 'Show Less';
-    } else {
-      bodyDiv.innerHTML = articleContents[id].substring(0, 700) + '..';
-      link.innerText = 'Show More';
-    }
-  }
-</script>
+    <script>
+      function linkify(text) {
+        // Regex to match URLs starting with http or https
+        return text.replace(/(https?:\/\/[^\s<]+)/g, function (url) {
+          // If the URL ends with punctuation, remove it from the link
+          var cleanUrl = url.replace(/[.,!?;:)]*$/, "");
+          var trailing = url.slice(cleanUrl.length);
+          return (
+            '<a href="' +
+            cleanUrl +
+            '" target="_blank" rel="noopener noreferrer">' +
+            cleanUrl +
+            "</a>" +
+            trailing
+          );
+        });
+      }
+
+      document.querySelectorAll(".article-body").forEach(function (el) {
+        el.innerHTML = linkify(el.innerHTML);
+      });
+    </script>
+
+    <script>
+      // Store the full content for each article in a JS object
+      const articleContents = {
+        <% articles.forEach(article => { %>
+          <%= article.id %>: `<%- article.content.replace(/`/g, '\\`') %>`,
+        <% }) %>
+      };
+
+      function toggleArticle(id) {
+        const bodyDiv = document.getElementById('article-body-' + id);
+        const link = bodyDiv.nextElementSibling;
+        if (link.innerText === 'Show More') {
+          bodyDiv.innerHTML = linkify(articleContents[id]);
+          link.innerText = 'Show Less';
+        } else {
+          bodyDiv.innerHTML = linkify(articleContents[id].substring(0, 700) + '..');
+          link.innerText = 'Show More';
+        }
+      }
+    </script>
   </body>
 </html>

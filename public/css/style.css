@@ -289,6 +289,7 @@ form button {
     height: 300px;
     margin: 10px 0;
     border-radius: 6px;
+    object-fit: cover;
 }
 
 /* Article content */
