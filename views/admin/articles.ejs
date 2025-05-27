@@ -55,7 +55,7 @@
     <div class="article-card">
       <h3><%= article.title %></h3>
       <% if (article.image_url) { %>
-      <img src="<%= article.image_url %>" alt="Article Image" />
+      <img src="<%= article.image_url %>" alt="Article Image" style="object-fit: cover; height: auto;" />
       <% } %>
       <!-- <p><%= article.content %></p> -->
       <
