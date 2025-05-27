@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link rel="stylesheet" href="/css/style.css" />
+  </head>
+  <body>
+    <h2>Upload Gallery Image</h2>
+    <form
+      claass="gallery-upload-form"
+      method="POST"
+      action="/admin/gallery/upload"
+      enctype="multipart/form-data"
+    >
+      <label>Category:</label>
+      <select name="category_id" required>
+        <% categories.forEach(cat => { %>
+        <option value="<%= cat.id %>"><%= cat.name %></option>
+        <% }) %></select
+      ><br /><br />
+
+      <label>Image:</label>
+      <input type="file" name="image" accept="image/*" required />
+      <img
+        id="imagePreview"
+        src="#"
+        alt="Image Preview"
+        style="
+          display: none;
+          max-width: 250px;
+          margin-bottom: 16px;
+          border-radius: 8px;
+        "
+      />
+      <br /><br />
+      <label>Caption:</label>
+      <input type="text" name="caption" required />
+      <button type="submit">Upload</button>
+    </form>
+    <section class="section">
+      <h3>Gallery Images</h3>
+      <% categories.forEach(cat => { %>
+      <h4 style="margin-top: 2rem"><%= cat.name %></h4>
+      <div class="gallery-grid">
+        <% const catImages = images.filter(img => img.category_id === cat.id);
+        if (catImages.length === 0) { %>
+        <p style="color: #aaa">No images in this category yet.</p>
+        <% } %> <% catImages.forEach(img => { %>
+        <div class="gallery-card">
+          <!-- <img src="<%= img.url %>" alt="<%= img.caption %>" /> -->
+          <img src="<%= img.url %>" alt="<%= img.caption %>" onclick="showModal('<%= img.url %>')" style="cursor:zoom-in;" />
+          <p><%= img.caption %></p>
+          <div class="article-buttons">
+            <form
+              method="POST"
+              action="/admin/gallery/delete/<%= img.id %>"
+              style="display: inline"
+            >
+              <button
+                type="submit"
+                onclick="return confirm('Delete this image?')"
+              >
+                Delete
+              </button>
+            </form>
+            <a
+              href="/admin/gallery/edit/<%= img.id %>"
+              class="cta-btn"
+              style="margin-top: 8px"
+              >Edit</a
+            >
+          </div>
+        </div>
+        <% }) %>
+      </div>
+      <% }) %>
+    </section>
+
+    <!-- image click to view event -->
+    <div id="imgModal" class="img-modal" style="display: none">
+      <span
+        class="close-modal"
+        id="closeModal"
+        style="
+          position: absolute;
+          top: 10px;
+          right: 20px;
+          font-size: 2rem;
+          cursor: pointer;
+          color: #fff;
+        "
+        >&times;</span
+      >
+      <img
+        class="img-modal-content"
+        id="modalImg"
+        style="
+          max-width: 90vw;
+          max-height: 90vh;
+          display: block;
+          margin: 40px auto 0 auto;
+          border-radius: 12px;
+          box-shadow: 0 4px 32px rgba(0, 0, 0, 0.4);
+        "
+      />
+    </div>
+
+    <!-- image preview script -->
+    <script>
+      const imageInput = document.querySelector('input[name="image"]');
+      const preview = document.getElementById("imagePreview");
+
+      imageInput.addEventListener("change", function () {
+        const file = this.files[0];
+        if (file) {
+          const reader = new FileReader();
+          reader.onload = function (e) {
+            preview.src = e.target.result;
+            preview.style.display = "block";
+          };
+          reader.readAsDataURL(file);
+        } else {
+          preview.src = "#";
+          preview.style.display = "none";
+        }
+      });
+    </script>
+
+    <!-- image click to zoom view script -->
+    <script>
+      // Existing image preview code...
+
+      // Modal functionality
+      function showModal(url) {
+        const modal = document.getElementById("imgModal");
+        const modalImg = document.getElementById("modalImg");
+        modal.style.display = "flex";
+        modalImg.src = url;
+      }
+      document.getElementById("closeModal").onclick = function () {
+        document.getElementById("imgModal").style.display = "none";
+        document.getElementById("modalImg").src = "";
+      };
+      // Optional: close modal when clicking outside the image
+      document.getElementById("imgModal").onclick = function (e) {
+        if (e.target === this) {
+          this.style.display = "none";
+          document.getElementById("modalImg").src = "";
+        }
+      };
+    </script>
+  </body>
+</html>

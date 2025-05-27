@@ -47,7 +47,13 @@
       <textarea name="mission"><%= info?.mission || '' %></textarea><br /><br />
 
       <label>History:</label><br />
-      <textarea name="history" id="content"><% info?.history || '' %></textarea><br /><br />
+      <textarea name="history" id="content"><%= info?.history || '' %></textarea><br /><br />
+
+      <label>Hero Image:</label><br />
+<input type="file" name="heroImage" accept="image/*" /><br /><br />
+<% if (info?.hero_image_url) { %>
+  <img src="<%= info.hero_image_url %>" alt="Hero Image" style="max-width: 300px;" /><br /><br />
+<% } %>
 
       <button type="submit">Save</button>
     </form>

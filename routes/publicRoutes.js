@@ -83,8 +83,6 @@ router.get("/", async (req, res) => {
   }
 });
 
-
-
 router.get("/articles/:id", articleController.showSingleArticle);
 
 router.get("/home2", async (req, res) => {
@@ -199,8 +197,6 @@ router.get("/articles", async (req, res) => {
   }
 });
 
-
-
 router.get("/videos", async (req, res) => {
   try {
     const search = req.query.search || "";
@@ -246,5 +242,9 @@ router.post("/faq/ask", async (req, res) => {
   ]);
   res.redirect("/faq");
 });
+
+// routes/publicRoutes.js
+const aboutController = require('../controllers/aboutController');
+router.get('/about', aboutController.showAbout);
 
 module.exports = router;

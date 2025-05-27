@@ -3,8 +3,13 @@ const router = express.Router();
 const adminController = require("../controllers/adminController");
 const ministryController = require("../controllers/ministryController");
 const articleController = require("../controllers/articleController");
+const galleryController = require('../controllers/galleryController');
 
-const upload = require("../middlewares/upload");
+// const upload = require("../middlewares/upload");
+
+const multer = require('multer');
+const upload = multer({ dest: 'uploads/' }); // temp local storage
+
 
 router.get("/login", adminController.showLogin);
 router.post("/login", adminController.login);
@@ -15,15 +20,41 @@ router.get("/users/edit/:id", adminController.editUserForm);
 router.post("/users/delete/:id", adminController.deleteUser);
 router.post("/users/edit/:id", adminController.updateUser);
 
-// Admin dashboard
-// router.get('/dashboard', (req, res) => {
-//   res.render('admin/dashboard');
-// });
+
 
 // Ministry Info routes
 router.get("/ministry", ministryController.showForm);
-// POST form with file upload
-router.post("/ministry", upload.single("logo"), ministryController.saveInfo);
+
+// POST form with multiple file uploads mini
+router.post(
+  "/ministry",
+  upload.fields([
+    { name: "logo", maxCount: 1 },
+    { name: "heroImage", maxCount: 1 },
+  ]),
+  ministryController.saveInfo
+);
+
+// const galleryController = require('../controllers/galleryController');
+
+router.get('/gallery', galleryController.showGalleryUpload); // show the form
+router.post('/gallery/upload', upload.single('image'), galleryController.uploadImage); // handle upload
+
+// Show edit form
+router.get('/gallery/edit/:id', galleryController.showEditImage);
+// Handle edit form submission
+router.post('/gallery/edit/:id', upload.single('image'), galleryController.editImage);
+// Handle delete
+router.post('/gallery/delete/:id', galleryController.deleteImage);
+
+// Show category management page
+router.get('/gallery/categories', galleryController.showCategories);
+
+// Handle new category creation
+router.post('/gallery/categories', galleryController.createCategory);
+
+// (Optional) Handle category deletion
+router.post('/gallery/categories/delete/:id', galleryController.deleteCategory);
 
 // router.get('/articles', articleController.showArticles);
 router.get("/articles", articleController.showSearchArticles);
@@ -52,17 +83,11 @@ router.get("/fix-created-at", async (req, res) => {
   }
 });
 
-// // Forgot password
-// router.get('/admin/forgot-password', adminController.showForgotPasswordForm);
-// router.post('/admin/forgot-password', adminController.handleForgotPassword);
-
-// // Reset password
-// router.get('/admin/reset-password/:token', adminController.showResetPasswordForm);
-// router.post('/admin/reset-password/:token', adminController.handleResetPassword);
-
 router.get("/forgot-password", adminController.showForgotPasswordForm);
 router.post("/forgot-password", adminController.handleForgotPassword);
 router.get("/reset-password/:token", adminController.showResetPasswordForm);
 router.post("/reset-password/:token", adminController.handleResetPassword);
+
+
 
 module.exports = router;

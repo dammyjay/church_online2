@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link rel="stylesheet" href="/css/style.css" />
+  </head>
+  <body>
+    
+    <h2>Edit Gallery Image</h2>
+    <form method="POST" action="/admin/gallery/edit/<%= image.id %>" enctype="multipart/form-data">
+      <label>Category:</label>
+      <select name="category_id" required>
+        <% categories.forEach(cat => { %>
+          <option value="<%= cat.id %>" <%= cat.id === image.category_id ? 'selected' : '' %>><%= cat.name %></option>
+        <% }) %>
+      </select><br /><br>
+      <label>Caption:</label>
+      <input type="text" name="caption" value="<%= image.caption %>" required /><br /><br>
+      <label>Current Image:</label><br>
+      <img src="<%= image.url %>" alt="Current Image" style="max-width:200px;"><br><br>
+      <label>Change Image:</label>
+      <input type="file" name="image" accept="image/*" /><br /><br>
+      <input type="hidden" name="existingUrl" value="<%= image.url %>">
+      <button type="submit">Save Changes</button>
+    </form>
+    
+  </body>
+</html>

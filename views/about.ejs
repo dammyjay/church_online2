@@ -14,7 +14,7 @@
     <header class="header">
       <div class="logo-title">
         <% if (info?.logo_url) { %>
-        <a href="/"><img src="<%= info.logo_url %>" alt="Logo" /></a>
+        <a href="/home2"><img src="<%= info.logo_url %>" alt="Logo" /></a>
         <% } %>
         <p><%= info?.name || 'C&S Church Online' %></p>
       </div>
@@ -36,14 +36,14 @@
       </nav> -->
       <button class="nav-toggle" onclick="toggleNav()">☰</button>
       <nav id="main-nav">
-        <a class="active" href="#mission-vision">Home</a>
-        <a href="#articles">Articles</a>
-        <a href="#videos">Videos</a>
-        <a href="#mission-vision">About</a>
-        <a href="#faq">FAQ</a>
+        <a  href="#" id="homeNav">Home</a>
+        <a href="/articles">Articles</a>
+        <a href="/videos">Videos</a>
+        <a class="active" href="">About</a>
+        <a href="/faq">FAQ</a>
         <% if (isLoggedIn) { %>
           <% if (profilePic) { %>
-            <img src="<%= profilePic %>" alt="Profile" style="width:32px;height:32px;border-radius:50%;vertical-align:middle;margin-right:8px;">
+            <img src="<%= profilePic ? profilePic : '/profile.webp' %>" alt="Profile" style="width:32px;height:32px;border-radius:50%;vertical-align:middle;margin-right:8px;">
           <% } %>
           <a style="background-color: red;" href="/admin/logout" class="login-button">Logout</a>
         <% } else { %>
@@ -58,7 +58,7 @@
     </header>
 
     <!-- Mission & Vision -->
-    <!-- <section id="mission-vision" class="section mission-vision">
+    <section id="mission-vision" class="section mission-vision">
       <h2>Our Vision</h2>
       <p><%= info?.vision || 'Our vision goes here...' %></p>
       
@@ -66,88 +66,72 @@
       <p><%= info?.mission || 'Our mission goes here...' %></p>
 
       <h2>Our History</h2>
-      <p><%- info?.history || 'Our history goes here...' %></p>
-    </section> -->
+<button id="toggleHistoryBtn" style="margin-bottom: 1rem; background: #bfa046; color: #fff; border: none; border-radius: 6px; padding: 8px 18px; cursor: pointer;">
+  View History
+</button>
+<div id="historyContent" style="display: none; background: #fafafa; border-radius: 8px; padding: 1.2rem; margin-bottom: 1.5rem;">
+  <%- info?.history || 'Our history goes here...' %>
+</div>
+    </section>
 
-    <% if (info?.hero_image_url) { %>
-      <section class="hero-section" style="background-image: url('<%= info.hero_image_url %>');">
-        <div class="hero-overlay">
-          <h1>Welcome to <%= info?.name || 'C&S Church Online' %></h1>
-          <p><%= info?.vision || 'Empowering lives through the gospel of Christ.' %></p>
-          <a href="/about" class="cta-btn">See Our Story & Gallery</a>
-        </div>
-      </section>
-    <% } %>
+   <!-- filter image by category -->
+    <div style="margin: 2rem 0; display: block; width: 100%; text-align: right;">
+      <label for="categoryFilter" style="font-weight: bold;">Filter by Category:</label>
+      <select id="categoryFilter" style="padding: 6px 12px; border-radius: 6px;">
+        <option value="all">All Categories</option>
+        <% categories.forEach(cat => { %>
+          <option value="cat-<%= cat.id %>"><%= cat.name %></option>
+        <% }) %>
+      </select>
+    </div>
 
-    <!-- Articles -->
-    <section id="articles" class="section">
-      <h2>Latest Articles</h2>
-      <div class="card-grid">
-        <% articles.forEach(article => { %>
-        <div class="card">
-          <h3><%- article.title %></h3>
-          <% if (article.image_url) { %>
-          <img
-            src="<%= article.image_url %>"
-            alt="Article Image"
-            style="
-              max-width: 100%;
-              height: 300px;
-              object-fit: cover;
-              border-radius: 8px;
-            "
-          />
-          <% } %>
-          <!-- <p><%= article.content.substring(0, 100) %>...</p> -->
-          <div class="article-body">
-            <%- article.content.substring(0, 100) %>..
+    <section class="section" id="gallery-section">
+      <h2>About Us & Gallery</h2>
+      <% categories.forEach(cat => { %>
+        <div class="category-group cat-<%= cat.id %>">
+          <h3><%= cat.name %></h3>
+          <div class="gallery-grid">
+            <% images.filter(img => img.category_id === cat.id).forEach(img => { %>
+              <div class="gallery-card">
+                <img src="<%= img.url %>" alt="<%= img.caption %>" onclick="showModal('<%= img.url %>')" style="cursor:zoom-in;" />
+                <p><%= img.caption %></p>
+              </div>
+            <% }) %>
           </div>
-          <!-- <small><%= new Date(article.created_at2).toLocaleDateString() %></small> -->
-          <small><%- new Date(article.created_at3).toLocaleString() %></small>
         </div>
-        <% }) %>
-      </div>
-      <div style="text-align: center; margin-top: 20px">
-        <a href="/articles" class="login-button">View All Articles</a>
-      </div>
+      <% }) %>
     </section>
-
-    <!-- Videos -->
-    <section id="videos" class="section">
-      <h2>Recent Videos</h2>
-      <div class="card-grid">
-        <% videos.forEach(video => { %>
-        <div class="card">
-          <h3><%= video.title %></h3>
-          <!-- <small>Embed URL: <%= video.embed_url %></small> -->
-
-          <% if (video.embed_url) { %>
-          <iframe
-            width="100%"
-            height="200"
-            src="<%= video.embed_url %>"
-            frameborder="0"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-            allowfullscreen
-          >
-          </iframe>
-          <% } else { %>
-          <p>Invalid or missing video URL</p>
-          <% } %>
-          <p><%= video.description %></p>
-          <!-- <small><%= new Date(video.created_at2).toLocaleDateString() %></small> -->
-          <small><%= new Date(video.created_at3).toLocaleString() %></small>
-        </div>
-
-        <% }) %>
-      </div>
-      <div style="text-align: center; margin-top: 20px">
-        <a href="/videos" class="login-button">View All Videos</a>
-      </div>
-    </section>
+    <!-- image click to view event -->
+    <div id="imgModal" class="img-modal" style="display: none">
+      <span
+        class="close-modal"
+        id="closeModal"
+        style="
+          position: absolute;
+          top: 10px;
+          right: 20px;
+          font-size: 2rem;
+          cursor: pointer;
+          color: #fff;
+        "
+        >&times;</span
+      >
+      <img
+        class="img-modal-content"
+        id="modalImg"
+        style="
+          max-width: 90vw;
+          max-height: 90vh;
+          display: block;
+          margin: 40px auto 0 auto;
+          border-radius: 12px;
+          box-shadow: 0 4px 32px rgba(0, 0, 0, 0.4);
+        "
+      />
+    </div>
 
      <!-- Frequently Asked Questions -->    
-    <section id="faq" class="section"> 
+    <section class="section"> 
       <h2>Frequently Asked Questions</h2> 
       <div class="faq-list"> 
         <% faqs.forEach((faq, index) => { %> 
@@ -166,9 +150,6 @@
                 </div> 
               </div> <% }) %> 
       </div> 
-      <div style="text-align: center; margin-top: 20px">
-        <a href="/faq" class="login-button">Ask a question</a>
-      </div>
     </section>
     
     <% if (subscribed === 'success') { %>
@@ -223,6 +204,8 @@
         </form>
       </div>
     </footer>
+
+    <!-- faq toggle script -->
     <script> 
       function toggleFaq(index) { 
         const answer = document.getElementById(`answer-${index}`); 
@@ -239,7 +222,7 @@
       } 
     </script>
 
-<!-- for redirect if user is not logged in -->
+<!-- script to check if user is logged in and handle protected links -->
 <script>
   // Expose login status from server
   // const isLoggedIn = <%= isLoggedIn ? 'true' : 'false' %>;
@@ -258,8 +241,7 @@
   document.addEventListener('DOMContentLoaded', function() {
     const articlesBtn = document.querySelector('a[href="/articles"]');
     const videosBtn = document.querySelector('a[href="/videos"]');
-    const faqBtn = document.querySelector('a[href="/faq"]');
-    
+
     if (articlesBtn) {
       articlesBtn.addEventListener('click', function(e) {
         handleProtectedLink(e, '/articles');
@@ -270,20 +252,85 @@
         handleProtectedLink(e, '/videos');
       });
     }
-    if (faqBtn) {
-      faqBtn.addEventListener('click', function(e) {
-        handleProtectedLink(e, '/faq');
+  });
+</script>
+
+ <!-- image click to zoom view script -->
+ <script>
+  // Existing image preview code...
+
+  // Modal functionality
+  function showModal(url) {
+    const modal = document.getElementById("imgModal");
+    const modalImg = document.getElementById("modalImg");
+    modal.style.display = "flex";
+    modalImg.src = url;
+  }
+  document.getElementById("closeModal").onclick = function () {
+    document.getElementById("imgModal").style.display = "none";
+    document.getElementById("modalImg").src = "";
+  };
+  // Optional: close modal when clicking outside the image
+  document.getElementById("imgModal").onclick = function (e) {
+    if (e.target === this) {
+      this.style.display = "none";
+      document.getElementById("modalImg").src = "";
+    }
+  };
+</script>
+
+<!-- search images by category script -->
+<script>
+  document.getElementById('categoryFilter').addEventListener('change', function() {
+    const selected = this.value;
+    const groups = document.querySelectorAll('.category-group');
+    if (selected === 'all') {
+      groups.forEach(g => g.style.display = '');
+    } else {
+      groups.forEach(g => {
+        if (g.classList.contains(selected)) {
+          g.style.display = '';
+        } else {
+          g.style.display = 'none';
+        }
       });
     }
   });
 </script>
 
-<!-- For the navigation toggle -->
+<!-- view history script -->
+<script>
+  document.getElementById('toggleHistoryBtn').addEventListener('click', function() {
+    const content = document.getElementById('historyContent');
+    if (content.style.display === 'none' || content.style.display === '') {
+      content.style.display = 'block';
+      this.textContent = 'Hide History';
+    } else {
+      content.style.display = 'none';
+      this.textContent = 'View History';
+    }
+  });
+</script>
+
+<!-- script to view and hid navbar on small screen  -->
 <script>
   function toggleNav() {
     var nav = document.getElementById("main-nav");
     nav.classList.toggle("open");
   }
 </script>
+
+<!-- Script to redirect to which homepage depending on if user logged in on not -->
+<script>
+  document.getElementById('homeNav').addEventListener('click', function(e) {
+    e.preventDefault();
+    if (isLoggedIn) {
+      window.location.href = '/home2';
+    } else {
+      window.location.href = '/';
+    }
+  });
+</script>
+
   </body>
 </html>

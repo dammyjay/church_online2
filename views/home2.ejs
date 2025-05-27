@@ -58,7 +58,7 @@
     </header>
 
     <!-- Mission & Vision -->
-    <section id="mission-vision" class="section mission-vision">
+    <!-- <section id="mission-vision" class="section mission-vision">
       <h2>Our Vision</h2>
       <p><%= info?.vision || 'Our vision goes here...' %></p>
       
@@ -67,7 +67,17 @@
 
       <h2>Our History</h2>
       <p><%= info?.history || 'Our history goes here...' %></p>
-    </section>
+    </section> -->
+
+    <% if (info?.hero_image_url) { %>
+      <section class="hero-section" style="background-image: url('<%= info.hero_image_url %>');">
+        <div class="hero-overlay">
+          <h1>Welcome to <%= info?.name || 'C&S Church Online' %></h1>
+          <p><%= info?.vision || 'Empowering lives through the gospel of Christ.' %></p>
+          <a href="/about" class="cta-btn">See Our Story & Gallery</a>
+        </div>
+      </section>
+    <% } %>
 
     <!-- Articles -->
     <section id="articles" class="section">
@@ -210,6 +220,8 @@
         </form>
       </div>
     </footer>
+
+    <!-- script for faq answer toggle -->
     <script> 
       function toggleFaq(index) { 
         const answer = document.getElementById(`answer-${index}`); 
@@ -226,6 +238,7 @@
       } 
     </script>
 
+<!-- script to check if user is logged in -->
 <script>
   // Expose login status from server
   // const isLoggedIn = <%= isLoggedIn ? 'true' : 'false' %>;

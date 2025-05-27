@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <h2>Gallery Categories</h2>
+    <form class="gallery-upload-form" method="POST" action="/admin/gallery/categories">
+      <input type="text" name="name" placeholder="New Category Name" required />
+      <button type="submit">Add Category</button>
+      <link rel="stylesheet" href="/css/style.css" />
+    </form>
+
+    <ul>
+      <% categories.forEach(cat => { %>
+      <li>
+        <%= cat.name %>
+        <form
+        
+          method="POST"
+          action="/admin/gallery/categories/delete/<%= cat.id %>"
+          style="display: inline"
+        >
+          <button
+            type="submit"
+            onclick="return confirm('Delete this category?')"
+            style="background-color: red;"
+          >
+            Delete
+          </button>
+        </form>
+      </li>
+      <% }) %>
+    </ul>
+  </body>
+</html>
