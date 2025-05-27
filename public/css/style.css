@@ -357,6 +357,13 @@ form button {
     margin-bottom: 10px;   
     word-break: break-word;
     overflow-wrap: break-word;
+    user-select: none;
+        /* Prevents text selection */
+        -webkit-user-select: none;
+        /* For Safari */
+        -moz-user-select: none;
+        /* For Firefox */
+        -ms-user-select: none;
     
 
 }
