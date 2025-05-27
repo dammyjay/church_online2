@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const pool = require("../models/db");
+const articleController = require("../controllers/articleController");
 
 // router.get('/videos', videoController.showVideos);
 
@@ -81,6 +82,10 @@ router.get("/", async (req, res) => {
     res.status(500).send("Server Error");
   }
 });
+
+
+
+router.get("/articles/:id", articleController.showSingleArticle);
 
 router.get("/home2", async (req, res) => {
   try {
@@ -194,11 +199,7 @@ router.get("/articles", async (req, res) => {
   }
 });
 
-// router.get('/videos', async (req, res) => {
-//   const result = await pool.query('SELECT * FROM videos4 ORDER BY created_at3 DESC');
 
-//   res.render('allVideos', { videos: result.rows });
-// });
 
 router.get("/videos", async (req, res) => {
   try {

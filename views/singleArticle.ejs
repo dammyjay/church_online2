@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title><%= article.title %> | C&S Church Online</title>
+    <link rel="stylesheet" href="/css/style.css" />
+    <link rel="icon" type="image/x-icon" href="/logo.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  </head>
+  <body>
+    <header class="header">
+      <div class="logo-title">
+        <a href="/home2"><img src="/logo.png" alt="Logo" /></a>
+        <p>C&S Church Online</p>
+      </div>
+      <button class="nav-toggle" onclick="toggleNav()">☰</button>
+      <nav id="main-nav">
+        <a href="/home2">Home</a>
+        <a href="/articles">Articles</a>
+        <a href="/videos">Videos</a>
+        <a href="#mission-vision">About</a>
+        <a href="/faqs">FAQ</a>
+        <a href="/admin/login" class="logout-button">Logout</a>
+      </nav>
+    </header>
+
+    <div
+      class="article-full"
+      style="
+        max-width: 700px;
+        margin: 40px auto;
+        background: #fff;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        padding: 32px;
+      "
+    >
+      <h2><%= article.title %></h2>
+      <% if (article.image_url) { %>
+      <img
+        src="<%= article.image_url %>"
+        alt="Article Image"
+        style="
+          max-width: 100%;
+          height: 350px;
+          object-fit: cover;
+          border-radius: 8px;
+        "
+      />
+      <% } %>
+      <div class="article-body" style="margin-top: 20px">
+        <%- article.content %>
+      </div>
+      <div style="margin-top: 12px">
+        <small
+          >Posted on <%= new Date(article.created_at3).toLocaleString()
+          %></small
+        >
+      </div>
+      <!-- <button>
+        <a
+          href="/articles"
+          style="
+            display: inline-block;
+            color: white;
+            font-weight: bold;
+            text-decoration: none;
+          "
+          class="button"
+          >&larr; All Articles</a
+        >
+      </button> -->
+      <button onclick="return checkAllArticles();">
+        <span
+          style="
+            display: inline-block;
+            color: white;
+            font-weight: bold;
+            text-decoration: none;
+          "
+          class="button"
+          >&larr; All Articles</span
+        >
+      </button>
+   
+    </div>
+
+    <!-- Related Articles Section -->
+    <div class="related-articles" style="margin: 40px auto; max-width: 900px">
+      <h3>Related Articles</h3>
+      <div class="card-grid2">
+        <% if (relatedArticles.length === 0) { %>
+        <p>No related articles found.</p>
+        <% } else { %> <% relatedArticles.forEach(ra => { %>
+        <div class="card">
+          <a
+            href="/articles/<%= ra.id %>"
+            onclick="return checkLogin('<%= ra.id %>');"
+            style="text-decoration: none; color: inherit"
+          >
+            <h4><%= ra.title %></h4>
+            <% if (ra.image_url) { %>
+            <img
+              src="<%= ra.image_url %>"
+              alt="Article Image"
+              style="
+                max-width: 100%;
+                height: 120px;
+                object-fit: cover;
+                border-radius: 8px;
+              "
+            />
+            <% } %>
+            <div class="article-body">
+              <%- ra.content.substring(0, 80) %>...
+            </div>
+          </a>
+        </div>
+        <% }) %> <% } %>
+      </div>
+    </div>
+
+    <!-- nav toggle script  -->
+    <script>
+      function toggleNav() {
+        var nav = document.getElementById("main-nav");
+        nav.classList.toggle("open");
+      }
+    </script>
+
+    <!-- check if user is logged in before allowing access to related articles -->
+    <script>
+      const isLoggedIn = <%= isLoggedIn ? 'true' : 'false' %>;
+      function checkLogin(articleId) {
+        if (!isLoggedIn) {
+          window.location.href = '/admin/login?redirect=' + encodeURIComponent('/articles/' + articleId);
+          return false; // Prevent default link
+        }
+        return true; // Allow navigation
+      }
+    </script>
+
+    <!-- check if user is logged in before allowing access to all articles -->
+    <script>
+        // ...existing code...
+      
+        function checkAllArticles() {
+          if (!isLoggedIn) {
+            window.location.href = '/admin/login?redirect=' + encodeURIComponent('/articles');
+            return false; // Prevent default
+          }
+          window.location.href = '/articles';
+          return false; // Prevent default (since we handle navigation)
+        }
+      </script>
+  </body>
+</html>

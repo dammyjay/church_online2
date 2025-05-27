@@ -104,12 +104,43 @@ exports.showEditForm = async (req, res) => {
     }
   };
   
+  // exports.showSingleArticle = async (req, res) => {
+  //   const id = req.params.id;
+  //   const result = await pool.query('SELECT * FROM articles WHERE id = $1', [id]);
+  //   if (result.rows.length === 0) return res.status(404).send('Article not found');
+  //   res.render('article', {
+  //   article: result.rows[0],
+  //   title: result.rows[0].title
+  //   });
+  // };
+    
   exports.showSingleArticle = async (req, res) => {
-    const id = req.params.id;
-    const result = await pool.query('SELECT * FROM articles WHERE id = $1', [id]);
-    if (result.rows.length === 0) return res.status(404).send('Article not found');
-    res.render('article', {
-    article: result.rows[0],
-    title: result.rows[0].title
-    });
-    };
+    const articleId = req.params.id;
+    // Fetch the main article
+    const result = await pool.query("SELECT * FROM articles WHERE id = $1", [
+      articleId,
+    ]);
+    if (result.rows.length === 0)
+      return res.status(404).send("Article not found");
+    const article = result.rows[0];
+
+    // Fetch related articles by similar title words (excluding the current article)
+    const keywords = article.title.split(" ").slice(0, 3); // Use first 3 words as keywords
+    const relatedResult = await pool.query(
+      `SELECT * FROM articles 
+       WHERE id != $1 AND (
+         title ILIKE $2 OR title ILIKE $3 OR title ILIKE $4
+       )
+       LIMIT 4`,
+      [
+        articleId,
+        `%${keywords[0]}%`,
+        `%${keywords[1] || ""}%`,
+        `%${keywords[2] || ""}%`,
+      ]
+    );
+    const relatedArticles = relatedResult.rows;
+
+    res.render("singleArticle", { article, relatedArticles, isLoggedIn: !!req.session.user  });
+  };
+
