@@ -40,6 +40,7 @@
       <input
         type="text"
         name="search"
+        id="videoSearch"
         placeholder="Search by title..."
         value="<%= search || '' %>"
         style="padding: 8px; width: 60%; max-width: 400px"
@@ -87,7 +88,7 @@
           <small><%= new Date(video.created_at3).toLocaleString() %></small>
         </div> -->
 
-        <div class="card"> 
+        <div class="card video-card-filter"> 
           <a href="/videos/<%= video.id %>" style="text-decoration: none; color: inherit;"> 
             <h3><%= video.title %></h3> 
             <% if (embedUrl) { %> 
@@ -198,5 +199,19 @@
       nav.classList.toggle("open");
     }
   </script>
+
+<script>
+  document.getElementById('videoSearch').addEventListener('input', function() {
+    const searchValue = this.value.toLowerCase();
+    document.querySelectorAll('.video-card-filter').forEach(card => {
+      const title = card.querySelector('h3').innerText.toLowerCase();
+      if (title.includes(searchValue)) {
+        card.style.display = '';
+      } else {
+        card.style.display = 'none';
+      }
+    });
+  });
+</script>
   </body>
 </html>
