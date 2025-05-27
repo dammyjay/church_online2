@@ -5,6 +5,7 @@
     <title>Edit Ministry Info</title>
     <link rel="stylesheet" href="/css/style.css" />
     <link rel="icon" type="image/x-icon" href="/logo.png" />
+    <script src="https://cdn.ckeditor.com/4.22.1/standard/ckeditor.js"></script>
   </head>
   <body>
     <!-- Header -->
@@ -46,7 +47,7 @@
       <textarea name="mission"><%= info?.mission || '' %></textarea><br /><br />
 
       <label>History:</label><br />
-      <textarea name="history"><%= info?.history || '' %></textarea><br /><br />
+      <textarea name="history" id="content"><% info?.history || '' %></textarea><br /><br />
 
       <button type="submit">Save</button>
     </form>
@@ -54,5 +55,6 @@
     <br />
 
     <a href="/admin/dashboard">Back to Dashboard</a>
+    <script> CKEDITOR.replace('content'); </script>
   </body>
 </html>

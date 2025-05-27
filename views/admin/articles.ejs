@@ -15,17 +15,18 @@
         <% } %>
         <p><%= info?.name || 'C&S Church Online' %></p>
       </div>
-      <nav>
+      <button class="nav-toggle" onclick="toggleNav()">☰</button>
+      <nav id="main-nav">
         <a href="/admin/dashboard">Dashboard</a>
         <a href="/admin/articles">Articles</a>
         <a href="/admin/videos">Videos</a>
         <a href="/admin/ministry">About</a>
         <a href="/admin/faqs">FAQ</a>
-        <a href="/admin/logout"  class="logout-button">Logout</a> <!-- Login remains a page link -->
-        
+        <a href="/admin/logout" class="logout-button">Logout</a>
+        <!-- Login remains a page link -->
       </nav>
     </header>
-    
+
     <h2>Create New Article</h2>
     <form method="POST" action="/admin/articles" enctype="multipart/form-data">
       <label>Title:</label><br />
@@ -57,7 +58,16 @@
       <img src="<%= article.image_url %>" alt="Article Image" />
       <% } %>
       <!-- <p><%= article.content %></p> -->
-      <div class="article-body"> <%- article.content %> </div>
+      <
+      <div class="article-body" id="article-body-<%= article.id %>">
+        <%- article.content.substring(0, 700) %>..
+      </div>
+      <a
+        href="javascript:void(0);"
+        class="toggle-article"
+        onclick="toggleArticle(<%= article.id %>)"
+        >Show More</a
+      >
       <small
         >Posted on <%= new Date(article.created_at3).toLocaleString() %></small
       >
@@ -76,6 +86,36 @@
     <% }) %>
 
     <a href="/admin/dashboard">Back to Dashboard</a>
-    <script> CKEDITOR.replace('content'); </script>
+    <script>
+      CKEDITOR.replace("content");
+    </script>
+
+    <script>
+      function toggleNav() {
+        var nav = document.getElementById("main-nav");
+        nav.classList.toggle("open");
+      }
+    </script>
+
+<script>
+  // Store the full content for each article in a JS object
+  const articleContents = {
+    <% articles.forEach(article => { %>
+      <%= article.id %>: `<%- article.content.replace(/`/g, '\\`') %>`,
+    <% }) %>
+  };
+
+  function toggleArticle(id) {
+    const bodyDiv = document.getElementById('article-body-' + id);
+    const link = bodyDiv.nextElementSibling;
+    if (link.innerText === 'Show More') {
+      bodyDiv.innerHTML = articleContents[id];
+      link.innerText = 'Show Less';
+    } else {
+      bodyDiv.innerHTML = articleContents[id].substring(0, 700) + '..';
+      link.innerText = 'Show More';
+    }
+  }
+</script>
   </body>
 </html>

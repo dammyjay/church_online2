@@ -34,6 +34,7 @@
     <form class="search-form" method="GET" action="/articles">
       <input
         type="text"
+        id="articleSearch"
         name="search"
         placeholder="Search by title..."
         value="<%= search || '' %>"
@@ -81,13 +82,16 @@
       <h2>All Articles</h2> 
       <div class="card-grid2"> 
         <% articles.forEach(article => { %> 
-          <div class="card"> 
+          <div class="card article-card-filter"> 
             <a href="/articles/<%= article.id %>" style="text-decoration: none; color: inherit;"> 
               <h3><%- article.title %></h3> 
               <% if (article.image_url) { %> 
                 <img src="<%= article.image_url %>" alt="Article Image" style="max-width: 100%; height: auto; object-fit: cover; border-radius: 8px;" /> <% } %> 
                 <div class="article-body"> <%- article.content.substring(0, 100) %>... </div> 
-                <small>Posted on <%= new Date(article.created_at3).toLocaleString() %></small> 
+                <div style="display: flex; align-items:   center; justify-content: flex-start; gap: 6px; margin-top: 6px;">
+                  <img src="/logo.png" alt="Logo" style="width: 30px; height: 30px; border-radius: 50%;" />
+                  <small>Posted on <%= new Date(article.created_at3).toLocaleString() %></small>
+                </div>
               </a> 
             </div> <% }) %> 
           </div> 
@@ -142,11 +146,26 @@
         </form>
       </div>
     </footer>
+    
     <script>
       function toggleNav() {
         var nav = document.getElementById("main-nav");
         nav.classList.toggle("open");
       }
     </script>
+
+<script>
+  document.getElementById('articleSearch').addEventListener('input', function() {
+    const searchValue = this.value.toLowerCase();
+    document.querySelectorAll('.article-card-filter').forEach(card => {
+      const title = card.querySelector('h3').innerText.toLowerCase();
+      if (title.includes(searchValue)) {
+        card.style.display = '';
+      } else {
+        card.style.display = 'none';
+      }
+    });
+  });
+</script>
   </body>
 </html>
