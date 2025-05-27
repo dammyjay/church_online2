@@ -1,6 +1,112 @@
 const pool = require('../models/db');
 const bcrypt = require('bcrypt');
 
+const crypto = require("crypto");
+// const nodemailer = require("nodemailer");
+const sendEmail = require("../utils/sendEmail");
+
+
+// Show forgot password form
+exports.showForgotPasswordForm = (req, res) => {
+  res.render('admin/forgotPassword', { message: null });
+};
+
+// Handle forgot password form submission
+exports.handleForgotPassword = async (req, res) => {
+  const { email } = req.body;
+  const result = await pool.query('SELECT * FROM users2 WHERE email = $1', [email]);
+  if (result.rows.length === 0) {
+    return res.render('admin/forgotPassword', { message: 'If this email exists, a reset link has been sent.' });
+  }
+  const user = result.rows[0];
+  const token = crypto.randomBytes(32).toString('hex');
+  const expires = new Date(Date.now() + 3600000); // 1 hour
+
+  await pool.query(
+    'UPDATE users2 SET reset_token = $1, reset_token_expires = $2 WHERE id = $3',
+    [token, expires, user.id]
+  );
+
+  const resetUrl = `http://${req.headers.host}/admin/reset-password/${token}`;
+  await sendEmail(
+    email,
+    'Password Reset',
+    `Click <a href="${resetUrl}">here</a> to reset your password.`
+  );
+
+  res.render('admin/forgotPassword', { message: 'If this email exists, a reset link has been sent.' });
+};
+
+
+// Handle forgot password form submission
+// exports.handleForgotPassword = async (req, res) => {
+//   const { email } = req.body;
+//   const result = await pool.query('SELECT * FROM users2 WHERE email = $1', [email]);
+//   if (result.rows.length === 0) {
+//     return res.render('admin/forgotPassword', { message: 'If this email exists, a reset link has been sent.' });
+//   }
+//   const user = result.rows[0];
+//   const token = crypto.randomBytes(32).toString('hex');
+//   const expires = new Date(Date.now() + 3600000); // 1 hour
+
+//   await pool.query(
+//     'UPDATE users2 SET reset_token = $1, reset_token_expires = $2 WHERE id = $3',
+//     [token, expires, user.id]
+//   );
+
+//   // Configure your SMTP settings
+//   const transporter = nodemailer.createTransport({
+//     // Example for Gmail:
+//     // service: 'gmail',
+//     // auth: { user: 'your@gmail.com', pass: 'yourpassword' }
+//     // Use your real SMTP config in production!
+//   });
+
+//   const resetUrl = `http://${req.headers.host}/admin/reset-password/${token}`;
+//   await transporter.sendMail({
+//     to: user.email,
+//     subject: 'Password Reset',
+//     html: `Click <a href="${resetUrl}">here</a> to reset your password.`
+//   });
+
+//   res.render('admin/forgotPassword', { message: 'If this email exists, a reset link has been sent.' });
+// };
+
+// Show reset password form
+exports.showResetPasswordForm = async (req, res) => {
+  const { token } = req.params;
+  const result = await pool.query(
+    'SELECT * FROM users2 WHERE reset_token = $1 AND reset_token_expires > NOW()',
+    [token]
+  );
+  if (result.rows.length === 0) {
+    return res.send('Invalid or expired token.');
+  }
+  res.render('admin/resetPassword', { token, message: null });
+};
+
+// Handle reset password submission
+exports.handleResetPassword = async (req, res) => {
+  const { token } = req.params;
+  const { password, confirmPassword } = req.body;
+  if (password !== confirmPassword) {
+    return res.render('admin/resetPassword', { token, message: 'Passwords do not match.' });
+  }
+  const result = await pool.query(
+    'SELECT * FROM users2 WHERE reset_token = $1 AND reset_token_expires > NOW()',
+    [token]
+  );
+  if (result.rows.length === 0) {
+    return res.send('Invalid or expired token.');
+  }
+  // const hashed = await bcrypt.hash(password, 10);
+  await pool.query(
+    'UPDATE users2 SET password = $1, reset_token = NULL, reset_token_expires = NULL WHERE reset_token = $2',
+    [password, token]
+  );
+  res.render('admin/login', { error: null, title: 'Login', redirect: '', message: 'Password reset successful. Please log in.' });
+};
+
 
 // exports.showLogin = (req, res) => {
 //   res.render('admin/login', { error: null, title: 'Login'  });
