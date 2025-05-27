@@ -18,10 +18,12 @@
       <button class="nav-toggle" onclick="toggleNav()">☰</button>
       <nav id="main-nav">
         <a href="/admin/dashboard">Dashboard</a>
-        <a href="/admin/articles">Articles</a>
+        <a class="active" href="/admin/articles">Articles</a>
         <a href="/admin/videos">Videos</a>
         <a href="/admin/ministry">About</a>
         <a href="/admin/faqs">FAQ</a>
+        <a href="/admin/gallery">Gallery Images</a>
+        <a href="/admin/gallery/categories">Gal Categories</a>
         <a href="/admin/logout" class="logout-button">Logout</a>
         <!-- Login remains a page link -->
       </nav>
@@ -94,6 +96,7 @@
       CKEDITOR.replace("content");
     </script>
 
+<!-- script to toggle navigation menu -->
     <script>
       function toggleNav() {
         var nav = document.getElementById("main-nav");
@@ -101,6 +104,7 @@
       }
     </script>
 
+<!-- Script not to be able to copy content from article body -->
     <script>
       document.querySelectorAll(".article-body").forEach(function (el) {
         el.addEventListener("contextmenu", function (e) {
@@ -112,6 +116,7 @@
       });
     </script>
 
+<!-- script for checking content like link in article -->
     <script>
       function linkify(text) {
         // Regex to match URLs starting with http or https

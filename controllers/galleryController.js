@@ -5,9 +5,14 @@ const cloudinary = require("../utils/cloudinary");
 const fs = require("fs");
 
 exports.showGalleryUpload = async (req, res) => {
+  const infoResult = await pool.query(
+    "SELECT * FROM ministry_info ORDER BY id DESC LIMIT 1"
+  );
+  const info = infoResult.rows[0] || {};
   const categories = await pool.query("SELECT * FROM gallery_categories");
   const images = await pool.query("SELECT * FROM gallery_images");
   res.render("admin/gallery", {
+    info,
     categories: categories.rows,
     images: images.rows,
   });
@@ -76,8 +81,12 @@ exports.uploadImage = async (req, res) => {
 
 // Show all categories and a form to add new ones
 exports.showCategories = async (req, res) => {
+  const infoResult = await pool.query(
+    "SELECT * FROM ministry_info ORDER BY id DESC LIMIT 1"
+  );
+  const info = infoResult.rows[0] || {};
   const categories = await pool.query("SELECT * FROM gallery_categories");
-  res.render("admin/galleryCategories", { categories: categories.rows });
+  res.render("admin/galleryCategories", {info, categories: categories.rows });
 };
 
 // Create a new category

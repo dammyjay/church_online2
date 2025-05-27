@@ -13,14 +13,17 @@
         <% } %>
         <p><%= info?.name || 'C&S Church Online' %></p>
       </div>
-      <nav>
+      <button class="nav-toggle" onclick="toggleNav()">☰</button>
+      <nav id="main-nav">
         <a href="/admin/dashboard">Dashboard</a>
         <a href="/admin/articles">Articles</a>
         <a class="active" href="/admin/videos">Videos</a>
         <a href="/admin/ministry">About</a>
         <a href="/admin/faqs">FAQ</a>
-        <a href="/admin/logout"  class="logout-button">Logout</a> <!-- Login remains a page link -->
-        
+        <a href="/admin/gallery">Gallery Images</a>
+        <a href="/admin/gallery/categories">Gal Categories</a>
+        <a href="/admin/logout" class="logout-button">Logout</a>
+        <!-- Login remains a page link -->
       </nav>
     </header>
     <form class="search-form" method="GET" action="/admin/videos" style="margin-bottom: 20px">

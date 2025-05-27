@@ -9,8 +9,10 @@
   <body>
     <header class="header">
       <div class="logo-title">
-        <img src="/logo.png" alt="Logo" />
-        <p>C&S Church Online</p>
+        <% info = info || {}; %> <% if (info.logo_url) { %>
+        <img src="<%= info.logo_url %>" alt="Logo" />
+        <% } %>
+        <p><%= info?.name || 'C&S Church Online' %></p>
       </div>
       <button class="nav-toggle" onclick="toggleNav()">☰</button>
       <nav id="main-nav">
@@ -19,8 +21,10 @@
         <a href="/admin/videos">Videos</a>
         <a href="/admin/ministry">About</a>
         <a class="active" href="/admin/faqs">FAQ</a>
-        <a href="/admin/logout"  class="logout-button">Logout</a> <!-- Login remains a page link -->
-        
+        <a href="/admin/gallery">Gallery Images</a>
+        <a href="/admin/gallery/categories">Gal Categories</a>
+        <a href="/admin/logout" class="logout-button">Logout</a>
+        <!-- Login remains a page link -->
       </nav>
     </header>
     <h2>Manage Frequently Asked Questions</h2>

@@ -10,43 +10,22 @@
     <!-- Header -->
     <header class="header">
       <div class="logo-title">
-        <% info = info || {}; %> <% if (info?.logo_url) { %>
+        <% info = info || {}; %> <% if (info.logo_url) { %>
         <img src="<%= info.logo_url %>" alt="Logo" />
         <% } %>
         <p><%= info?.name || 'C&S Church Online' %></p>
       </div>
-      <!-- <button class="nav-toggle" onclick="toggleNav()">☰</button> -->
-      <!-- <nav id="main-nav">
-        <a href="/admin/articles">Articles</a>
-        <a href="/admin/videos">Videos</a>
-        <a href="/admin/ministry">Ministry</a>
-        <a href="/admin/faqs">FAQ</a>
-        <% if (profilePic) { %>
-        <img
-          src="<%= profilePic ? profilePic : '/profile.webp' %>"
-          alt="Profile"
-          style="
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            vertical-align: middle;
-            margin-right: 8px;
-          "
-        />
-        <% } %>
-        <a href="/admin/logout" class="logout-button">Logout</a>
-        
-      </nav> -->
       <button class="nav-toggle" onclick="toggleNav()">☰</button>
       <nav id="main-nav">
+        <a class="active" href="/admin/dashboard">Dashboard</a>
         <a href="/admin/articles">Articles</a>
         <a href="/admin/videos">Videos</a>
-        <a href="/admin/ministry">Ministry</a>
+        <a href="/admin/ministry">About</a>
         <a href="/admin/faqs">FAQ</a>
-        <% if (profilePic) { %>
-          <img src="<%= profilePic %>" alt="Profile" style="width:32px;height:32px;border-radius:50%;vertical-align:middle;margin-right:8px;">
-        <% } %>
+        <a href="/admin/gallery">Gallery Images</a>
+        <a href="/admin/gallery/categories">Gal Categories</a>
         <a href="/admin/logout" class="logout-button">Logout</a>
+        <!-- Login remains a page link -->
       </nav>
     </header>
 
