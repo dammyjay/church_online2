@@ -20,8 +20,18 @@
         <a href="/videos">Videos</a>
         <a href="#mission-vision">About</a>
         <a href="/faqs">FAQ</a>
-        <a href="/admin/login" class="logout-button">Logout</a>
-      </nav>
+        <!-- <a href="/admin/login" class="logout-button">Logout</a> -->
+        <% if (isLoggedIn) { %>
+            <a href="/admin/logout" class="logout-button">Logout</a>
+          <% } else { %>
+            <a href="/admin/login" class="login-button">Login</a>
+            <a
+            href="/signup"
+            style="background-color: rgb(0, 0, 0); color: rgb(255, 255, 255)"
+            class="login-button"
+          >Signup</a>
+          <% } %>
+    </nav>
     </header>
 
     <div
