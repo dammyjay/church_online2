@@ -29,7 +29,7 @@ router.get("/", async (req, res) => {
     // Deterministically shuffle based on the day
     function getDailyImages(images, count) {
       const today = new Date();
-      const seed =
+      let seed =
         today.getFullYear() * 10000 +
         (today.getMonth() + 1) * 100 +
         today.getDate();
