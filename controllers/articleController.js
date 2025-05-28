@@ -140,7 +140,18 @@ exports.showEditForm = async (req, res) => {
       ]
     );
     const relatedArticles = relatedResult.rows;
+    const relatedIds = relatedArticles
+      .map((a) => a.id)
+      .concat([parseInt(articleId)]);
+    const otherResult = await pool.query(
+      `SELECT * FROM articles WHERE id NOT IN (${relatedIds
+        .map((_, i) => `$${i + 1}`)
+        .join(",")}) ORDER BY created_at3 DESC LIMIT 4`,
+      relatedIds
+    );
+    const otherArticles = otherResult.rows;
+  
 
-    res.render("singleArticle", { article, relatedArticles, isLoggedIn: !!req.session.user  });
+    res.render("singleArticle", { article, relatedArticles, otherArticles, isLoggedIn: !!req.session.user  });
   };
 

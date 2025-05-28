@@ -8,6 +8,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   </head>
   <body>
+    <% 
+    function linkify(text) {
+      if (!text) return '';
+      return text.replace(/(https:\/\/[^\s<]+)/g, '<a href="$1" target="_blank" rel="noopener">$1</a>');
+    }
+    %>
     <header class="header">
       <div class="logo-title">
         <a href="/home2"><img src="/logo.png" alt="Logo" /></a>
@@ -22,16 +28,17 @@
         <a href="/faqs">FAQ</a>
         <!-- <a href="/admin/login" class="logout-button">Logout</a> -->
         <% if (isLoggedIn) { %>
-            <a href="/admin/logout" class="logout-button">Logout</a>
-          <% } else { %>
-            <a href="/admin/login" class="login-button">Login</a>
-            <a
-            href="/signup"
-            style="background-color: rgb(0, 0, 0); color: rgb(255, 255, 255)"
-            class="login-button"
-          >Signup</a>
-          <% } %>
-    </nav>
+        <a href="/admin/logout" class="logout-button">Logout</a>
+        <% } else { %>
+        <a href="/admin/login" class="login-button">Login</a>
+        <a
+          href="/signup"
+          style="background-color: rgb(0, 0, 0); color: rgb(255, 255, 255)"
+          class="login-button"
+          >Signup</a
+        >
+        <% } %>
+      </nav>
     </header>
 
     <div
@@ -59,7 +66,8 @@
       />
       <% } %>
       <div class="article-body" style="margin-top: 20px">
-        <%- article.content %>
+        <!-- <%- article.content %> -->
+        <%- linkify(article.content) %>
       </div>
       <div style="margin-top: 12px">
         <small
@@ -92,11 +100,10 @@
           >&larr; All Articles</span
         >
       </button>
-   
     </div>
 
     <!-- Related Articles Section -->
-    <div class="related-articles" style="margin: 40px auto; max-width: 900px">
+    <!-- <div class="related-articles" style="margin: 40px auto; max-width: 900px">
       <h3>Related Articles</h3>
       <div class="card-grid2">
         <% if (relatedArticles.length === 0) { %>
@@ -122,11 +129,68 @@
             />
             <% } %>
             <div class="article-body">
-              <%- ra.content.substring(0, 80) %>...
+              <%- linkify(ra.content.substring(0, 80)) %>...
             </div>
           </a>
         </div>
         <% }) %> <% } %>
+      </div>
+    </div> -->
+
+    <div class="related-articles" style="margin: 40px auto; max-width: 900px">
+      <h3>Related Articles</h3>
+      <div class="card-grid2">
+        <% if (relatedArticles.length === 0) { %>
+          <p>No related articles found.</p>
+          <h4 style="margin-top:2rem;">Other Articles</h4>
+          <% if (otherArticles && otherArticles.length > 0) { %>
+            <% otherArticles.forEach(oa => { %>
+              <div class="card">
+                <a
+                  href="/articles/<%= oa.id %>"
+                  onclick="return checkLogin('<%= oa.id %>');"
+                  style="text-decoration: none; color: inherit"
+                >
+                  <h4><%= oa.title %></h4>
+                  <% if (oa.image_url) { %>
+                    <img
+                      src="<%= oa.image_url %>"
+                      alt="Article Image"
+                      style="max-width: 100%; height: 120px; object-fit: cover; border-radius: 8px;"
+                    />
+                  <% } %>
+                  <div class="article-body">
+                    <%- linkify(oa.content.substring(0, 80)) %>...
+                  </div>
+                </a>
+              </div>
+            <% }) %>
+          <% } else { %>
+            <p>No other articles available.</p>
+          <% } %>
+        <% } else { %>
+          <% relatedArticles.forEach(ra => { %>
+            <div class="card">
+              <a
+                href="/articles/<%= ra.id %>"
+                onclick="return checkLogin('<%= ra.id %>');"
+                style="text-decoration: none; color: inherit"
+              >
+                <h4><%= ra.title %></h4>
+                <% if (ra.image_url) { %>
+                  <img
+                    src="<%= ra.image_url %>"
+                    alt="Article Image"
+                    style="max-width: 100%; height: 120px; object-fit: cover; border-radius: 8px;"
+                  />
+                <% } %>
+                <div class="article-body">
+                  <%- linkify(ra.content.substring(0, 80)) %>...
+                </div>
+              </a>
+            </div>
+          <% }) %>
+        <% } %>
       </div>
     </div>
 
@@ -152,16 +216,19 @@
 
     <!-- check if user is logged in before allowing access to all articles -->
     <script>
-        // ...existing code...
-      
-        function checkAllArticles() {
-          if (!isLoggedIn) {
-            window.location.href = '/admin/login?redirect=' + encodeURIComponent('/articles');
-            return false; // Prevent default
-          }
-          window.location.href = '/articles';
-          return false; // Prevent default (since we handle navigation)
+      // ...existing code...
+
+      function checkAllArticles() {
+        if (!isLoggedIn) {
+          window.location.href =
+            "/admin/login?redirect=" + encodeURIComponent("/articles");
+          return false; // Prevent default
         }
-      </script>
+        window.location.href = "/articles";
+        return false; // Prevent default (since we handle navigation)
+      }
+    </script>
+
+   
   </body>
 </html>

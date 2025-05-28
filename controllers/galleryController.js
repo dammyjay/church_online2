@@ -62,15 +62,16 @@ exports.deleteImage = async (req, res) => {
 
 exports.uploadImage = async (req, res) => {
   const { category_id, caption } = req.body;
-  let imageUrl = null;
+  // let imageUrl = null;
+  let imageUrl = req.file ? req.file.path : null; // Use existing URL if provided
 
-  if (req.file) {
-    const result = await cloudinary.uploader.upload(req.file.path, {
-      folder: "gallery",
-    });
-    imageUrl = result.secure_url;
-    fs.unlinkSync(req.file.path); // remove temp file
-  }
+  // if (req.file) {
+  //   const result = await cloudinary.uploader.upload(req.file.path, {
+  //     folder: "gallery",
+  //   });
+  //   imageUrl = result.secure_url;
+  //   fs.unlinkSync(req.file.path); // remove temp file
+  // }
 
   await pool.query(
     "INSERT INTO gallery_images (url, caption, category_id) VALUES ($1, $2, $3)",

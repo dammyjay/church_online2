@@ -5,11 +5,11 @@ const ministryController = require("../controllers/ministryController");
 const articleController = require("../controllers/articleController");
 const galleryController = require('../controllers/galleryController');
 
-// const upload = require("../middlewares/upload");
+
 
 const multer = require('multer');
-const upload = multer({ dest: 'uploads/' }); // temp local storage
-
+// const upload = multer({ dest: 'uploads/' }); // temp local storage
+const upload = require("../middlewares/upload");
 
 router.get("/login", adminController.showLogin);
 router.post("/login", adminController.login);

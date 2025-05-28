@@ -38,7 +38,19 @@
       <textarea name="content" id="content" required></textarea><br /><br />
 
       <label>Image (optional):</label><br />
-      <input type="file" name="image" /><br /><br />
+      <!-- <input type="file" name="image" /><br /><br /> -->
+      <input type="file" name="image" id="imageInput" /><br /><br />
+      <img
+        id="imagePreview"
+        src="#"
+        alt="Image Preview"
+        style="
+          display: none;
+          max-width: 250px;
+          margin-bottom: 16px;
+          border-radius: 8px;
+        "
+      />
 
       <button type="submit">Save Article</button>
     </form>
@@ -96,7 +108,7 @@
       CKEDITOR.replace("content");
     </script>
 
-<!-- script to toggle navigation menu -->
+    <!-- script to toggle navigation menu -->
     <script>
       function toggleNav() {
         var nav = document.getElementById("main-nav");
@@ -104,7 +116,7 @@
       }
     </script>
 
-<!-- Script not to be able to copy content from article body -->
+    <!-- Script not to be able to copy content from article body -->
     <script>
       document.querySelectorAll(".article-body").forEach(function (el) {
         el.addEventListener("contextmenu", function (e) {
@@ -116,7 +128,28 @@
       });
     </script>
 
-<!-- script for checking content like link in article -->
+    <!-- script to preview image before upload -->
+    <script>
+      document
+        .getElementById("imageInput")
+        .addEventListener("change", function () {
+          const preview = document.getElementById("imagePreview");
+          const file = this.files[0];
+          if (file) {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+              preview.src = e.target.result;
+              preview.style.display = "block";
+            };
+            reader.readAsDataURL(file);
+          } else {
+            preview.src = "#";
+            preview.style.display = "none";
+          }
+        });
+    </script>
+
+    <!-- script for checking content like link in article -->
     <script>
       function linkify(text) {
         // Regex to match URLs starting with http or https
