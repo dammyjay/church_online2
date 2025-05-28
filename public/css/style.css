@@ -1048,7 +1048,7 @@ nav a:hover {
     .hero-carousel {
             position: relative;
             width: 100%;
-            height: 350px;
+            height: 300px;
             overflow: hidden;   }
 
     .nav-toggle {
@@ -1169,7 +1169,7 @@ nav a:hover {
     .hero-carousel {
             position: relative;
             width: 100%;
-            height: 500px;
+            height: 400px;
             overflow: hidden;   }
     .nav-toggle {
             display: block;
@@ -1276,7 +1276,7 @@ nav a:hover {
     .hero-carousel {
             position: relative;
             width: 100%;
-            height: 500px;
+            height: 400px;
             overflow: hidden;   }
     .nav-toggle {
         display: none;
@@ -1300,7 +1300,7 @@ nav a:hover {
     .hero-carousel {
             position: relative;
             width: 100%;
-            height: 500px;
+            height: 400px;
             overflow: hidden;   }
     .table-responsive {
             width: 100%;
