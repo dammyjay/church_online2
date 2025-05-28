@@ -15,9 +15,39 @@ router.get("/", async (req, res) => {
     const faqsResult = await pool.query(
       "SELECT * FROM faqs WHERE is_published = true ORDER BY created_at DESC LIMIT 5"
     );
+    // const randomImagesResult = await pool.query(
+    //   "SELECT url FROM gallery_images ORDER BY RANDOM() LIMIT 5"
+    // );
     const info = infoResult.rows[0];
     const articles = articlesResult.rows;
     const faqs = faqsResult.rows;
+    // const carouselImages = randomImagesResult.rows.map((row) => row.url);
+
+    const allImagesResult = await pool.query("SELECT url FROM gallery_images");
+    const allImages = allImagesResult.rows.map((row) => row.url);
+
+    // Deterministically shuffle based on the day
+    function getDailyImages(images, count) {
+      const today = new Date();
+      const seed =
+        today.getFullYear() * 10000 +
+        (today.getMonth() + 1) * 100 +
+        today.getDate();
+      // Simple seeded shuffle (Fisher-Yates with seed)
+      let arr = images.slice();
+      let random = function () {
+        var x = Math.sin(seed++) * 10000;
+        return x - Math.floor(x);
+      };
+      for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+      return arr.slice(0, count);
+    }
+
+    const carouselImages = getDailyImages(allImages, 5);
+
 
     console.log(
       "Raw video URLs:",
@@ -76,6 +106,7 @@ router.get("/", async (req, res) => {
       subscribed: req.query.subscribed,
       isLoggedIn: !!req.session.user, 
       profilePic,
+      carouselImages
     });
   } catch (err) {
     console.error("Error fetching homepage data:", err);
@@ -99,6 +130,32 @@ router.get("/home2", async (req, res) => {
     const info = infoResult.rows[0];
     const articles = articlesResult.rows;
     const faqs = faqsResult.rows;
+
+    const allImagesResult = await pool.query("SELECT url FROM gallery_images");
+    const allImages = allImagesResult.rows.map((row) => row.url);
+
+    // Deterministically shuffle based on the day
+    function getDailyImages(images, count) {
+      const today = new Date();
+      let seed =
+        today.getFullYear() * 10000 +
+        (today.getMonth() + 1) * 100 +
+        today.getDate();
+      // Simple seeded shuffle (Fisher-Yates with seed)
+      let arr = images.slice();
+      let random = function () {
+        var x = Math.sin(seed++) * 10000;
+        return x - Math.floor(x);
+      };
+      for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+      return arr.slice(0, count);
+    }
+
+    const carouselImages = getDailyImages(allImages, 5);
+
 
     console.log(
       "Raw video URLs:",
@@ -158,6 +215,7 @@ router.get("/home2", async (req, res) => {
       title: "Home",
       isLoggedIn,
       profilePic,
+      carouselImages
     });
   } catch (err) {
     console.error("Error fetching homepage data:", err);

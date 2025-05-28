@@ -18,22 +18,7 @@
         <% } %>
         <p><%= info?.name || 'C&S Church Online' %></p>
       </div>
-
-      <!-- <nav>
-        <a class="active" href="#mission-vision">Home</a>
-        <a href="#articles">Articles</a>
-        <a href="#videos">Videos</a>
-        <a href="#mission-vision">About</a>
-        
-        <a href="/admin/login" class="login-button">Login</a>
-       
-        <a
-          href="/signup"
-          style="background-color: rgb(0, 0, 0); color: rgb(255, 255, 255)"
-          class="login-button"
-          >Signup</a
-        >
-      </nav> -->
+      
       <button class="nav-toggle" onclick="toggleNav()">☰</button>
       <nav id="main-nav">
         <a class="active" href="#mission-vision">Home</a>
@@ -68,6 +53,8 @@
       <h2>Our History</h2>
       <p><%- info?.history || 'Our history goes here...' %></p>
     </section> -->
+    
+
 
     <% if (info?.hero_image_url) { %>
       <section class="hero-section" style="background-image: url('<%= info.hero_image_url %>');">
@@ -146,6 +133,22 @@
       </div>
     </section>
 
+    <% if (carouselImages && carouselImages.length > 0) { %>
+      <section class="hero-carousel">
+        <h1>Here are some of our Highlight</h1>
+        <% carouselImages.forEach(function(img, idx) { %>
+          <div class="carousel-slide" style="background-image: url('<%= img %>'); <%= idx === 0 ? '' : 'display:none;' %>"></div>
+        <% }) %>
+        <button class="carousel-btn prev" onclick="prevSlide()">&#10094;</button>
+        <button class="carousel-btn next" onclick="nextSlide()">&#10095;</button>
+        <!-- <div class="hero-overlay">
+          <h1>Welcome to <%= info?.name || 'C&S Church Online' %></h1>
+          <p><%= info?.vision || 'Empowering lives through the gospel of Christ.' %></p>
+          <a href="/about" class="cta-btn">See Our Story & Gallery</a>
+        </div> -->
+      </section>
+    <% } %>
+
      <!-- Frequently Asked Questions -->    
     <section id="faq" class="section"> 
       <h2>Frequently Asked Questions</h2> 
@@ -223,6 +226,8 @@
         </form>
       </div>
     </footer>
+
+    <!-- script for faq toggle show/hide answer -->
     <script> 
       function toggleFaq(index) { 
         const answer = document.getElementById(`answer-${index}`); 
@@ -285,5 +290,60 @@
     nav.classList.toggle("open");
   }
 </script>
-  </body>
+
+<!-- script for carousel  -->
+<!-- <script>
+  let currentSlide = 0;
+  const slides = document.querySelectorAll('.carousel-slide');
+
+  function showSlide(idx) {
+    slides.forEach((slide, i) => {
+      slide.style.display = (i === idx) ? 'block' : 'none';
+    });
+    currentSlide = idx;
+  }
+
+  function nextSlide() {
+    let next = (currentSlide + 1) % slides.length;
+    showSlide(next);
+  }
+
+  function prevSlide() {
+    let prev = (currentSlide - 1 + slides.length) % slides.length;
+    showSlide(prev);
+  }
+
+  // Auto-play every 4 seconds
+  setInterval(nextSlide, 4000);
+
+  // Initialize
+  if (slides.length > 0) showSlide(0);
+</script> -->
+  
+<script>
+  let currentSlide = 0;
+  const slides = document.querySelectorAll('.carousel-slide');
+
+  function showSlide(idx) {
+    slides.forEach((slide, i) => {
+      slide.style.display = (i === idx) ? 'block' : 'none';
+    });
+    currentSlide = idx;
+  }
+
+  function nextSlide() {
+    let next = (currentSlide + 1) % slides.length;
+    showSlide(next);
+  }
+
+  function prevSlide() {
+    let prev = (currentSlide - 1 + slides.length) % slides.length;
+    showSlide(prev);
+  }
+
+  setInterval(nextSlide, 4000); // Change every 4 seconds
+  if (slides.length > 0) showSlide(0);
+</script>
+
+</body>
 </html>

@@ -12,10 +12,54 @@ body {
     flex-direction: column;
     align-items: center;
 }
+.hero-carousel {
+    position: relative;
+    width: 100%;
+    height: 700px;
+    overflow: hidden;
+}
+
+.carousel-slide {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+    transition: opacity 0.5s;
+}
+
+.carousel-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(0, 0, 0, 0.4);
+    color: #fff;
+    border: none;
+    font-size: 2rem;
+    padding: 8px 16px;
+    border-radius: 50%;
+    cursor: pointer;
+    z-index: 10;
+}
+
+.carousel-btn.prev {
+    left: 20px;
+}
+
+.carousel-btn.next {
+    right: 20px;
+}
+
+.hero-carousel .hero-overlay {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+    color: #fff;
+    top: 30%; }
 .hero-section {
     position: relative;
     width: 100%;
-    height: 500px;
+    height: 100%;
     background-size: cover;
     background-position: center;
     display: flex;
@@ -1001,7 +1045,11 @@ nav a:hover {
 
 /* Optional: reduce padding on very small screens */
 @media screen and (max-width: 480px) {
-
+    .hero-carousel {
+            position: relative;
+            width: 100%;
+            height: 350px;
+            overflow: hidden;   }
 
     .nav-toggle {
             display: block;
@@ -1118,6 +1166,11 @@ nav a:hover {
 
 /* Responsive Design */
 @media (max-width: 768px) {
+    .hero-carousel {
+            position: relative;
+            width: 100%;
+            height: 500px;
+            overflow: hidden;   }
     .nav-toggle {
             display: block;
             background: none;
@@ -1220,6 +1273,11 @@ nav a:hover {
 
 /* Desktop: show nav, hide hamburger */
 @media (min-width: 769px) {
+    .hero-carousel {
+            position: relative;
+            width: 100%;
+            height: 500px;
+            overflow: hidden;   }
     .nav-toggle {
         display: none;
     }
@@ -1239,6 +1297,11 @@ nav a:hover {
     } }
 
 @media (max-width: 600px) {
+    .hero-carousel {
+            position: relative;
+            width: 100%;
+            height: 500px;
+            overflow: hidden;   }
     .table-responsive {
             width: 100%;
             overflow-x: auto;
