@@ -56,6 +56,10 @@ router.post('/gallery/categories', galleryController.createCategory);
 // (Optional) Handle category deletion
 router.post('/gallery/categories/delete/:id', galleryController.deleteCategory);
 
+// Handle category edit form submission
+router.post('/gallery/categories/edit/:id', galleryController.editCategory);
+
+
 // router.get('/articles', articleController.showArticles);
 router.get("/articles", articleController.showSearchArticles);
 router.post("/articles", upload.single("image"), articleController.saveArticle);

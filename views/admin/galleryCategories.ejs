@@ -7,27 +7,31 @@
   </head>
   <body>
     <header class="header">
-        <div class="logo-title">
-          <% info = info || {}; %> <% if (info.logo_url) { %>
-          <img src="<%= info.logo_url %>" alt="Logo" />
-          <% } %>
-          <p><%= info?.name || 'C&S Church Online' %></p>
-        </div>
-        <button class="nav-toggle" onclick="toggleNav()">☰</button>
-        <nav id="main-nav">
-          <a href="/admin/dashboard">Dashboard</a>
-          <a href="/admin/articles">Articles</a>
-          <a href="/admin/videos">Videos</a>
-          <a href="/admin/ministry">About</a>
-          <a href="/admin/faqs">FAQ</a>
-          <a href="/admin/gallery">Gallery Images</a>
-          <a class="active" href="/admin/gallery/categories">Gal Categories</a>
-          <a href="/admin/logout" class="logout-button">Logout</a>
-          <!-- Login remains a page link -->
-        </nav>
-      </header>
+      <div class="logo-title">
+        <% info = info || {}; %> <% if (info.logo_url) { %>
+        <img src="<%= info.logo_url %>" alt="Logo" />
+        <% } %>
+        <p><%= info?.name || 'C&S Church Online' %></p>
+      </div>
+      <button class="nav-toggle" onclick="toggleNav()">☰</button>
+      <nav id="main-nav">
+        <a href="/admin/dashboard">Dashboard</a>
+        <a href="/admin/articles">Articles</a>
+        <a href="/admin/videos">Videos</a>
+        <a href="/admin/ministry">About</a>
+        <a href="/admin/faqs">FAQ</a>
+        <a href="/admin/gallery">Gallery Images</a>
+        <a class="active" href="/admin/gallery/categories">Gal Categories</a>
+        <a href="/admin/logout" class="logout-button">Logout</a>
+        <!-- Login remains a page link -->
+      </nav>
+    </header>
     <h2>Gallery Categories</h2>
-    <form class="gallery-upload-form" method="POST" action="/admin/gallery/categories">
+    <form
+      class="gallery-upload-form"
+      method="POST"
+      action="/admin/gallery/categories"
+    >
       <input type="text" name="name" placeholder="New Category Name" required />
       <button type="submit">Add Category</button>
       <link rel="stylesheet" href="/css/style.css" />
@@ -36,9 +40,10 @@
     <ul>
       <% categories.forEach(cat => { %>
       <li>
-        <%= cat.name %>
+        <span id="cat-name-<%= cat.id %>"><%= cat.name %></span>
+    <!-- Edit button -->
+    <button type="button" onclick="showEditForm(<%= cat.id %>, '<%= cat.name.replace(/'/g, "\\'") %>')">Edit</button>
         <form
-        
           method="POST"
           action="/admin/gallery/categories/delete/<%= cat.id %>"
           style="display: inline"
@@ -46,20 +51,52 @@
           <button
             type="submit"
             onclick="return confirm('Delete this category?')"
-            style="background-color: red;"
+            style="background-color: red"
           >
             Delete
           </button>
         </form>
+        <!-- Hidden edit form -->
+        
       </li>
       <% }) %>
     </ul>
+
+<!-- Modal Overlay for Edit -->
+<div id="editModal" class="modal-overlay" style="display:none;">
+  <div class="modal-content">
+    <form id="modalEditForm" method="POST" action="#">
+      <h3>Edit Category</h3>
+      <input type="text" name="name" id="modalCategoryName" required />
+      <div style="margin-top: 16px;">
+        <button type="submit">Save</button>
+        <button type="button" onclick="hideEditForm()">Cancel</button>
+      </div>
+    </form>
+  </div>
+</div>
+    <!-- script to edit category names -->
+    <script>
+      function showEditForm(id, name) {
+        document.getElementById('editModal').style.display = 'flex';
+        document.getElementById('modalCategoryName').value = name;
+        document.getElementById('modalEditForm').action = '/admin/gallery/categories/edit/' + id;
+      }
+      function hideEditForm() {
+        document.getElementById('editModal').style.display = 'none';
+      }
+      // Optional: Hide modal when clicking outside the modal content
+      document.getElementById('editModal').addEventListener('click', function(e) {
+        if (e.target === this) hideEditForm();
+      });
+    </script>
+
+    <!-- script to toggle navigation menu -->
+    <script>
+      function toggleNav() {
+        var nav = document.getElementById("main-nav");
+        nav.classList.toggle("open");
+      }
+    </script>
   </body>
-  <!-- script to toggle navigation menu -->
-  <script>
-    function toggleNav() {
-      var nav = document.getElementById("main-nav");
-      nav.classList.toggle("open");
-    }
-  </script>
 </html>

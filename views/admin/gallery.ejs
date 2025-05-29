@@ -59,41 +59,59 @@
       <input type="text" name="caption" required />
       <button type="submit">Upload</button>
     </form>
+
+    <!-- filtering images by category -->
+    <label for="categoryFilter"><strong>Filter by Category:</strong></label>
+    <select id="categoryFilter" style="margin-bottom: 24px">
+      <option value="all">All Categories</option>
+      <% categories.forEach(cat => { %>
+      <option value="cat-<%= cat.id %>"><%= cat.name %></option>
+      <% }) %>
+    </select>
+
+    <!-- the gallery section  -->
     <section class="section">
       <h3>Gallery Images</h3>
       <% categories.forEach(cat => { %>
-      <h4 style="margin-top: 2rem"><%= cat.name %></h4>
-      <div class="gallery-grid">
-        <% const catImages = images.filter(img => img.category_id === cat.id);
-        if (catImages.length === 0) { %>
-        <p style="color: #aaa">No images in this category yet.</p>
-        <% } %> <% catImages.forEach(img => { %>
-        <div class="gallery-card">
-          <!-- <img src="<%= img.url %>" alt="<%= img.caption %>" /> -->
-          <img src="<%= img.url %>" alt="<%= img.caption %>" onclick="showModal('<%= img.url %>')" style="cursor:zoom-in;" />
-          <p><%= img.caption %></p>
-          <div class="article-buttons">
-            <form
-              method="POST"
-              action="/admin/gallery/delete/<%= img.id %>"
-              style="display: inline"
-            >
-              <button
-                type="submit"
-                onclick="return confirm('Delete this image?')"
+      <div class="category-section" data-cat="cat-<%= cat.id %>">
+        <h4 style="margin-top: 2rem"><%= cat.name %></h4>
+        <div class="gallery-grid">
+          <% // Ensure both sides are numbers for reliable comparison const
+          catImages = images.filter(img => Number(img.category_id) ===
+          Number(cat.id)); if (catImages.length === 0) { %>
+          <p style="color: #aaa">No images in this category yet.</p>
+          <% } %> <% catImages.forEach(img => { %>
+          <div class="gallery-card">
+            <img
+              src="<%= img.url %>"
+              alt="<%= img.caption %>"
+              onclick="showModal('<%= img.url %>')"
+              style="cursor: zoom-in"
+            />
+            <p><%= img.caption %></p>
+            <div class="article-buttons">
+              <form
+                method="POST"
+                action="/admin/gallery/delete/<%= img.id %>"
+                style="display: inline"
               >
-                Delete
-              </button>
-            </form>
-            <a
-              href="/admin/gallery/edit/<%= img.id %>"
-              class="cta-btn"
-              style="margin-top: 8px"
-              >Edit</a
-            >
+                <button
+                  type="submit"
+                  onclick="return confirm('Delete this image?')"
+                >
+                  Delete
+                </button>
+              </form>
+              <a
+                href="/admin/gallery/edit/<%= img.id %>"
+                class="cta-btn"
+                style="margin-top: 8px"
+                >Edit</a
+              >
+            </div>
           </div>
+          <% }) %>
         </div>
-        <% }) %>
       </div>
       <% }) %>
     </section>
@@ -174,10 +192,27 @@
 
     <!-- script to toggle navigation menu -->
     <script>
-        function toggleNav() {
-          var nav = document.getElementById("main-nav");
-          nav.classList.toggle("open");
-        }
-      </script>
+      function toggleNav() {
+        var nav = document.getElementById("main-nav");
+        nav.classList.toggle("open");
+      }
+    </script>
+
+    <!-- script to filter gallery images by category -->
+    <script>
+      document
+        .getElementById("categoryFilter")
+        .addEventListener("change", function () {
+          const selected = this.value;
+          document.querySelectorAll(".category-section").forEach((section) => {
+            if (selected === "all") {
+              section.style.display = "";
+            } else {
+              section.style.display =
+                section.dataset.cat === selected ? "" : "none";
+            }
+          });
+        });
+    </script>
   </body>
 </html>

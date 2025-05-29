@@ -1042,6 +1042,26 @@ nav a:hover {
  .faq-form button:hover {
      background-color: #007c52;   }
 
+         .modal-overlay {
+             position: fixed;
+             top: 0;
+             left: 0;
+             right: 0;
+             bottom: 0;
+             background: rgba(0, 0, 0, 0.6);
+             display: flex;
+             align-items: center;
+             justify-content: center;
+             z-index: 1000;
+         }
+    
+         .modal-content {
+             background: #fff;
+             padding: 32px 24px;
+             border-radius: 10px;
+             min-width: 300px;
+             box-shadow: 0 4px 24px rgba(0, 0, 0, 0.15);
+             text-align: center;     }
 
 /* Optional: reduce padding on very small screens */
 @media screen and (max-width: 480px) {

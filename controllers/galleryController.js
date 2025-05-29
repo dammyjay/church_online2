@@ -103,3 +103,11 @@ exports.deleteCategory = async (req, res) => {
   await pool.query("DELETE FROM gallery_categories WHERE id = $1", [id]);
   res.redirect("/admin/gallery/categories");
 };
+
+// Edit (update) a category
+exports.editCategory = async (req, res) => {
+  const { id } = req.params;
+  const { name } = req.body;
+  await pool.query("UPDATE gallery_categories SET name = $1 WHERE id = $2", [name, id]);
+  res.redirect("/admin/gallery/categories");
+};
