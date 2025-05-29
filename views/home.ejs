@@ -74,13 +74,14 @@
       <section id="announcement-section" class="announcement" style="display:none;">
         <button class="close-announcement-btn" onclick="hideAnnouncement()" title="Close">&times;</button>
         <h2>Announcement: <%= announcement.title %></h2>
-        <p><%= announcement.message %></p>
+        <p><%- announcement.message %></p>
         <% if (announcement.event_date) { %>
           <small>Event Date: <%= new Date(announcement.event_date).toDateString() %></small>
         <% } %>
         <% if (announcement.flyer_url) { %>
           <img src="<%= announcement.flyer_url %>" alt="Event Flyer">
         <% } %>
+        
       </section>
     <% } %>
 

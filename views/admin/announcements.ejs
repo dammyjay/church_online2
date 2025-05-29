@@ -2,9 +2,10 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <title>Admin Dashboard</title>
+    <title>Announcement</title>
     <link rel="stylesheet" href="/css/style.css" />
     <link rel="icon" type="image/x-icon" href="/logo.png" />
+    <script src="https://cdn.ckeditor.com/4.22.1/standard/ckeditor.js"></script>
   </head>
   <body>
     <!-- Header -->
@@ -31,47 +32,85 @@
     </header>
 
     <h2>Create Announcement</h2>
-    <form method="POST" action="/admin/announcements" enctype="multipart/form-data">
-      <label>Title:</label><br>
-      <input type="text" name="title" required><br><br>
-      <label>Message:</label><br>
-      <textarea name="message" required></textarea><br><br>
-      <label>Event Date (optional):</label><br>
-      <input type="date" name="event_date"><br><br>
-      <label>Event Flyer (optional):</label><br>
-      <input type="file" name="flyer"><br><br>
+    <form
+      method="POST"
+      action="/admin/announcements"
+      enctype="multipart/form-data"
+    >
+      <label>Title:</label><br />
+      <input type="text" name="title" required /><br /><br />
+      <label>Message:</label><br />
+      <textarea name="message" id="content" required></textarea><br /><br />
+      <label>Event Date (optional):</label><br />
+      <input type="date" name="event_date" /><br /><br />
+      <label>Event Flyer (optional):</label><br />
+      <input type="file" name="flyer" /><br /><br />
       <button type="submit">Create Announcement</button>
     </form>
 
     <h3>All Announcements</h3>
-<ul class="admin-announcement-list">
-  <% announcements.forEach(a => { %>
-    <li class="admin-announcement-item">
-      <strong><%= a.title %></strong>
-      <% if (a.event_date) { %>
-        <span style="color:#bfa046;"> | <%= new Date(a.event_date).toDateString() %></span>
-      <% } %>
-      <br>
-      <span><%= a.message %></span>
-      <% if (a.flyer_url) { %>
+    <ul class="admin-announcement-list">
+      <% announcements.forEach(a => { %>
+      <li class="admin-announcement-item">
+        <strong><%= a.title %></strong>
+        <% if (a.event_date) { %>
+        <span style="color: #bfa046">
+          | <%= new Date(a.event_date).toDateString() %></span
+        >
+        <% } %>
+        <br />
+        <span><%- a.message %></span>
+        <% if (a.flyer_url) { %>
         <div>
-          <img src="<%= a.flyer_url %>" alt="Flyer" style="max-width:180px;margin:8px 0;border-radius:8px;">
+          <img
+            src="<%= a.flyer_url %>"
+            alt="Flyer"
+            style="max-width: 180px; margin: 8px 0; border-radius: 8px"
+          />
         </div>
-      <% } %>
-      <form method="POST" action="/admin/announcements/delete/<%= a.id %>" style="display:inline;">
-        <button type="submit" onclick="return confirm('Delete this announcement?')">Delete</button>
-      </form>
-      <a href="/admin/announcements/edit/<%= a.id %>" class="cta-btn" style="margin-left:12px;">Edit</a>
-    </li>
-  <% }) %>
-</ul>
-   
+        <% } %>
+        <div class="article-buttons">
+          <!-- <form
+            method="POST"
+            action="/admin/announcements/delete/<%= a.id %>"
+            style="display: inline"
+          >
+            <button
+              type="submit"
+              onclick="return confirm('Delete this announcement?')"
+            >
+              Delete
+            </button>
+          </form> -->
+          <form
+            action="/admin/announcements/delete/<%= a.id %>"
+            method="POST"
+            onsubmit="return confirm('Are you sure you want to delete this announcement');"
+          >
+            <button type="submit">Delete</button>
+          </form>
+          <a
+            href="/admin/announcements/edit/<%= a.id %>"
+            class="cta-btn"
+            style="margin-left: 12px"
+            >Edit</a
+          >
+        </div>
+      </li>
+      <% }) %>
+    </ul>
 
+    <!-- script for navigation toggle hamburger menu -->
     <script>
       function toggleNav() {
         var nav = document.getElementById("main-nav");
         nav.classList.toggle("open");
       }
+    </script>
+
+    <!-- script for CKeditor -->
+    <script>
+      CKEDITOR.replace("content");
     </script>
   </body>
 </html>
