@@ -87,7 +87,7 @@ exports.showForm = async (req, res) => {
 
 
 exports.saveInfo = async (req, res) => {
-  const { vision, mission, history } = req.body;
+  const { vision, mission, history, marquee_message } = req.body;
   let logo_url = null;
   let hero_image_url = null;
 
@@ -118,20 +118,21 @@ exports.saveInfo = async (req, res) => {
   if (result.rows.length === 0) {
     // Insert
     await pool.query(
-      "INSERT INTO ministry_info (logo_url, vision, mission, history, hero_image_url) VALUES ($1, $2, $3, $4, $5)",
-      [logo_url, vision, mission, history, hero_image_url]
+      "INSERT INTO ministry_info (logo_url, vision, mission, history, hero_image_url, marquee_message) VALUES ($1, $2, $3, $4, $5, $6)",
+      [logo_url, vision, mission, history, hero_image_url, marquee_message]
     );
   } else {
     // Update (keep old URLs if new not provided)
     const current = result.rows[0];
     await pool.query(
-      "UPDATE ministry_info SET logo_url = $1, vision = $2, mission = $3, history = $4, hero_image_url = $5 WHERE id = $6",
+      "UPDATE ministry_info SET logo_url = $1, vision = $2, mission = $3, history = $4, hero_image_url = $5, marquee_message =$6 WHERE id = $7",
       [
         logo_url || current.logo_url,
         vision,
         mission,
         history,
         hero_image_url || current.hero_image_url,
+        marquee_message || current.marquee_message || '',
         current.id,
       ]
     );

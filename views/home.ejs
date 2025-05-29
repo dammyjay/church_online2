@@ -66,6 +66,14 @@
       </section>
     <% } %>
 
+    <!-- Marquee Message -->
+    <% if (info?.marquee_message) { %>
+      <div class="marquee-container">
+        <div class="marquee-text"><%= info.marquee_message %></div>
+      </div>
+    <% } %>
+
+
     <% if (announcement) { %>
       <div id="announcement-preview" class="announcement-preview" onclick="showAnnouncement()">
         📢 <strong>New Announcement:</strong> <%= announcement.title %> &nbsp;
