@@ -78,16 +78,20 @@
         </div>
       </section>
     <% } %>
-
     <% if (announcement) { %>
-      <section class="announcement" style="background: #fffbe6; border-radius: 8px; padding: 24px; margin: 32px auto; max-width: 600px;">
+      <div id="announcement-preview" class="announcement-preview" onclick="showAnnouncement()">
+        📢 <strong>New Announcement:</strong> <%= announcement.title %> &nbsp;
+        <button class="view-announcement-btn">View</button>
+      </div>
+      <section id="announcement-section" class="announcement" style="display:none;">
+        <button class="close-announcement-btn" onclick="hideAnnouncement()" title="Close">&times;</button>
         <h2>Announcement: <%= announcement.title %></h2>
         <p><%= announcement.message %></p>
         <% if (announcement.event_date) { %>
-          <small>Event Date: <%= announcement.event_date %></small><br>
+          <small>Event Date: <%= new Date(announcement.event_date).toDateString() %></small>
         <% } %>
         <% if (announcement.flyer_url) { %>
-          <img src="<%= announcement.flyer_url %>" alt="Event Flyer" style="max-width:100%;margin-top:12px;border-radius:8px;">
+          <img src="<%= announcement.flyer_url %>" alt="Event Flyer">
         <% } %>
       </section>
     <% } %>
@@ -332,6 +336,18 @@
   
     setInterval(nextSlide, 4000); // Change every 4 seconds
     if (slides.length > 0) showSlide(0);
+  </script>
+
+  <!-- script to preview announcement -->
+  <script>
+    function showAnnouncement() {
+      document.getElementById('announcement-preview').style.display = 'none';
+      document.getElementById('announcement-section').style.display = 'block';
+    }
+    function hideAnnouncement() {
+      document.getElementById('announcement-section').style.display = 'none';
+      document.getElementById('announcement-preview').style.display = 'block';
+    }
   </script>
   </body>
 </html>

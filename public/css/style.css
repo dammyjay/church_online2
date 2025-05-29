@@ -1103,6 +1103,55 @@ nav a:hover {
     box-shadow: 0 2px 12px rgba(191, 160, 70, 0.10);
     border: 1px solid #ffe58f; }
 
+        .announcement-preview {
+            background: #fffbe6;
+            border: 2px solid #ffe58f;
+            border-radius: 12px;
+            padding: 16px 24px;
+            margin: 32px auto 0 auto;
+            max-width: 500px;
+            box-shadow: 0 2px 12px rgba(191, 160, 70, 0.10);
+            text-align: center;
+            color: #bfa046;
+            font-size: 1.15rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+            position: relative;
+        }
+    
+        .announcement-preview:hover {
+            background: #fff3c1;
+        }
+    
+        .view-announcement-btn {
+            background: #bfa046;
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            padding: 6px 18px;
+            font-size: 1rem;
+            font-weight: 600;
+            margin-left: 12px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+    
+        .view-announcement-btn:hover {
+            background: #a38833;
+        }
+    
+        .close-announcement-btn {
+            position: absolute;
+            top: 12px;
+            right: 18px;
+            background: transparent;
+            border: none;
+            font-size: 2rem;
+            color: #bfa046;
+            cursor: pointer;
+            z-index: 10;     }
+
 /* Optional: reduce padding on very small screens */
 @media screen and (max-width: 480px) {
     .hero-carousel {
