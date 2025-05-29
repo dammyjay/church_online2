@@ -21,6 +21,10 @@ router.get("/", async (req, res) => {
     const info = infoResult.rows[0];
     const articles = articlesResult.rows;
     const faqs = faqsResult.rows;
+    const annResult = await pool.query(
+      "SELECT * FROM announcements ORDER BY event_date DESC LIMIT 1"
+    );
+    const announcement = annResult.rows[0];
     // const carouselImages = randomImagesResult.rows.map((row) => row.url);
 
     const allImagesResult = await pool.query("SELECT url FROM gallery_images");
@@ -104,9 +108,10 @@ router.get("/", async (req, res) => {
       videos,
       faqs,
       subscribed: req.query.subscribed,
-      isLoggedIn: !!req.session.user, 
+      isLoggedIn: !!req.session.user,
       profilePic,
-      carouselImages
+      carouselImages,
+      announcement,
     });
   } catch (err) {
     console.error("Error fetching homepage data:", err);
@@ -133,7 +138,10 @@ router.get("/home2", async (req, res) => {
 
     const allImagesResult = await pool.query("SELECT url FROM gallery_images");
     const allImages = allImagesResult.rows.map((row) => row.url);
-
+    const annResult = await pool.query(
+      "SELECT * FROM announcements ORDER BY event_date DESC LIMIT 1"
+    );
+    const announcement = annResult.rows[0];
     // Deterministically shuffle based on the day
     function getDailyImages(images, count) {
       const today = new Date();
@@ -215,7 +223,8 @@ router.get("/home2", async (req, res) => {
       title: "Home",
       isLoggedIn,
       profilePic,
-      carouselImages
+      carouselImages,
+      announcement
     });
   } catch (err) {
     console.error("Error fetching homepage data:", err);

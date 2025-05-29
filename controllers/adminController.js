@@ -300,3 +300,30 @@ exports.deleteUser = async (req, res) => {
     res.status(500).send('Server error');
   }
 };
+
+
+// Show announcements page
+exports.showAnnouncements = async (req, res) => {
+  const infoResult = await pool.query(
+    "SELECT * FROM ministry_info ORDER BY id DESC LIMIT 1"
+  );
+  const info = infoResult.rows[0] || {};
+  const result = await pool.query('SELECT * FROM announcements ORDER BY event_date DESC');
+  res.render('admin/announcements', {info, announcements: result.rows });
+};
+
+// Create a new announcement
+exports.createAnnouncement = async (req, res) => {
+  const infoResult = await pool.query(
+    "SELECT * FROM ministry_info ORDER BY id DESC LIMIT 1"
+  );
+  const info = infoResult.rows[0];
+  const { title, message, event_date } = req.body;
+  let flyer_url = req.file ? req.file.path : null; // Use existing URL if provided
+
+  await pool.query(
+    "INSERT INTO announcements (title, message, event_date, flyer_url) VALUES ($1, $2, $3, $4)",
+    [title, message, event_date, flyer_url]
+  );
+  res.redirect("/admin/announcements");
+};

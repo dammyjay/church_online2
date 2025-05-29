@@ -92,6 +92,12 @@ router.post("/forgot-password", adminController.handleForgotPassword);
 router.get("/reset-password/:token", adminController.showResetPasswordForm);
 router.post("/reset-password/:token", adminController.handleResetPassword);
 
-
+// routes for announcements
+router.get("/announcements", adminController.showAnnouncements);
+router.post(
+  "/announcements",
+  upload.single("flyer"),
+  adminController.createAnnouncement
+);
 
 module.exports = router;

@@ -1063,6 +1063,46 @@ nav a:hover {
              box-shadow: 0 4px 24px rgba(0, 0, 0, 0.15);
              text-align: center;     }
 
+/* Announcement Section Styling */
+.announcement {
+    background: #fffbe6;
+    border-radius: 16px;
+    padding: 32px 24px;
+    margin: 40px auto;
+    max-width: 600px;
+    box-shadow: 0 4px 24px rgba(191, 160, 70, 0.08);
+    text-align: center;
+    border: 1.5px solid #ffe58f;
+}
+
+.announcement h2 {
+    color: #bfa046;
+    font-size: 2rem;
+    margin-bottom: 18px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+}
+
+.announcement p {
+    color: #333;
+    font-size: 1.15rem;
+    margin-bottom: 12px;
+}
+
+.announcement small {
+    color: #bfa046;
+    font-weight: 600;
+    display: block;
+    margin-bottom: 12px;
+}
+
+.announcement img {
+    max-width: 100%;
+    margin-top: 18px;
+    border-radius: 12px;
+    box-shadow: 0 2px 12px rgba(191, 160, 70, 0.10);
+    border: 1px solid #ffe58f; }
+
 /* Optional: reduce padding on very small screens */
 @media screen and (max-width: 480px) {
     .hero-carousel {
