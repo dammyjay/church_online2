@@ -43,7 +43,10 @@ exports.editImage = async (req, res) => {
       folder: "gallery",
     });
     imageUrl = result.secure_url;
-    fs.unlinkSync(req.file.path);
+    // fs.unlinkSync(req.file.path);
+    if (req.file && req.file.path && fs.existsSync(req.file.path)) {
+      fs.unlinkSync(req.file.path);
+    }
   }
 
   await pool.query(

@@ -15,7 +15,7 @@ body {
 .hero-carousel {
     position: relative;
     width: 100%;
-    height: 700px;
+    height: 1000px;
     overflow: hidden;
 }
 
@@ -1073,6 +1073,7 @@ nav a:hover {
     box-shadow: 0 4px 24px rgba(191, 160, 70, 0.08);
     text-align: center;
     border: 1.5px solid #ffe58f;
+    position: relative;
 }
 
 .announcement h2 {
@@ -1143,14 +1144,16 @@ nav a:hover {
     
         .close-announcement-btn {
             position: absolute;
-            top: 12px;
-            right: 18px;
-            background: transparent;
-            border: none;
-            font-size: 2rem;
-            color: #bfa046;
-            cursor: pointer;
-            z-index: 10;     }
+                top: 18px;
+                right: 24px;
+                background: transparent;
+                border: none;
+                font-size: 2rem;
+                color: #bfa046;
+                cursor: pointer;
+                z-index: 10;
+                padding: 0;
+                line-height: 1;   }
 
                         .admin-announcement-list {
                             list-style: none;
@@ -1171,6 +1174,41 @@ nav a:hover {
                         .admin-announcement-item strong {
                             font-size: 1.1rem;             }
 
+                                                        @keyframes pulse {
+                                                            0% {
+                                                                transform: scale(1);
+                                                                box-shadow: 0 0 0 0 #ffe58f;
+                                                            }
+                            
+                                                            70% {
+                                                                transform: scale(1.08);
+                                                                box-shadow: 0 0 0 10px rgba(191, 160, 70, 0.15);
+                                                            }
+                            
+                                                            100% {
+                                                                transform: scale(1);
+                                                                box-shadow: 0 0 0 0 #ffe58f;
+                                                            }
+                                                        }
+                            
+                                                        .view-announcement-btn {
+                                                            background: #bfa046;
+                                                            color: #fff;
+                                                            border: none;
+                                                            border-radius: 6px;
+                                                            padding: 8px 22px;
+                                                            font-size: 1.1rem;
+                                                            font-weight: 700;
+                                                            margin-left: 12px;
+                                                            cursor: pointer;
+                                                            transition: background 0.2s, transform 0.2s;
+                                                            animation: pulse 1.5s infinite;
+                                                            box-shadow: 0 2px 8px rgba(191, 160, 70, 0.10);
+                                                        }
+                            
+                                                        .view-announcement-btn:hover {
+                                                            background: #a38833;
+                                                            transform: scale(1.12);                             }
 /* Optional: reduce padding on very small screens */
 @media screen and (max-width: 480px) {
     .hero-carousel {

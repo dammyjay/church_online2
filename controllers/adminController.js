@@ -4,6 +4,8 @@ const bcrypt = require('bcrypt');
 const crypto = require("crypto");
 // const nodemailer = require("nodemailer");
 const sendEmail = require("../utils/sendEmail");
+const cloudinary = require("../utils/cloudinary");
+const fs = require("fs");
 
 
 // Show forgot password form
@@ -351,7 +353,10 @@ exports.editAnnouncement = async (req, res) => {
       folder: "announcements",
     });
     flyer_url = result.secure_url;
-    fs.unlinkSync(req.file.path);
+    // fs.unlinkSync(req.file.path);
+    if (req.file && req.file.path && fs.existsSync(req.file.path)) {
+      fs.unlinkSync(req.file.path);
+    }
   }
 
   await pool.query(
