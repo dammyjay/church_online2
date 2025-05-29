@@ -100,4 +100,11 @@ router.post(
   adminController.createAnnouncement
 );
 
+router.post("/announcements/delete/:id", adminController.deleteAnnouncement);
+router.get("/announcements/edit/:id", adminController.showEditAnnouncement);
+router.post(
+  "/announcements/edit/:id",
+  upload.single("flyer"),
+  adminController.editAnnouncement
+);
 module.exports = router;

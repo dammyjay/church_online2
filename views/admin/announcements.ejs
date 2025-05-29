@@ -42,6 +42,29 @@
       <input type="file" name="flyer"><br><br>
       <button type="submit">Create Announcement</button>
     </form>
+
+    <h3>All Announcements</h3>
+<ul class="admin-announcement-list">
+  <% announcements.forEach(a => { %>
+    <li class="admin-announcement-item">
+      <strong><%= a.title %></strong>
+      <% if (a.event_date) { %>
+        <span style="color:#bfa046;"> | <%= new Date(a.event_date).toDateString() %></span>
+      <% } %>
+      <br>
+      <span><%= a.message %></span>
+      <% if (a.flyer_url) { %>
+        <div>
+          <img src="<%= a.flyer_url %>" alt="Flyer" style="max-width:180px;margin:8px 0;border-radius:8px;">
+        </div>
+      <% } %>
+      <form method="POST" action="/admin/announcements/delete/<%= a.id %>" style="display:inline;">
+        <button type="submit" onclick="return confirm('Delete this announcement?')">Delete</button>
+      </form>
+      <a href="/admin/announcements/edit/<%= a.id %>" class="cta-btn" style="margin-left:12px;">Edit</a>
+    </li>
+  <% }) %>
+</ul>
    
 
     <script>

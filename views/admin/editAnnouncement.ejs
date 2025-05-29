@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" href="/css/style.css" />
+    <link rel="icon" type="image/x-icon" href="/logo.png" />
+  </head>
+  <body>
+    <!-- Header -->
+    <header class="header">
+      <div class="logo-title">
+        <% info = info || {}; %> <% if (info.logo_url) { %>
+        <img src="<%= info.logo_url %>" alt="Logo" />
+        <% } %>
+        <p><%= info?.name || 'C&S Church Online' %></p>
+      </div>
+      <button class="nav-toggle" onclick="toggleNav()">☰</button>
+      <nav id="main-nav">
+        <a class="active" href="/admin/dashboard">Dashboard</a>
+        <a href="/admin/articles">Articles</a>
+        <a href="/admin/videos">Videos</a>
+        <a href="/admin/ministry">About</a>
+        <a href="/admin/faqs">FAQ</a>
+        <a href="/admin/gallery">Gallery Images</a>
+        <a href="/admin/gallery/categories">Gal Categories</a>
+        <a href="/admin/announcements">Announcement</a>
+        <a href="/admin/logout" class="logout-button">Logout</a>
+        <!-- Login remains a page link -->
+      </nav>
+    </header>
+
+    <h2>Edit Announcement</h2>
+    <form
+      method="POST"
+      action="/admin/announcements/edit/<%= announcement.id %>"
+      enctype="multipart/form-data"
+    >
+      <label>Title:</label>
+      <input
+        type="text"
+        name="title"
+        value="<%= announcement.title %>"
+        required
+      /><br />
+      <label>Message:</label>
+      <textarea name="message" required><%= announcement.message %></textarea
+      ><br />
+      <label>Event Date:</label>
+      <input
+        type="date"
+        name="event_date"
+        value="<%= announcement.event_date ? announcement.event_date.toISOString().split('T')[0] : '' %>"
+      /><br />
+      <% if (announcement.flyer_url) { %>
+      <label>Current Flyer:</label><br />
+      <img
+        src="<%= announcement.flyer_url %>"
+        alt="Flyer"
+        style="max-width: 180px; margin: 8px 0; border-radius: 8px"
+      /><br />
+      <input
+        type="hidden"
+        name="existing_flyer_url"
+        value="<%= announcement.flyer_url %>"
+      />
+      <% } %>
+      <label>Change Flyer (optional):</label>
+      <input type="file" name="flyer" /><br />
+      <button type="submit">Update Announcement</button>
+    </form>
+
+    <script>
+      function toggleNav() {
+        var nav = document.getElementById("main-nav");
+        nav.classList.toggle("open");
+      }
+    </script>
+  </body>
+</html>

@@ -1152,6 +1152,25 @@ nav a:hover {
             cursor: pointer;
             z-index: 10;     }
 
+                        .admin-announcement-list {
+                            list-style: none;
+                            padding: 0;
+                            margin-top: 32px;
+                            max-width: 700px;
+                        }
+            
+                        .admin-announcement-item {
+                            background: #fffbe6;
+                            border: 1px solid #ffe58f;
+                            border-radius: 10px;
+                            margin-bottom: 18px;
+                            padding: 18px 18px 12px 18px;
+                            box-shadow: 0 2px 8px rgba(191, 160, 70, 0.07);
+                        }
+            
+                        .admin-announcement-item strong {
+                            font-size: 1.1rem;             }
+
 /* Optional: reduce padding on very small screens */
 @media screen and (max-width: 480px) {
     .hero-carousel {

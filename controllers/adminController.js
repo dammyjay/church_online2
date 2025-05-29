@@ -327,3 +327,42 @@ exports.createAnnouncement = async (req, res) => {
   );
   res.redirect("/admin/announcements");
 };
+
+// Show the edit form for an announcement
+exports.showEditAnnouncement = async (req, res) => {
+  const { id } = req.params;
+  const infoResult = await pool.query("SELECT * FROM ministry_info ORDER BY id DESC LIMIT 1");
+  const info = infoResult.rows[0] || {};
+  const annResult = await pool.query("SELECT * FROM announcements WHERE id = $1", [id]);
+  const announcement = annResult.rows[0];
+  if (!announcement) return res.redirect('/admin/announcements');
+  res.render('admin/editAnnouncement', { info, announcement });
+};
+
+// Handle the edit form submission
+exports.editAnnouncement = async (req, res) => {
+  const { id } = req.params;
+  const { title, message, event_date } = req.body;
+  let flyer_url = req.body.existing_flyer_url || null;
+
+  // If a new flyer is uploaded, upload to cloudinary and use new URL
+  if (req.file) {
+    const result = await cloudinary.uploader.upload(req.file.path, {
+      folder: "announcements",
+    });
+    flyer_url = result.secure_url;
+    fs.unlinkSync(req.file.path);
+  }
+
+  await pool.query(
+    "UPDATE announcements SET title = $1, message = $2, event_date = $3, flyer_url = $4 WHERE id = $5",
+    [title, message, event_date, flyer_url, id]
+  );
+  res.redirect("/admin/announcements");
+};
+
+// In adminController.js
+exports.deleteAnnouncement = async (req, res) => {
+  await pool.query('DELETE FROM announcements WHERE id = $1', [req.params.id]);
+  res.redirect('/admin/announcements');
+};
