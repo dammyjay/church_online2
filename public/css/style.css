@@ -882,12 +882,34 @@ nav a:hover {
 }
 
 
+.show-more-btn,
+.show-less-btn,
+.continue-reading-btn {
+    background: #bfa046;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 4px 14px;
+    margin-left: 8px;
+    cursor: pointer;
+    font-size: 0.95rem;
+    font-weight: 600;
+    transition: background 0.2s;
+}
+
+.show-more-btn:hover,
+.show-less-btn:hover,
+.continue-reading-btn:hover {
+    background: #a38833; }
+
 /* Footer Styles */
 .site-footer {
     background-color: #222;
     color: #ebc625;
     padding: 40px 20px 20px;
     font-size: 14px;
+    width: 100%;
+    margin: 20px 0px;
 }
 
 .footer-container {
@@ -895,8 +917,8 @@ nav a:hover {
     flex-wrap: wrap;
     justify-content: space-between;
     gap: 30px;
-    max-width: 1200px;
-    margin: 0 auto;
+    /* max-width: 1200px;
+    margin: 0 auto; */
 }
 
 .footer-about,

@@ -110,7 +110,7 @@
             alt="Article Image"
             style="
               max-width: 100%;
-              height: auto;
+              height: 300px;
               object-fit: cover;
               border-radius: 8px;
             "
@@ -118,8 +118,9 @@
           <% } %>
           <!-- <p><%= article.content.substring(0, 100) %>...</p> -->
           <div class="article-body">
-            <%- article.content.substring(0, 100) %>..
+            <%- article.content.substring(0, 600) %>..
           </div>
+          <button class="continue-reading-btn" onclick="continueReading(<%= article.id %>)">Continue Reading</button>
           <!-- <small><%= new Date(article.created_at2).toLocaleDateString() %></small> -->
           <small><%- new Date(article.created_at3).toLocaleString() %></small>
         </div>
@@ -351,5 +352,24 @@
       document.getElementById('announcement-preview').style.display = 'block';
     }
   </script>
+
+  <!-- script for continue reading and check if user is logged in -->
+<script>
+  function showMore(idx) {
+  document.getElementById('article-short-' + idx).style.display = 'none';
+  document.getElementById('article-long-' + idx).style.display = 'block';
+}
+function showLess(idx) {
+  document.getElementById('article-long-' + idx).style.display = 'none';
+  document.getElementById('article-short-' + idx).style.display = 'block';
+}
+  function continueReading(articleId) {
+    if (<%= isLoggedIn ? 'true' : 'false' %>) {
+      window.location.href = '/articles/' + articleId;
+    } else {
+      window.location.href = '/admin/login?redirect=' + encodeURIComponent('/articles/' + articleId);
+    }
+  }
+</script>
   </body>
 </html>
