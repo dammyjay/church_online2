@@ -1,6 +1,5 @@
 const pool = require('../models/db');
 const bcrypt = require('bcrypt');
-
 const crypto = require("crypto");
 // const nodemailer = require("nodemailer");
 const sendEmail = require("../utils/sendEmail");
@@ -16,63 +15,36 @@ exports.showForgotPasswordForm = (req, res) => {
 // Handle forgot password form submission
 exports.handleForgotPassword = async (req, res) => {
   const { email } = req.body;
-  const result = await pool.query('SELECT * FROM users2 WHERE email = $1', [email]);
+  const result = await pool.query("SELECT * FROM users2 WHERE email = $1", [
+    email,
+  ]);
   if (result.rows.length === 0) {
-    return res.render('admin/forgotPassword', { message: 'If this email exists, a reset link has been sent.' });
+    // Show a clear message if email does not exist
+    return res.render("admin/forgotPassword", {
+      message: "Email does not exist.",
+    });
   }
   const user = result.rows[0];
-  const token = crypto.randomBytes(32).toString('hex');
+  const token = crypto.randomBytes(32).toString("hex");
   const expires = new Date(Date.now() + 3600000); // 1 hour
 
   await pool.query(
-    'UPDATE users2 SET reset_token = $1, reset_token_expires = $2 WHERE id = $3',
+    "UPDATE users2 SET reset_token = $1, reset_token_expires = $2 WHERE id = $3",
     [token, expires, user.id]
   );
 
   const resetUrl = `http://${req.headers.host}/admin/reset-password/${token}`;
   await sendEmail(
     email,
-    'Password Reset',
+    "Password Reset",
     `Click <a href="${resetUrl}">here</a> to reset your password.`
   );
 
-  res.render('admin/forgotPassword', { message: 'If this email exists, a reset link has been sent.' });
+  res.render("admin/forgotPassword", {
+    message: "a reset link has been sent.",
+  });
 };
 
-
-// Handle forgot password form submission
-// exports.handleForgotPassword = async (req, res) => {
-//   const { email } = req.body;
-//   const result = await pool.query('SELECT * FROM users2 WHERE email = $1', [email]);
-//   if (result.rows.length === 0) {
-//     return res.render('admin/forgotPassword', { message: 'If this email exists, a reset link has been sent.' });
-//   }
-//   const user = result.rows[0];
-//   const token = crypto.randomBytes(32).toString('hex');
-//   const expires = new Date(Date.now() + 3600000); // 1 hour
-
-//   await pool.query(
-//     'UPDATE users2 SET reset_token = $1, reset_token_expires = $2 WHERE id = $3',
-//     [token, expires, user.id]
-//   );
-
-//   // Configure your SMTP settings
-//   const transporter = nodemailer.createTransport({
-//     // Example for Gmail:
-//     // service: 'gmail',
-//     // auth: { user: 'your@gmail.com', pass: 'yourpassword' }
-//     // Use your real SMTP config in production!
-//   });
-
-//   const resetUrl = `http://${req.headers.host}/admin/reset-password/${token}`;
-//   await transporter.sendMail({
-//     to: user.email,
-//     subject: 'Password Reset',
-//     html: `Click <a href="${resetUrl}">here</a> to reset your password.`
-//   });
-
-//   res.render('admin/forgotPassword', { message: 'If this email exists, a reset link has been sent.' });
-// };
 
 // Show reset password form
 exports.showResetPasswordForm = async (req, res) => {
@@ -109,10 +81,6 @@ exports.handleResetPassword = async (req, res) => {
   res.render('admin/login', { error: null, title: 'Login', redirect: '', message: 'Password reset successful. Please log in.' });
 };
 
-
-// exports.showLogin = (req, res) => {
-//   res.render('admin/login', { error: null, title: 'Login'  });
-// };
 
 exports.showLogin = (req, res) => {
   res.render("admin/login", {
@@ -167,66 +135,11 @@ exports.login = async (req, res) => {
   }
 };
 
-// exports.login = async (req, res) => {
-//   const { email, password } = req.body;
-//   const result = await pool.query('SELECT * FROM users2 WHERE email = $1', [email]);
-//   // Check if the user exists
-
-//   if (result.rows.length === 0) {
-//     return res.render('admin/login', { error: 'Invalid credentials' });
-//   }
-  
-//   const user = result.rows[0];
-//   const isMatch = await bcrypt.compare(password, user.password);
-//   if (!isMatch) {
-//     return res.render('admin/login', { error: 'Invalid credentials' });
-//   }
-
-//   req.session.user = {
-//     id: user.id,
-//     email: user.email,
-//     role: user.role,
-//   };
-//   // Check if the user is an admin
-//   if (user.role === 'admin') {
-//     return res.redirect('/admin/dashboard');
-//   } else {
-//     return res.redirect('/');
-//   }
-
-// }
-
-
-// exports.dashboard = (req, res) => {
-//   // if (!req.session.admin) return res.redirect('/admin/login');
-//   if (!req.session.user || req.session.user.role !== 'admin') return res.redirect('/admin/login');
-//   // res.render('admin/dashboard');
-// };
 
 exports.logout = (req, res) => {
   req.session.destroy();
   res.redirect('/admin/login');
 };
-
-// exports.dashboard = async (req, res) => {
-//   // if (!req.session.admin) return res.redirect('/admin/login');
-//   if (!req.session.user || req.session.user.role !== 'admin') {
-//     return res.redirect('/admin/login');
-//     }
-
-//   try {
-//     const infoResult = await pool.query('SELECT * FROM ministry_info ORDER BY id DESC LIMIT 1');
-    
-//     const info = infoResult.rows[0];
-
-//     console.log('info:', info);
-//     res.render('admin/dashboard', { info });
-//   } catch (error) {
-//     console.error(error);
-//     res.status(500).send('Server Error');
-//   }
-// };
-
 
 exports.dashboard = async (req, res) => {
   // if (!req.session.admin) return res.redirect('/admin/login');
