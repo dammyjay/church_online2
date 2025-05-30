@@ -141,37 +141,136 @@ exports.logout = (req, res) => {
   res.redirect('/admin/login');
 };
 
+// exports.dashboard = async (req, res) => {
+//   // if (!req.session.admin) return res.redirect('/admin/login');
+//   if (!req.session.user || req.session.user.role !== 'admin') {
+//     return res.redirect('/admin/login');
+//     }
+
+//   try {
+//     const infoResult = await pool.query(
+//       "SELECT * FROM ministry_info ORDER BY id DESC LIMIT 1"
+//     );
+//     const usersResult = await pool.query(
+//       "SELECT * FROM users2 ORDER BY created_at DESC"
+//     );
+//     const pendingFaqResult = await pool.query(
+//       "SELECT COUNT(*) FROM faqs WHERE answer IS NULL OR answer = ''"
+//     );
+//     // Get total users
+//     const totalResult = await pool.query("SELECT COUNT(*) FROM users2");
+//     const totalUsers = parseInt(totalResult.rows[0].count);
+
+//     // Get users created in the last 7 days
+//     const lastWeekResult = await pool.query(
+//       "SELECT COUNT(*) FROM users2 WHERE created_at >= NOW() - INTERVAL '7 days'"
+//     );
+//     const recentUsers = parseInt(lastWeekResult.rows[0].count);
+//     // Calculate percentage
+//     const percentageNew =totalUsers > 0 ? Math.round((recentUsers / totalUsers) * 100) : 0;
+//     const pendingFaqCount = parseInt(pendingFaqResult.rows[0].count);
+//     const users = usersResult.rows;
+//     const info = infoResult.rows[0];
+//     // Get profilePic from session
+//     const profilePic = req.session.user
+//       ? req.session.user.profile_picture
+//       : null;
+//     console.log("User session:", req.session.user);
+//     console.log("Profile picture:", profilePic);
+
+//     console.log("info:", info, "users:", users);
+//     res.render("admin/dashboard", {
+//       info,
+//       users,
+//       profilePic,
+//       pendingFaqCount,
+//       totalUsers,
+//       recentUsers,
+//       percentageNew
+//     }); // ← Pass users to EJS
+//   } catch (error) {
+//     console.error(error);
+//     res.status(500).send('Server Error');
+//   }
+// };
+
 exports.dashboard = async (req, res) => {
   // if (!req.session.admin) return res.redirect('/admin/login');
-  if (!req.session.user || req.session.user.role !== 'admin') {
-    return res.redirect('/admin/login');
-    }
+  if (!req.session.user || req.session.user.role !== "admin") {
+    return res.redirect("/admin/login");
+  }
 
   try {
+    // Query filters
+    const { gender, role, email } = req.query;
+    // Step 1: Get Ministry Info
     const infoResult = await pool.query(
       "SELECT * FROM ministry_info ORDER BY id DESC LIMIT 1"
     );
-    const usersResult = await pool.query(
-      "SELECT * FROM users2 ORDER BY created_at DESC"
-    );
-    const pendingFaqResult = await pool.query(
-      "SELECT COUNT(*) FROM faqs WHERE answer IS NULL OR answer = ''"
-      );
-      const pendingFaqCount = parseInt(pendingFaqResult.rows[0].count);
-    const users = usersResult.rows;
     const info = infoResult.rows[0];
-    // Get profilePic from session
-    const profilePic = req.session.user ? req.session.user.profile_picture : null;
-    console.log("User session:", req.session.user);
-    console.log("Profile picture:", profilePic);
-    
-    console.log("info:", info, "users:", users);
-    res.render("admin/dashboard", { info, users, profilePic, pendingFaqCount }); // ← Pass users to EJS
+
+    // Step 2: Build dynamic user query
+    let query = "SELECT * FROM users2 WHERE 1=1";
+    const params = [];
+
+    if (gender) {
+      params.push(gender);
+      query += ` AND gender = $${params.length}`;
+    }
+
+    if (role) {
+      params.push(role);
+      query += ` AND role = $${params.length}`;
+    }
+
+    if (email) {
+      params.push(`%${email.toLowerCase()}%`);
+      query += ` AND LOWER(email) LIKE $${params.length}`;
+    }
+
+    query += " ORDER BY created_at DESC";
+    const usersResult = await pool.query(query, params);
+    const users = usersResult.rows;
+
+    // Step 3: Stats
+    const totalResult = await pool.query("SELECT COUNT(*) FROM users2");
+    const totalUsers = parseInt(totalResult.rows[0].count);
+
+    const lastWeekResult = await pool.query(
+      "SELECT COUNT(*) FROM users2 WHERE created_at >= NOW() - INTERVAL '7 days'"
+    );
+    const recentUsers = parseInt(lastWeekResult.rows[0].count);
+
+    const percentageNew =
+      totalUsers > 0 ? Math.round((recentUsers / totalUsers) * 100) : 0;
+
+    const pendingFaqResult = await pool.query(
+      "SELECT COUNT(*) FROM faqs WHERE answer IS NULL OR TRIM(answer) = ''"
+    );
+    const pendingFaqCount = parseInt(pendingFaqResult.rows[0].count);
+
+    const profilePic = req.session.user
+      ? req.session.user.profile_picture
+      : null;
+
+    res.render("admin/dashboard", {
+      info,
+      users,
+      profilePic,
+      pendingFaqCount,
+      totalUsers,
+      recentUsers,
+      percentageNew,
+      gender,
+      role,
+      email,
+    });
   } catch (error) {
     console.error(error);
-    res.status(500).send('Server Error');
+    res.status(500).send("Server Error");
   }
 };
+
 
 exports.editUserForm = async (req, res) => {
   const userId = req.params.id;

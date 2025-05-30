@@ -41,12 +41,45 @@
     <p>You are logged in.</p>
     <!-- <a href="/admin/logout">Logout</a> -->
     <h2>All Registered Users</h2>
-    <p style="red">Unanswered FAQs: <strong><%= pendingFaqCount %></strong></p>
+    <p style="color:red">Unanswered FAQs: <strong><%= pendingFaqCount %></strong></p>
+    <div class="dashboard-stats"> 
+      <div class="stat-box"> 
+        <h3>Total Users</h3> 
+        <p><%= totalUsers %></p> 
+      </div> 
+      <div class="stat-box"> 
+        <h3>New This Week</h3> 
+        <p><%= recentUsers %> (<%= percentageNew %>% of total)</p> 
+      </div> 
+      <div class="stat-box"> 
+        <h3>Pending FAQs</h3> 
+        <p><%= pendingFaqCount %></p> 
+      </div> 
+    </div>
+    <form method="GET" action="/admin/dashboard" class="filter-form"> <select name="gender"> 
+      <option value="">All Genders</option> 
+      <option value="Male" <%= gender === 'Male' ? 'selected' : '' %>>Male</option> 
+      <option value="Female" <%= gender === 'Female' ? 'selected' : '' %>>Female</option> 
+    </select> 
+    
+    <select name="role"> 
+      <option value="">All Roles</option> 
+      <option value="admin" <%= role === 'admin' ? 'selected' : '' %>>Admin</option> 
+      <option value="user" <%= role === 'user' ? 'selected' : '' %>>User</option> 
+    </select> 
+    
+    <input type="text" name="email" placeholder="Search by email" value="<%= email || '' %>" /> 
+    <button type="submit">Filter</button> 
+  </form>
+
+     
+    </form>
     <div class="table-responsive">
       <table
         class="user-table"
         style="width: 80%; border-collapse: collapse; margin-top: 20px"
       >
+        
         <thead>
           <tr>
             <th>Profile Picture</th>
