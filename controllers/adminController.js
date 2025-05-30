@@ -334,7 +334,7 @@ exports.sendNewsletter = async (req, res) => {
   res.render("admin/newsletter", {
     info, success: "Newsletter sent to all members!",
   });
-};
+};  
 
 // exports.sendNewsletter = async (req, res) => {
 //   const { subject, message } = req.body;

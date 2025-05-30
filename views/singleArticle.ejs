@@ -102,41 +102,7 @@
       </button>
     </div>
 
-    <!-- Related Articles Section -->
-    <!-- <div class="related-articles" style="margin: 40px auto; max-width: 900px">
-      <h3>Related Articles</h3>
-      <div class="card-grid2">
-        <% if (relatedArticles.length === 0) { %>
-        <p>No related articles found.</p>
-        <% } else { %> <% relatedArticles.forEach(ra => { %>
-        <div class="card">
-          <a
-            href="/articles/<%= ra.id %>"
-            onclick="return checkLogin('<%= ra.id %>');"
-            style="text-decoration: none; color: inherit"
-          >
-            <h4><%= ra.title %></h4>
-            <% if (ra.image_url) { %>
-            <img
-              src="<%= ra.image_url %>"
-              alt="Article Image"
-              style="
-                max-width: 100%;
-                height: 120px;
-                object-fit: cover;
-                border-radius: 8px;
-              "
-            />
-            <% } %>
-            <div class="article-body">
-              <%- linkify(ra.content.substring(0, 80)) %>...
-            </div>
-          </a>
-        </div>
-        <% }) %> <% } %>
-      </div>
-    </div> -->
-
+    
     <div class="related-articles" style="margin: 40px auto; max-width: 900px">
       <h3>Related Articles</h3>
       <div class="card-grid2">
@@ -228,6 +194,22 @@
         return false; // Prevent default (since we handle navigation)
       }
     </script>
+
+<!-- <script>
+  document.addEventListener("contextmenu", function (e) {
+    e.preventDefault();
+  });
+</script> -->
+
+<script>
+  document.addEventListener("keyup", function (e) {
+    if (e.key === "PrintScreen") {
+      navigator.clipboard.writeText(""); // Clear clipboard
+      alert("Screenshots are disabled on this page.");
+    }
+  });
+</script>
+
 
    
   </body>
