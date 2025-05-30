@@ -588,7 +588,7 @@ form button {
 /* Make sure article content appears above the watermark */
 .article-full>* {
     position: relative;
-    z-index: 1;
+    z-index: 0;
 }
 
 
@@ -1466,7 +1466,7 @@ nav a:hover {
                      width: 100vw;
                      height: 100vh;
                      background: rgba(75, 57, 10, 0.3);
-                     z-index: 1999;
+                     z-index: 2000;
                  }
         
                  .sidebar-overlay.active {
