@@ -1,5 +1,7 @@
 const express = require("express");
 const router = express.Router();
+// const parser = require("../middlewares/upload");
+
 const adminController = require("../controllers/adminController");
 const ministryController = require("../controllers/ministryController");
 const articleController = require("../controllers/articleController");
@@ -107,4 +109,10 @@ router.post(
   upload.single("flyer"),
   adminController.editAnnouncement
 );
+
+// send newsletter email
+router.get("/newsletter", adminController.showNewsletterForm);
+router.post("/newsletter", upload.single('image'), adminController.sendNewsletter);
+
+
 module.exports = router;

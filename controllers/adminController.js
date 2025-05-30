@@ -284,3 +284,94 @@ exports.deleteAnnouncement = async (req, res) => {
   await pool.query('DELETE FROM announcements WHERE id = $1', [req.params.id]);
   res.redirect('/admin/announcements');
 };
+
+
+// Show the newsletter form
+exports.showNewsletterForm = async (req, res) => {
+  const infoResult = await pool.query(
+    "SELECT * FROM ministry_info ORDER BY id DESC LIMIT 1"
+  );
+  const info = infoResult.rows[0] || {};
+  res.render('admin/newsletter', {info});
+};
+
+// Send the newsletter to all users
+exports.sendNewsletter = async (req, res) => {
+  const { subject, message } = req.body;
+  let imageUrl = null;
+
+  // Upload image to Cloudinary if provided
+  if (req.file) {
+    const result = await cloudinary.uploader.upload(req.file.path, {
+      folder: "newsletters",
+    });
+    imageUrl = result.secure_url;
+    if (req.file && req.file.path && fs.existsSync(req.file.path)) {
+      fs.unlinkSync(req.file.path); // Remove temp file
+    }
+  }
+  const infoResult = await pool.query(
+    "SELECT * FROM ministry_info ORDER BY id DESC LIMIT 1"
+  );
+  const info = infoResult.rows[0] || {};
+  // Get all user emails
+  const resultUsers = await pool.query(
+    "SELECT email FROM users2 WHERE email IS NOT NULL"
+  );
+  const emails = resultUsers.rows.map((row) => row.email);
+
+  // Compose HTML message
+  let htmlMsg = `<div>${message}</div>`;
+  if (imageUrl) {
+    htmlMsg += `<div style="margin-top:20px;"><img src="${imageUrl}" alt="Newsletter Image" style="max-width:100%;border-radius:8px;"></div>`;
+  }
+
+  // Send to all users
+  for (const email of emails) {
+    await sendEmail(email, subject, htmlMsg);
+  }
+
+  res.render("admin/newsletter", {
+    info, success: "Newsletter sent to all members!",
+  });
+};
+
+// exports.sendNewsletter = async (req, res) => {
+//   const { subject, message } = req.body;
+//   let imageUrl = req.file ? req.file.path : null;
+
+//   // Upload image to Cloudinary if provided
+//   if (req.file) {
+//     const result = await cloudinary.uploader.upload(req.file.path, {
+//       folder: "newsletters",
+//     });
+//     imageUrl = result.secure_url;
+//     if (req.file && req.file.path && fs.existsSync(req.file.path)) {
+//       fs.unlinkSync(req.file.path); // Remove temp file
+//     }
+//   }
+//   const infoResult = await pool.query(
+//     "SELECT * FROM ministry_info ORDER BY id DESC LIMIT 1"
+//   );
+//   const info = infoResult.rows[0] || {};
+//   // Get all user emails
+//   const resultUsers = await pool.query(
+//     "SELECT email FROM users2 WHERE email IS NOT NULL"
+//   );
+//   const emails = resultUsers.rows.map((row) => row.email);
+
+//   // Compose HTML message
+//   let htmlMsg = `<div>${message}</div>`;
+//   if (imageUrl) {
+//     htmlMsg += `<div style="margin-top:20px;"><img src="${imageUrl}" alt="Newsletter Image" style="max-width:100%;border-radius:8px;"></div>`;
+//   }
+
+//   // Send to all users
+//   for (const email of emails) {
+//     await sendEmail(email, subject, htmlMsg);
+//   }
+
+//   res.render("admin/newsletter", {
+//     info, success: "Newsletter sent to all members!",
+//   });
+// };

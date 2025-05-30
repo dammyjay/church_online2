@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Announcement</title>
+    <link rel="stylesheet" href="/css/style.css" />
+    <link rel="icon" type="image/x-icon" href="/logo.png" />
+    <script src="https://cdn.ckeditor.com/4.22.1/standard/ckeditor.js"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css"
+    />
+  </head>
+  <body>
+    <!-- Header -->
+    <header class="header">
+      <div class="logo-title">
+        <% info = info || {}; %> <% if (info.logo_url) { %>
+        <img src="<%= info.logo_url %>" alt="Logo" />
+        <% } %>
+        <p><%= info?.name || 'C&S Church Online' %></p>
+      </div>
+      <button class="nav-toggle" onclick="toggleNav()">☰</button>
+      <nav id="main-nav">
+        <a class="active" href="/admin/dashboard">Dashboard</a>
+        <a href="/admin/articles">Articles</a>
+        <a href="/admin/videos">Videos</a>
+        <a href="/admin/ministry">About</a>
+        <a href="/admin/faqs">FAQ</a>
+        <a href="/admin/gallery">Gallery Images</a>
+        <a href="/admin/gallery/categories">Gal Categories</a>
+        <a href="/admin/announcements">Announcement</a>
+        <a href="/admin/newsletter">Newsletter</a>
+        <a href="/admin/logout" class="logout-button">Logout</a>
+        <!-- Login remains a page link -->
+      </nav>
+    </header>
+
+    <!-- views/admin/newsletter.ejs -->
+    <!-- views/admin/newsletter.ejs -->
+    <h2>Send Newsletter</h2>
+    
+    <form
+      id="newsletter-form"
+      method="POST"
+      action="/admin/newsletter"
+      enctype="multipart/form-data"
+    >
+      <label>Subject:</label>
+      <input type="text" name="subject" required />
+      <label>Message:</label>
+      <textarea name="message" id="content" rows="8" required></textarea>
+      <label>Image (optional):</label>
+      <input type="file" name="image" />
+      <button type="submit">Send Newsletter</button>
+    </form>
+
+    <!-- Add this inside your <body> in newsletter.ejs -->
+    <div
+      id="newsletter-status"
+      style="display: none; text-align: center; margin: 20px"
+    >
+    
+      <i
+        class="fas fa-spinner fa-spin"
+        style="font-size: 40px; color: #b1960d"
+      ></i>
+      <span id="newsletter-status-text"
+        >Sending newsletter, please wait...</span
+      >
+    </div>
+
+    <!-- script for navigation toggle hamburger menu -->
+    <script>
+      function toggleNav() {
+        var nav = document.getElementById("main-nav");
+        nav.classList.toggle("open");
+      }
+    </script>
+
+    <!-- script for CKeditor -->
+    <script>
+      CKEDITOR.replace("content");
+    </script>
+
+    <!-- the progress bar script -->
+
+    <script>
+      document
+        .getElementById("newsletter-form")
+        .addEventListener("submit", async function (e) {
+          e.preventDefault();
+          document.getElementById("newsletter-status").style.display = "block";
+
+          // Update the textarea with CKEditor content before sending
+          CKEDITOR.instances.content.updateElement();
+          const form = e.target;
+          const formData = new FormData(form);
+
+          try {
+            const response = await fetch(form.action, {
+              method: "POST",
+              body: formData,
+            });
+            const html = await response.text();
+            document.body.innerHTML = html; // Replace page with response (shows success message)
+          } catch (err) {
+            document.getElementById("newsletter-status-text").innerText =
+              "An error occurred. Please try again.";
+          }
+        });
+    </script>
+  </body>
+</html>

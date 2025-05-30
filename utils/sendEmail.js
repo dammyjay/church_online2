@@ -26,7 +26,7 @@ await transporter.sendMail({
 // from: "Ministry Web App" <${user}>,
 to,
 subject,
-text: message
+html: message
 });
 };
 
