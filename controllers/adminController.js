@@ -154,8 +154,11 @@ exports.dashboard = async (req, res) => {
     const usersResult = await pool.query(
       "SELECT * FROM users2 ORDER BY created_at DESC"
     );
+    const pendingFaqResult = await pool.query(
+      "SELECT COUNT(*) FROM faqs WHERE answer IS NULL OR answer = ''"
+      );
+      const pendingFaqCount = parseInt(pendingFaqResult.rows[0].count);
     const users = usersResult.rows;
-
     const info = infoResult.rows[0];
     // Get profilePic from session
     const profilePic = req.session.user ? req.session.user.profile_picture : null;
@@ -163,7 +166,7 @@ exports.dashboard = async (req, res) => {
     console.log("Profile picture:", profilePic);
     
     console.log("info:", info, "users:", users);
-    res.render("admin/dashboard", { info, users, profilePic }); // ← Pass users to EJS
+    res.render("admin/dashboard", { info, users, profilePic, pendingFaqCount }); // ← Pass users to EJS
   } catch (error) {
     console.error(error);
     res.status(500).send('Server Error');

@@ -1119,6 +1119,15 @@ nav a:hover {
      border-radius: 4px;
      cursor: pointer;
  }
+ .faq-badge {
+     position: absolute;
+     top: -5px;
+     right: -10px;
+     background: red;
+     color: white;
+     font-size: 11px;
+     padding: 3px 6px;
+     border-radius: 50%;   }
 
  .faq-form button:hover {
      background-color: #007c52;   }
@@ -1413,6 +1422,16 @@ nav a:hover {
 
 /* Responsive Design */
 @media (max-width: 768px) {
+    .faq-badge {
+            position: absolute;
+            top: -5px;
+            right: -2px;
+            background: red;
+            color: white;
+            font-size: 11px;
+            padding: 3px 6px;
+            border-radius: 50%;
+        }
     .hero-carousel {
             position: relative;
             width: 100%;

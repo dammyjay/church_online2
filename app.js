@@ -67,7 +67,7 @@ app.use('/', userRoutes);
 const subscribeRoutes = require('./routes/subscribeRoutes');
 app.use('/', subscribeRoutes);
 
-const publicFaqRoutes = require('./routes/publicFaqRoutesjs');
+const publicFaqRoutes = require('./routes/publicFaqRoutes.js');
 app.use('/', publicFaqRoutes);
 
 const adminFaqRoutes = require('./routes/adminFaqRoutes');

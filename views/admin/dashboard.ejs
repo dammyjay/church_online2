@@ -21,7 +21,14 @@
         <a href="/admin/articles">Articles</a>
         <a href="/admin/videos">Videos</a>
         <a href="/admin/ministry">About Us</a>
-        <a href="/admin/faqs">FAQ</a>
+        <!-- <a href="/admin/faqs">FAQ</a> --><a
+          href="/admin/faqs"
+          style="position: relative"
+        >
+          FAQ <% if (pendingFaqCount > 0) { %>
+          <span class="faq-badge"><%= pendingFaqCount %></span> <% } %>
+        </a>
+
         <a href="/admin/gallery">Gallery Images</a>
         <a href="/admin/gallery/categories">Gal Categories</a>
         <a href="/admin/announcements">Announcement</a>
@@ -34,6 +41,7 @@
     <p>You are logged in.</p>
     <!-- <a href="/admin/logout">Logout</a> -->
     <h2>All Registered Users</h2>
+    <p style="red">Unanswered FAQs: <strong><%= pendingFaqCount %></strong></p>
     <div class="table-responsive">
       <table
         class="user-table"
