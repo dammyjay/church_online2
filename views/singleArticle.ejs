@@ -222,6 +222,13 @@
     }
   });
 
+    // ✅ Correct: Block Ctrl+S, Ctrl+P, Ctrl+U
+  document.addEventListener("keydown", function (e) {
+    if (e.ctrlKey && ['s', 'p', 'u'].includes(e.key.toLowerCase())) {
+      e.preventDefault();
+      alert("Action blocked.");
+    }
+  });
   // Blur screen when tab is not focused or dev tools are possibly open
   let isBlurred = false;
 
