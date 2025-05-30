@@ -1,15 +1,14 @@
-const pool = require('../models/db');
-const bcrypt = require('bcrypt');
+const pool = require("../models/db");
+const bcrypt = require("bcrypt");
 const crypto = require("crypto");
 // const nodemailer = require("nodemailer");
 const sendEmail = require("../utils/sendEmail");
 const cloudinary = require("../utils/cloudinary");
 const fs = require("fs");
 
-
 // Show forgot password form
 exports.showForgotPasswordForm = (req, res) => {
-  res.render('admin/forgotPassword', { message: null });
+  res.render("admin/forgotPassword", { message: null });
 };
 
 // Handle forgot password form submission
@@ -45,18 +44,17 @@ exports.handleForgotPassword = async (req, res) => {
   });
 };
 
-
 // Show reset password form
 exports.showResetPasswordForm = async (req, res) => {
   const { token } = req.params;
   const result = await pool.query(
-    'SELECT * FROM users2 WHERE reset_token = $1 AND reset_token_expires > NOW()',
+    "SELECT * FROM users2 WHERE reset_token = $1 AND reset_token_expires > NOW()",
     [token]
   );
   if (result.rows.length === 0) {
-    return res.send('Invalid or expired token.');
+    return res.send("Invalid or expired token.");
   }
-  res.render('admin/resetPassword', { token, message: null });
+  res.render("admin/resetPassword", { token, message: null });
 };
 
 // Handle reset password submission
@@ -64,23 +62,30 @@ exports.handleResetPassword = async (req, res) => {
   const { token } = req.params;
   const { password, confirmPassword } = req.body;
   if (password !== confirmPassword) {
-    return res.render('admin/resetPassword', { token, message: 'Passwords do not match.' });
+    return res.render("admin/resetPassword", {
+      token,
+      message: "Passwords do not match.",
+    });
   }
   const result = await pool.query(
-    'SELECT * FROM users2 WHERE reset_token = $1 AND reset_token_expires > NOW()',
+    "SELECT * FROM users2 WHERE reset_token = $1 AND reset_token_expires > NOW()",
     [token]
   );
   if (result.rows.length === 0) {
-    return res.send('Invalid or expired token.');
+    return res.send("Invalid or expired token.");
   }
   // const hashed = await bcrypt.hash(password, 10);
   await pool.query(
-    'UPDATE users2 SET password = $1, reset_token = NULL, reset_token_expires = NULL WHERE reset_token = $2',
+    "UPDATE users2 SET password = $1, reset_token = NULL, reset_token_expires = NULL WHERE reset_token = $2",
     [password, token]
   );
-  res.render('admin/login', { error: null, title: 'Login', redirect: '', message: 'Password reset successful. Please log in.' });
+  res.render("admin/login", {
+    error: null,
+    title: "Login",
+    redirect: "",
+    message: "Password reset successful. Please log in.",
+  });
 };
-
 
 exports.showLogin = (req, res) => {
   res.render("admin/login", {
@@ -117,7 +122,7 @@ exports.login = async (req, res) => {
     id: user.id,
     email: user.email,
     role: user.role,
-    profile_pic: user.profile_picture, 
+    profile_pic: user.profile_picture,
   };
 
   // Redirect to intended page if present, else default
@@ -135,10 +140,9 @@ exports.login = async (req, res) => {
   }
 };
 
-
 exports.logout = (req, res) => {
   req.session.destroy();
-  res.redirect('/admin/login');
+  res.redirect("/admin/login");
 };
 
 // exports.dashboard = async (req, res) => {
@@ -271,21 +275,22 @@ exports.dashboard = async (req, res) => {
   }
 };
 
-
 exports.editUserForm = async (req, res) => {
   const userId = req.params.id;
 
   try {
-    const result = await pool.query('SELECT * FROM users2 WHERE id = $1', [userId]);
+    const result = await pool.query("SELECT * FROM users2 WHERE id = $1", [
+      userId,
+    ]);
     const user = result.rows[0];
     if (!user) {
-      return res.status(404).send('User not found');
+      return res.status(404).send("User not found");
     }
 
-    res.render('admin/editUser', { user });
+    res.render("admin/editUser", { user });
   } catch (error) {
-    console.error('Error loading user edit form:', error);
-    res.status(500).send('Server error');
+    console.error("Error loading user edit form:", error);
+    res.status(500).send("Server error");
   }
 };
 
@@ -295,14 +300,14 @@ exports.updateUser = async (req, res) => {
 
   try {
     await pool.query(
-      'UPDATE users2 SET fullname = $1, email = $2, phone = $3, gender = $4, role = $5 WHERE id = $6',
+      "UPDATE users2 SET fullname = $1, email = $2, phone = $3, gender = $4, role = $5 WHERE id = $6",
       [fullname, email, phone, gender, role, userId]
     );
 
-    res.redirect('/admin/dashboard');
+    res.redirect("/admin/dashboard");
   } catch (error) {
-    console.error('Error updating user:', error);
-    res.status(500).send('Server error');
+    console.error("Error updating user:", error);
+    res.status(500).send("Server error");
   }
 };
 
@@ -310,14 +315,13 @@ exports.deleteUser = async (req, res) => {
   const userId = req.params.id;
 
   try {
-    await pool.query('DELETE FROM users2 WHERE id = $1', [userId]);
-    res.redirect('/admin/dashboard');
+    await pool.query("DELETE FROM users2 WHERE id = $1", [userId]);
+    res.redirect("/admin/dashboard");
   } catch (error) {
-    console.error('Error deleting user:', error);
-    res.status(500).send('Server error');
+    console.error("Error deleting user:", error);
+    res.status(500).send("Server error");
   }
 };
-
 
 // Show announcements page
 exports.showAnnouncements = async (req, res) => {
@@ -325,8 +329,10 @@ exports.showAnnouncements = async (req, res) => {
     "SELECT * FROM ministry_info ORDER BY id DESC LIMIT 1"
   );
   const info = infoResult.rows[0] || {};
-  const result = await pool.query('SELECT * FROM announcements ORDER BY event_date DESC');
-  res.render('admin/announcements', {info, announcements: result.rows });
+  const result = await pool.query(
+    "SELECT * FROM announcements ORDER BY event_date DESC"
+  );
+  res.render("admin/announcements", { info, announcements: result.rows });
 };
 
 // Create a new announcement
@@ -348,12 +354,17 @@ exports.createAnnouncement = async (req, res) => {
 // Show the edit form for an announcement
 exports.showEditAnnouncement = async (req, res) => {
   const { id } = req.params;
-  const infoResult = await pool.query("SELECT * FROM ministry_info ORDER BY id DESC LIMIT 1");
+  const infoResult = await pool.query(
+    "SELECT * FROM ministry_info ORDER BY id DESC LIMIT 1"
+  );
   const info = infoResult.rows[0] || {};
-  const annResult = await pool.query("SELECT * FROM announcements WHERE id = $1", [id]);
+  const annResult = await pool.query(
+    "SELECT * FROM announcements WHERE id = $1",
+    [id]
+  );
   const announcement = annResult.rows[0];
-  if (!announcement) return res.redirect('/admin/announcements');
-  res.render('admin/editAnnouncement', { info, announcement });
+  if (!announcement) return res.redirect("/admin/announcements");
+  res.render("admin/editAnnouncement", { info, announcement });
 };
 
 // Handle the edit form submission
@@ -383,10 +394,9 @@ exports.editAnnouncement = async (req, res) => {
 
 // In adminController.js
 exports.deleteAnnouncement = async (req, res) => {
-  await pool.query('DELETE FROM announcements WHERE id = $1', [req.params.id]);
-  res.redirect('/admin/announcements');
+  await pool.query("DELETE FROM announcements WHERE id = $1", [req.params.id]);
+  res.redirect("/admin/announcements");
 };
-
 
 // Show the newsletter form
 exports.showNewsletterForm = async (req, res) => {
@@ -394,7 +404,7 @@ exports.showNewsletterForm = async (req, res) => {
     "SELECT * FROM ministry_info ORDER BY id DESC LIMIT 1"
   );
   const info = infoResult.rows[0] || {};
-  res.render('admin/newsletter', {info});
+  res.render("admin/newsletter", { info });
 };
 
 // Send the newsletter to all users
@@ -434,46 +444,33 @@ exports.sendNewsletter = async (req, res) => {
   }
 
   res.render("admin/newsletter", {
-    info, success: "Newsletter sent to all members!",
+    info,
+    success: "Newsletter sent to all members!",
   });
-};  
+};
 
-// exports.sendNewsletter = async (req, res) => {
-//   const { subject, message } = req.body;
-//   let imageUrl = req.file ? req.file.path : null;
+exports.getAdminProfile = async (req, res) => {
+  const userId = req.session.user?.id;
+  if (!userId || req.session.user.role !== "admin")
+    return res.redirect("/admin/login");
+  const result = await pool.query("SELECT * FROM users2 WHERE id = $1", [
+    userId,
+  ]);
+  res.render("adminProfile", {
+    user: result.rows[0],
+    title: "Admin Profile",
+  });
+};
 
-//   // Upload image to Cloudinary if provided
-//   if (req.file) {
-//     const result = await cloudinary.uploader.upload(req.file.path, {
-//       folder: "newsletters",
-//     });
-//     imageUrl = result.secure_url;
-//     if (req.file && req.file.path && fs.existsSync(req.file.path)) {
-//       fs.unlinkSync(req.file.path); // Remove temp file
-//     }
-//   }
-//   const infoResult = await pool.query(
-//     "SELECT * FROM ministry_info ORDER BY id DESC LIMIT 1"
-//   );
-//   const info = infoResult.rows[0] || {};
-//   // Get all user emails
-//   const resultUsers = await pool.query(
-//     "SELECT email FROM users2 WHERE email IS NOT NULL"
-//   );
-//   const emails = resultUsers.rows.map((row) => row.email);
-
-//   // Compose HTML message
-//   let htmlMsg = `<div>${message}</div>`;
-//   if (imageUrl) {
-//     htmlMsg += `<div style="margin-top:20px;"><img src="${imageUrl}" alt="Newsletter Image" style="max-width:100%;border-radius:8px;"></div>`;
-//   }
-
-//   // Send to all users
-//   for (const email of emails) {
-//     await sendEmail(email, subject, htmlMsg);
-//   }
-
-//   res.render("admin/newsletter", {
-//     info, success: "Newsletter sent to all members!",
-//   });
-// };
+exports.updateAdminProfile = async (req, res) => {
+  const { fullname, phone } = req.body;
+  const profile_picture = req.file
+    ? req.file.path
+    : req.session.user.profile_picture;
+  await pool.query(
+    "UPDATE users2 SET fullname = $1, phone = $2, profile_picture = $3 WHERE id = $4",
+    [fullname, phone, profile_picture, req.session.user.id]
+  );
+  req.session.user.profile_picture = profile_picture; // update session
+  res.redirect("/admin/profile");
+};

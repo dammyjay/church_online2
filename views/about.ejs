@@ -43,7 +43,7 @@
         <a href="/faq">FAQ</a>
         <% if (isLoggedIn) { %>
           <% if (profilePic) { %>
-            <img src="<%= profilePic ? profilePic : '/profile.webp' %>" alt="Profile" style="width:32px;height:32px;border-radius:50%;vertical-align:middle;margin-right:8px;">
+            <a href="/profile"><img src="<%= profilePic ? profilePic : '/profile.webp' %>" alt="Profile" style="width:32px;height:32px;border-radius:50%;vertical-align:middle;margin-right:8px;"></a>
           <% } %>
           <a style="background-color: red;" href="/admin/logout" class="login-button">Logout</a>
         <% } else { %>

@@ -115,4 +115,11 @@ router.get("/newsletter", adminController.showNewsletterForm);
 router.post("/newsletter", upload.single('image'), adminController.sendNewsletter);
 
 
+router.get("/admin/profile", adminController.getAdminProfile);
+router.post(
+  "/admin/profile",
+  upload.single("profile_picture"),
+  adminController.updateAdminProfile
+);
+
 module.exports = router;
