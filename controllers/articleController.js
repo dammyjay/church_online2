@@ -9,27 +9,32 @@ exports.showSearchArticles = async (req, res) => {
   try {
     const search = req.query.search;
     const infoResult = await pool.query(
-      'SELECT * FROM ministry_info ORDER BY id DESC LIMIT 1',
+      "SELECT * FROM ministry_info ORDER BY id DESC LIMIT 1"
     );
     const info = infoResult.rows[0] || {};
+    // Step 3: Stats
+    const totalResult = await pool.query("SELECT COUNT(*) FROM articles");
+    const totalArticle = parseInt(totalResult.rows[0].count);
     let articlesResult;
 
     if (search) {
       articlesResult = await pool.query(
-        'SELECT * FROM articles WHERE LOWER(title) LIKE $1 ORDER BY created_at DESC',
+        "SELECT * FROM articles WHERE LOWER(title) LIKE $1 ORDER BY created_at DESC",
         [`%${search.toLowerCase()}%`]
       );
     } else {
-      articlesResult = await pool.query('SELECT * FROM articles ORDER BY created_at DESC');
+      articlesResult = await pool.query(
+        "SELECT * FROM articles ORDER BY created_at DESC"
+      );
     }
 
-    res.render('admin/articles', {
+    res.render("admin/articles", {
       info,
-      title: 'All Articles',
+      totalArticle,
+      title: "All Articles",
       articles: articlesResult.rows,
       search, // Pass back to template for input field value
     });
-
   } catch (err) {
     console.error('Error searching articles:', err);
     res.status(500).send('Server Error');
@@ -91,13 +96,20 @@ exports.showEditForm = async (req, res) => {
 
   exports.showArticles = async (req, res) => {
     try {
-      const infoResult = await pool.query('SELECT * FROM ministry_info ORDER BY id DESC LIMIT 1');
+      const infoResult = await pool.query(
+        "SELECT * FROM ministry_info ORDER BY id DESC LIMIT 1"
+      );
       const info = infoResult.rows[0] || {};
-      
-      const articlesResult = await pool.query('SELECT * FROM articles ORDER BY created_at3 DESC');
+
+      const articlesResult = await pool.query(
+        "SELECT * FROM articles ORDER BY created_at3 DESC"
+      );
       const articles = articlesResult.rows;
-  
-      res.render('admin/articles', { info, articles, title: 'Article'  });
+
+      // Step 3: Stats
+      const totalResult = await pool.query("SELECT COUNT(*) FROM articles");
+      const totalArticle = parseInt(totalResult.rows[0].count);
+      res.render("admin/articles", { info, totalArticle, articles, title: "Article" });
     } catch (err) {
       console.error(err);
       res.status(500).send('Server Error');

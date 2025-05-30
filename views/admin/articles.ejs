@@ -67,6 +67,10 @@
       <button type="submit">Search</button>
     </form>
     <h2>Existing Articles</h2>
+    <div class="stat-box"> 
+      <h3>Total Article</h3> 
+      <p><%= totalArticle %></p> 
+    </div> 
     <% articles.forEach(article => { %>
     <div class="article-card">
       <h3><%= article.title %></h3>

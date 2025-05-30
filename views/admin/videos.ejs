@@ -59,6 +59,10 @@
     </form>
 
     <h2>Existing Videos</h2>
+    <div class="stat-box"> 
+      <h3>Total Article</h3> 
+      <p><%= totalVideos %></p> 
+    </div> 
 
     <% videos.forEach(video => { const regExp =
     /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/; const

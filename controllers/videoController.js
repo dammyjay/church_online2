@@ -13,6 +13,8 @@ exports.showSearchVideos = async (req, res) => {
     );
     const info = infoResult.rows[0] || {};
     const search = req.query.search || '';
+    const totalVideosResult = await pool.query('SELECT COUNT(*) FROM videos4');
+    const totalVideos = parseInt(totalVideosResult.rows[0].count, 10);
     let result;
     // let videosResult;
 if (search) {
@@ -26,6 +28,7 @@ if (search) {
 
 res.render('admin/videos', {
   info,
+  totalVideos, // Pass total videos count to template
   title: 'All Videos',
   videos: result.rows,
   search // ✅ This allows <%= search %> to work in videos.ejs
