@@ -401,6 +401,16 @@ form button {
     /* width: 100%; */
 }
 
+.video-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+    padding: 20px; 
+    max-width: 1500px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
 .video-card {
     border: 1px solid #ddd;
     padding: 15px;
@@ -418,6 +428,30 @@ form button {
     gap: 10px;
     margin-bottom: 20px;
 }
+
+.toggle-desc-btn {
+    background: none;
+    border: none;
+    color: #007bff;
+    cursor: pointer;
+    margin-top: 5px;
+    padding: 0;
+    font-size: 0.9rem;
+}
+
+.video-desc {
+    margin-top: 10px;
+    font-size: 0.9rem;   }
+
+
+        .article-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            padding: 20px;
+            max-width: 1500px;
+            width: 100%;
+            box-sizing: border-box;   }
 
 /* Article cards container */
 .article-card {
@@ -905,6 +939,8 @@ nav a:hover {
         overflow-y: auto;
         margin-top: 20px;
 }
+
+
 
 .user-table {
     width: 100%;

@@ -29,7 +29,12 @@
         <!-- Login remains a page link -->
       </nav>
     </header>
-    <form class="search-form" method="GET" action="/admin/videos" style="margin-bottom: 20px">
+    <form
+      class="search-form"
+      method="GET"
+      action="/admin/videos"
+      style="margin-bottom: 20px"
+    >
       <input
         type="text"
         name="search"
@@ -60,48 +65,83 @@
     </form>
 
     <h2>Existing Videos</h2>
-    <div class="stat-box"> 
-      <h3>Total Article</h3> 
-      <p><%= totalVideos %></p> 
-    </div> 
-
-    <% videos.forEach(video => { const regExp =
-    /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/; const
-    match = video.youtube_url.match(regExp); const videoId = (match &&
-    match[2].length == 11) ? match[2] : null; %>
-
-    <div class="video-card">
-      <h3><%= video.title %></h3>
-      <% if (videoId) { %>
-      <div class="video-container">
-        <iframe
-          src="https://www.youtube.com/embed/<%= videoId %>"
-          frameborder="0"
-          allowfullscreen
-        ></iframe>
-      </div>
-      <p><%= video.description %></p>
-      <small
-        >Posted on <%= new Date(video.created_at3).toLocaleString() %></small
-      >
-      <% } else { %>
-      <p>Invalid YouTube URL</p>
-      <% } %>
-
-      <div class="video-buttons">
-        <a href="/admin/videos/edit/<%= video.id %>">Edit</a>
-        <form
-          action="/admin/videos/delete/<%= video.id %>"
-          method="POST"
-          onsubmit="return confirm('Delete this video?');"
-        >
-          <button type="submit">Delete</button>
-        </form>
-      </div>
+    <div class="stat-box">
+      <h3>Total Video</h3>
+      <p><%= totalVideos %></p>
     </div>
 
-    <% }) %>
+    <section class="video-grid">
+      <% videos.forEach(video => { let videoId = null; const url =
+      video.youtube_url; if (url.includes("watch?v=")) { videoId =
+      url.split("watch?v=")[1].split("&")[0]; } else if
+      (url.includes("youtu.be/")) { videoId =
+      url.split("youtu.be/")[1].split("?")[0]; } else if
+      (url.includes("/embed/")) { videoId =
+      url.split("/embed/")[1].split("?")[0]; } else if
+      (url.includes("/shorts/")) { videoId =
+      url.split("/shorts/")[1].split("?")[0]; } %>
+
+      <div class="video-card">
+        <h3><%= video.title %></h3>
+        <% if (videoId) { %>
+        <div class="video-container">
+          <iframe
+            src="https://www.youtube.com/embed/<%= videoId %>"
+            frameborder="0"
+            allowfullscreen
+          >
+          </iframe>
+        </div>
+        <% let desc = video.description || ""; %>
+        <p class="video-desc">
+          <span class="short-desc">
+            <%= desc.length > 100 ? desc.substring(0, 100) + '...' : desc %>
+          </span>
+          <% if (desc.length > 100) { %>
+          <span class="full-desc" style="display: none"><%= desc %></span>
+          <button class="toggle-desc-btn" onclick="toggleDescription(this)">
+            Show more
+          </button>
+          <% } %>
+        </p>
+
+        <small
+          >Posted on <%= new Date(video.created_at3).toLocaleString() %></small
+        >
+        <% } else { %>
+        <p>Invalid YouTube URL</p>
+        <% } %>
+        <div class="video-buttons">
+          <a href="/admin/videos/edit/<%= video.id %>">Edit</a>
+          <form
+            action="/admin/videos/delete/<%= video.id %>"
+            method="POST"
+            onsubmit="return confirm('Delete this video?');"
+          >
+            <button type="submit">Delete</button>
+          </form>
+        </div>
+      </div>
+      <% }) %>
+    </section>
 
     <a href="/admin/dashboard">Back to Dashboard</a>
+
+    <script>
+      function toggleDescription(button) {
+        const card = button.closest(".video-card");
+        const shortDesc = card.querySelector(".short-desc");
+        const fullDesc = card.querySelector(".full-desc");
+        if (fullDesc.style.display === "none") {
+          shortDesc.style.display = "none";
+          fullDesc.style.display = "inline";
+          button.textContent = "Show less";
+        } else {
+          shortDesc.style.display = "inline";
+          fullDesc.style.display = "none";
+          button.textContent = "Show more";
+        }
+      }
+    </script>
   </body>
 </html>
