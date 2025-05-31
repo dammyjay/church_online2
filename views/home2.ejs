@@ -140,37 +140,33 @@
     </section>
 
     <!-- Videos -->
-    <section id="videos" class="section">
-      <h2>Recent Videos</h2>
-      <div class="card-grid">
-        <% videos.forEach(video => { %>
-        <div class="card">
-          <h3><%= video.title %></h3>
-          <!-- <small>Embed URL: <%= video.embed_url %></small> -->
-
-          <% if (video.embed_url) { %>
-          <iframe
-            width="100%"
-            height="200"
-            src="<%= video.embed_url %>"
-            frameborder="0"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-            allowfullscreen
-          >
-          </iframe>
-          <% } else { %>
-          <p>Invalid or missing video URL</p>
-          <% } %>
-          <p><%= video.description %></p>
-          <!-- <small><%= new Date(video.created_at2).toLocaleDateString() %></small> -->
-          <small><%= new Date(video.created_at3).toLocaleString() %></small>
-        </div>
-
-        <% }) %>
-      </div>
-      <div style="text-align: center; margin-top: 20px">
-        <a href="/videos" class="login-button">View All Videos</a>
-      </div>
+    <section id="videos" class="section"> 
+      <h2>Recent Videos</h2> 
+      <div class="card-grid"> 
+        <% videos.forEach(video => { let embedUrl = ''; 
+        if (video.youtube_url) { if (video.youtube_url.includes("watch?v=")) { 
+          embedUrl = video.youtube_url.replace("watch?v=", "embed/"); } else if 
+          (video.youtube_url.includes("/shorts/")) { const id = 
+            video.youtube_url.split("/shorts/")[1].split("?")[0]; embedUrl = 
+            "https://www.youtube.com/embed/" + id; } else if 
+            (video.youtube_url.includes("youtu.be/")) { const id = 
+              video.youtube_url.split("youtu.be/")[1].split("?")[0]; embedUrl = 
+              "https://www.youtube.com/embed/" + id; } else { embedUrl = 
+                video.youtube_url; } } %> 
+                <div class="card"> 
+                  <h3><%= video.title %></h3> 
+                  <% if (embedUrl) { %> 
+                    <iframe width="100%" height="200" src="<%= embedUrl %>" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen> </iframe> 
+                    <% } else { %> 
+                      <p>Invalid or missing video URL</p> 
+                      <% } %> 
+                      <p><%= video.description %>....</p> 
+                      <small><%= new Date(video.created_at3).toLocaleString() %></small> 
+                    </div> <% }) %> 
+                  </div> 
+                  <div style="text-align: center; margin-top: 20px"> 
+                    <a href="/videos" class="login-button">View All Videos</a> 
+                  </div> 
     </section>
 
     <% if (carouselImages && carouselImages.length > 0) { %>
