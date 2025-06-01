@@ -331,6 +331,7 @@ exports.showAnnouncements = async (req, res) => {
   const info = infoResult.rows[0] || {};
   const result = await pool.query(
     "SELECT * FROM announcements ORDER BY event_date DESC"
+    // "SELECT * FROM announcements WHERE is_visible = true ORDER BY event_date DESC LIMIT 1"
   );
   res.render("admin/announcements", { info, announcements: result.rows });
 };
@@ -342,11 +343,12 @@ exports.createAnnouncement = async (req, res) => {
   );
   const info = infoResult.rows[0];
   const { title, message, event_date } = req.body;
+  const is_visible = req.body.is_visible === "on";
   let flyer_url = req.file ? req.file.path : null; // Use existing URL if provided
 
   await pool.query(
-    "INSERT INTO announcements (title, message, event_date, flyer_url) VALUES ($1, $2, $3, $4)",
-    [title, message, event_date, flyer_url]
+    "INSERT INTO announcements (title, message, event_date, flyer_url, is_visible) VALUES ($1, $2, $3, $4, $5)",
+    [title, message, event_date, flyer_url, is_visible]
   );
   res.redirect("/admin/announcements");
 };
@@ -358,6 +360,7 @@ exports.showEditAnnouncement = async (req, res) => {
     "SELECT * FROM ministry_info ORDER BY id DESC LIMIT 1"
   );
   const info = infoResult.rows[0] || {};
+  
   const annResult = await pool.query(
     "SELECT * FROM announcements WHERE id = $1",
     [id]
@@ -371,6 +374,7 @@ exports.showEditAnnouncement = async (req, res) => {
 exports.editAnnouncement = async (req, res) => {
   const { id } = req.params;
   const { title, message, event_date } = req.body;
+  const is_visible = req.body.is_visible === "on";
   let flyer_url = req.body.existing_flyer_url || null;
 
   // If a new flyer is uploaded, upload to cloudinary and use new URL
@@ -386,8 +390,8 @@ exports.editAnnouncement = async (req, res) => {
   }
 
   await pool.query(
-    "UPDATE announcements SET title = $1, message = $2, event_date = $3, flyer_url = $4 WHERE id = $5",
-    [title, message, event_date, flyer_url, id]
+    "UPDATE announcements SET title = $1, message = $2, event_date = $3, flyer_url = $4, is_visible = $5 WHERE id = $6",
+    [title, message, event_date, flyer_url, is_visible, id]
   );
   res.redirect("/admin/announcements");
 };

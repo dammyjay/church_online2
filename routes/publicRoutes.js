@@ -22,7 +22,8 @@ router.get("/", async (req, res) => {
     const articles = articlesResult.rows;
     const faqs = faqsResult.rows;
     const annResult = await pool.query(
-      "SELECT * FROM announcements ORDER BY event_date DESC LIMIT 1"
+      // "SELECT * FROM announcements ORDER BY event_date DESC LIMIT 1"
+      "SELECT * FROM announcements WHERE is_visible = true ORDER BY event_date DESC LIMIT 1"
     );
     const announcement = annResult.rows[0];
     // const carouselImages = randomImagesResult.rows.map((row) => row.url);
@@ -139,7 +140,8 @@ router.get("/home2", async (req, res) => {
     const allImagesResult = await pool.query("SELECT url FROM gallery_images");
     const allImages = allImagesResult.rows.map((row) => row.url);
     const annResult = await pool.query(
-      "SELECT * FROM announcements ORDER BY event_date DESC LIMIT 1"
+      // "SELECT * FROM announcements ORDER BY event_date DESC LIMIT 1"
+      "SELECT * FROM announcements WHERE is_visible = true ORDER BY event_date DESC LIMIT 1"
     );
     const announcement = annResult.rows[0];
     // Deterministically shuffle based on the day

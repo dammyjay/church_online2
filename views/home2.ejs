@@ -85,25 +85,31 @@
           <div class="marquee-text"><%= info.marquee_message %></div>
         </div>
       <% } %>
-
-    <% if (announcement) { %>
-      <div id="announcement-preview" class="announcement-preview" onclick="showAnnouncement()">
-        📢 <strong>New Announcement:</strong> <%= announcement.title %> &nbsp;
-        <button class="view-announcement-btn">View</button>
-      </div>
-      <section id="announcement-section" class="announcement" style="display:none;">
-        <button class="close-announcement-btn" onclick="hideAnnouncement()" title="Close">&times;</button>
-        <h2>Announcement: <%= announcement.title %></h2>
-        <p><%- announcement.message %></p>
-        <% if (announcement.event_date) { %>
-          <small>Event Date: <%= new Date(announcement.event_date).toDateString() %></small>
-        <% } %>
-        <% if (announcement.flyer_url) { %>
-          <img src="<%= announcement.flyer_url %>" alt="Event Flyer">
-        <% } %>
-        
-      </section>
-    <% } %>
+    <!-- Announcement Section -->
+      <% if (announcement) { %>
+        <div id="announcement-preview" class="announcement-preview" onclick="showAnnouncement()">
+          📢 <strong>New Announcement:</strong> <%= announcement.title %> &nbsp;
+          <button class="view-announcement-btn">View</button>
+        </div>
+      
+        <section id="announcement-section" class="announcement" style="display:none;">
+          <button class="close-announcement-btn" onclick="hideAnnouncement()" title="Close">&times;</button>
+          <h2>Announcement: <%= announcement.title %></h2>
+          <p><%- announcement.message %></p>
+          <% if (announcement.event_date) { %>
+            <small>Event Date: <%= new Date(announcement.event_date).toDateString() %></small>
+          <% } %>
+          <% if (announcement.flyer_url) { %>
+            <img src="<%= announcement.flyer_url %>" alt="Event Flyer">
+          <% } %>
+        </section>
+      <% } else { %>
+        <section class="announcement-coming-soon">
+          <h2>📢 Announcement Coming Soon</h2>
+          <p>Stay tuned for our latest events and updates.</p>
+        </section>
+      <% } %>
+      
 
     <!-- Articles -->
     <section id="articles" class="section">

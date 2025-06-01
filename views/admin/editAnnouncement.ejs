@@ -71,6 +71,11 @@
       <% } %>
       <label>Change Flyer (optional):</label>
       <input type="file" name="flyer" /><br />
+      <label>
+        <input type="checkbox" name="is_visible" <%= announcement && announcement.is_visible ? 'checked' : '' %> >
+        Show on homepage
+      </label>
+      
       <button type="submit">Update Announcement</button>
     </form>
 

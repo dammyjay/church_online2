@@ -47,6 +47,11 @@
       <input type="date" name="event_date" /><br /><br />
       <label>Event Flyer (optional):</label><br />
       <input type="file" name="flyer" /><br /><br />
+      <label>
+        <input type="checkbox" name="is_visible" <%= announcements && announcements.is_visible ? 'checked' : '' %> >
+        Show on homepage
+      </label>
+      
       <button type="submit">Create Announcement</button>
     </form>
 

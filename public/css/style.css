@@ -1231,6 +1231,14 @@ nav a:hover {
              text-align: center;     }
 
 /* Announcement Section Styling */
+.announcement-coming-soon {
+    background-color: #fff9e6;
+    padding: 15px;
+    border-left: 4px solid #ffcc00;
+    margin: 20px 0;
+    border-radius: 5px;
+    text-align: center;
+}
 .announcement {
     background: #fffbe6;
     border-radius: 16px;
@@ -1291,6 +1299,7 @@ nav a:hover {
         .announcement-preview:hover {
             background: #fff3c1;
         }
+
     
         .view-announcement-btn {
             background: #bfa046;
