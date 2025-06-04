@@ -254,11 +254,34 @@ router.get("/articles", async (req, res) => {
       );
     }
 
+    const articles = result.rows;
+
+    // Fetch likes for all articles
+    const likesResult = await pool.query(`
+  SELECT content_id, COUNT(*) as count
+  FROM likes
+  WHERE content_type = 'article'
+  GROUP BY content_id
+`);
+
+    const likeMap = {};
+    likesResult.rows.forEach((row) => {
+      likeMap[row.content_id] = parseInt(row.count);
+    });
+
+    // Merge like counts into articles
+    articles.forEach((article) => {
+      article.like_count = likeMap[article.id] || 0;
+    });
+
+
     res.render("allArticles", {
-      articles: result.rows,
+      // articles: result.rows,
+      articles,
       search, // ⬅️ pass search value to EJS
       subscribed: req.query.subscribed,
       title: "All article",
+      user: req.session.user || null,
     });
   } catch (err) {
     console.error("Error fetching public articles:", err);

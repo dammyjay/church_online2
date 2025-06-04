@@ -3,7 +3,7 @@ const express = require('express');
 const session = require('express-session');
 const bodyParser = require('body-parser');
 const path = require('path');
-require('dotenv').config();
+const createTables = require("./models/initTables");
 
 const app = express();
 const layout = require('express-ejs-layouts');
@@ -89,6 +89,9 @@ app.use('/', publicArticleRoutes);
 const publicVideoRoutes = require('./routes/publicVideoRoutes');
 app.use('/', publicVideoRoutes);
 
+const interactionRoutes = require('./routes/interactionRoutes');
+app.use('/interaction', interactionRoutes);
+
 // // Example in your routes file
 // router.get('/login', (req, res) => {
 //   res.render('admin/login'); // note: include 'admin/' because login.ejs is inside admin folder
@@ -120,6 +123,11 @@ app.get('/', async (req, res) => {
     }
 });
   
+
+
+// Run table creation at startup
+createTables();
+
 
 // Start server
 const PORT = process.env.PORT || 3000;

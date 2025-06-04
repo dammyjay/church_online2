@@ -12,6 +12,9 @@ body {
     flex-direction: column;
     align-items: center;
 }
+em,
+i {
+    font-style: italic; }
 .hero-carousel {
     position: relative;
     width: 100%;
@@ -1086,6 +1089,34 @@ nav a:hover {
     margin-top: 30px;
     font-size: 13px;
     color: #aaa;  
+ }
+
+ .interaction-buttons i {
+     cursor: pointer;
+     margin-right: 15px;
+     font-size: 24px;
+     color: #a36d09;
+ }
+
+ .interaction-buttons i:hover {
+     color: #010408;
+ }
+
+ .comment-section {
+     margin-top: 10px;
+     padding: 8px;
+     background: #f9f9f9;
+     border-radius: 8px;
+ }
+
+ .comment-list {
+     margin-top: 8px;
+ }
+
+ .comment {
+     padding: 6px;
+     border-bottom: 1px solid #ccc;
+     font-size: 0.9rem;
  }
 
  /* .faq-list {
