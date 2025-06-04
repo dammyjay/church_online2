@@ -256,6 +256,7 @@ router.get("/articles", async (req, res) => {
 
     const articles = result.rows;
 
+
     // Fetch likes for all articles
     const likesResult = await pool.query(`
   SELECT content_id, COUNT(*) as count
@@ -269,15 +270,35 @@ router.get("/articles", async (req, res) => {
       likeMap[row.content_id] = parseInt(row.count);
     });
 
-    // Merge like counts into articles
+    // Merge comment counts into articles
     articles.forEach((article) => {
       article.like_count = likeMap[article.id] || 0;
     });
 
+    const articles2 = result.rows;
+
+    // Fetch comment for all articles
+    const commentResult = await pool.query(`
+    SELECT content_id, COUNT(*) as count
+    FROM comments
+    WHERE content_type = 'article'
+    GROUP BY content_id
+  `);
+
+    const commentMap = {};
+    commentResult.rows.forEach((row) => {
+      commentMap[row.content_id] = parseInt(row.count);
+    });
+
+    // Merge comment counts into articles
+    articles2.forEach((article) => {
+      article.comment_count = commentMap[article.id] || 0;
+    });
 
     res.render("allArticles", {
       // articles: result.rows,
       articles,
+      articles2,
       search, // ⬅️ pass search value to EJS
       subscribed: req.query.subscribed,
       title: "All article",
