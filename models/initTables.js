@@ -24,7 +24,26 @@ async function createTables() {
       );
     `);
 
-    console.log("✅ likes and comments tables are ready.");
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS push_subscriptions (
+        id SERIAL PRIMARY KEY,
+        endpoint TEXT NOT NULL,
+        keys TEXT NOT NULL
+      );
+    `);
+
+    await pool.query(`
+      CREATE TABLE subscriptions (
+        id SERIAL PRIMARY KEY,
+        endpoint TEXT UNIQUE,
+        keys JSONB,
+        created_at TIMESTAMP
+      );
+    `);
+
+    console.log(
+      "✅ likes, comments and push_subscriptions are ready tables are ready."
+    );
   } catch (err) {
     console.error("❌ Error creating tables:", err.message);
   }

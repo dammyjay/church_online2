@@ -1,9 +1,15 @@
 const pool = require('../models/db');
+const sendEmail = require("../utils/sendEmail");
+const webpush = require("../utils/webpushConfig");
 
-// exports.showArticles = async (req, res) => {
-//   const result = await pool.query('SELECT * FROM articles ORDER BY created_at3 DESC');
-//   res.render('admin/articles', { articles: result.rows });
-// };
+
+// const webpush = require("web-push");
+
+// webpush.setVapidDetails(
+//   "mailto:your@email.com", // update this to your contact
+//   process.env.VAPID_PUBLIC_KEY,
+//   process.env.VAPID_PRIVATE_KEY
+// );
 
 exports.showSearchArticles = async (req, res) => {
   try {
@@ -46,12 +52,87 @@ exports.saveArticle = async (req, res) => {
   const image_url = req.file ? req.file.path : null;
   const created_at3 = new Date(); // Create timestamp in JS
 
-  await pool.query(
-    // 'INSERT INTO articles (title, content, image_url) VALUES ($1, $2, $3)',
-    // [title, content, image_url]
-    'INSERT INTO articles (title, content, image_url, created_at3) VALUES ($1, $2, $3, $4)',
-    [title, content, image_url, created_at3]
+  // await pool.query(
+  //   // 'INSERT INTO articles (title, content, image_url) VALUES ($1, $2, $3)',
+  //   // [title, content, image_url]
+  //   "INSERT INTO articles (title, content, image_url, created_at3) VALUES ($1, $2, $3, $4) RETURNING id",
+  //   [title, content, image_url, created_at3]
+  // );
+
+  const insertResult = await pool.query(
+    "INSERT INTO articles (title, content, image_url, created_at3) VALUES ($1, $2, $3, $4) RETURNING id",
+    [title, content, image_url, created_at3]
   );
+
+  const articleId = insertResult.rows[0].id;
+
+  const articleUrl = `https://cschurchonline.org/articles/${articleId}`;
+  const resultUsers = await pool.query(
+    "SELECT email FROM users2 WHERE email IS NOT NULL"
+  );
+  const emails = resultUsers.rows.map((row) => row.email);
+
+  // Compose HTML message
+  // let message = "Dear Beloved, Article as been posted click on the link to view";
+  // let htmlMsg = `<div>${message} <p>${articleUrl}</div>`
+  // let htmlMsg = `<div style="font-family: Arial, sans-serif;"> <p>${message}</p> <p><a href="${articleUrl}" style="display:inline-block;padding:10px 15px;background:#007BFF;color:#fff;text-decoration:none;border-radius:4px;">Read Article</a></p></div>` ;
+
+  let message =
+    "Dear Beloved, an article has been posted. Click the link below to read it.";
+  let htmlMsg = `<div><p>${message}</p><p><a href="${articleUrl}" target="_blank">${title}</a></p>`;
+
+
+  if (image_url) {
+    htmlMsg += `<div style="margin-top:20px;"><img src="${image_url}" alt="Article Image" style="max-width:100%;border-radius:8px;"></div>`;
+  }
+
+  htmlMsg += `</div>`;
+
+  // Send to all users
+  // for (const email of emails) {
+  //   await sendEmail(email, title, htmlMsg);
+  // }
+
+
+  // const subsResult = await pool.query("SELECT * FROM push_subscriptions");
+
+  // const payload = JSON.stringify({
+  //   title: "New Article Posted",
+  //   body: title,
+  //   url: articleUrl,
+  // });
+
+  // for (const row of subsResult.rows) {
+  //   try {
+  //     const sub = {
+  //       endpoint: row.endpoint,
+  //       keys: JSON.parse(row.keys),
+  //     };
+  //     await webpush.sendNotification(sub, payload);
+  //   } catch (err) {
+  //     console.error("Push notification failed", err);
+  //   }
+  // }
+
+  const subsResult = await pool.query("SELECT * FROM subscriptions");
+  const payload = JSON.stringify({
+    title: title,
+    message: "A new article has been posted!",
+    url: articleUrl,
+  });
+
+  for (const sub of subsResult.rows) {
+    const pushSubscription = {
+      endpoint: sub.endpoint,
+      keys: sub.keys,
+    };
+
+    try {
+      await webpush.sendNotification(pushSubscription, payload);
+    } catch (err) {
+      console.error("Failed to send push:", err);
+    }
+  }
 
   res.redirect('/admin/articles');
 };

@@ -4,6 +4,7 @@ const session = require('express-session');
 const bodyParser = require('body-parser');
 const path = require('path');
 const createTables = require("./models/initTables");
+const notificationRoutes = require("./routes/notificationRoutes");
 
 const app = express();
 const layout = require('express-ejs-layouts');
@@ -35,6 +36,8 @@ app.use(session({
     maxAge: 24 * 60 * 60 * 1000 // 1 day
     }
 }));
+
+app.locals.vapidPublicKey = process.env.VAPID_PUBLIC_KEY;
 
 // app.use((req, res, next) => {
 //   if (
@@ -122,6 +125,9 @@ app.get('/', async (req, res) => {
       res.status(500).send('Server Error');
     }
 });
+
+
+app.use("/notifications", notificationRoutes);
   
 
 
