@@ -94,25 +94,6 @@ exports.saveArticle = async (req, res) => {
   // }
 
 
-  // const subsResult = await pool.query("SELECT * FROM push_subscriptions");
-
-  // const payload = JSON.stringify({
-  //   title: "New Article Posted",
-  //   body: title,
-  //   url: articleUrl,
-  // });
-
-  // for (const row of subsResult.rows) {
-  //   try {
-  //     const sub = {
-  //       endpoint: row.endpoint,
-  //       keys: JSON.parse(row.keys),
-  //     };
-  //     await webpush.sendNotification(sub, payload);
-  //   } catch (err) {
-  //     console.error("Push notification failed", err);
-  //   }
-  // }
 
   const subsResult = await pool.query("SELECT * FROM subscriptions");
   const payload = JSON.stringify({
