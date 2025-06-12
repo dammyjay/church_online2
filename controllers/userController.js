@@ -25,7 +25,9 @@ exports.signup = async (req, res) => {
   await pool.query("DELETE FROM pending_users WHERE email = $1", [email]);
 
   //this code below that will store the file in the cloudinary to the database
-  const profile_picture = req.file ? req.file.path : null;
+  // const profile_picture = req.file ? req.file.path : null;
+  const defaultImage = "/profile.webp"; // or any image path in your public folder
+  const profile_picture = req.file ? req.file.path : defaultImage;
   const otp = Math.floor(100000 + Math.random() * 900000).toString();
   const role = "user"; // Default role for new users
   const expires = new Date(Date.now() + 10 * 60 * 1000); // 10 mins
