@@ -4,15 +4,51 @@ const pool = require("../models/db");
 const { sendFaqAnswerEmail } = require("../utils/sendEmail");
 
 // Show all FAQs
+// router.get("/admin/faqs", async (req, res) => {
+//   const infoResult = await pool.query(
+//     "SELECT * FROM ministry_info ORDER BY id DESC LIMIT 1"
+//   );
+//   const info = infoResult.rows[0] || {};
+//   const result = await pool.query(
+//     "SELECT * FROM faqs ORDER BY created_at DESC"
+//   );
+//   res.render("admin/manageFaqs", {info, faqs: result.rows, title: "Manage FAQ" });
+// });
+
 router.get("/admin/faqs", async (req, res) => {
-  const infoResult = await pool.query(
-    "SELECT * FROM ministry_info ORDER BY id DESC LIMIT 1"
-  );
-  const info = infoResult.rows[0] || {};
-  const result = await pool.query(
-    "SELECT * FROM faqs ORDER BY created_at DESC"
-  );
-  res.render("admin/manageFaqs", {info, faqs: result.rows, title: "Manage FAQ" });
+  try {
+    const { filter } = req.query;
+
+    const infoResult = await pool.query(
+      "SELECT * FROM ministry_info ORDER BY id DESC LIMIT 1"
+    );
+    const info = infoResult.rows[0] || {};
+
+    let query = "SELECT * FROM faqs WHERE 1=1";
+    const params = [];
+
+    if (filter === "published") {
+      query += " AND is_published = true";
+    } else if (filter === "answered") {
+      query += " AND answer IS NOT NULL AND TRIM(answer) != ''";
+    } else if (filter === "unanswered") {
+      query += " AND (answer IS NULL OR TRIM(answer) = '')";
+    }
+
+    query += " ORDER BY created_at DESC";
+
+    const result = await pool.query(query, params);
+
+    res.render("admin/manageFaqs", {
+      info,
+      faqs: result.rows,
+      title: "Manage FAQ",
+      filter,
+    });
+  } catch (err) {
+    console.error("Error fetching FAQs:", err);
+    res.status(500).send("Server Error");
+  }
 });
 
 // Show edit form

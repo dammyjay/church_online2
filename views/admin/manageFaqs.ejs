@@ -31,6 +31,7 @@
       </nav>
     </header>
     <h2>Manage Frequently Asked Questions</h2>
+    <form method="GET" action="/admin/faqs" style="margin: 20px 0;"> <label for="status">Filter:</label> <select name="filter" onchange="this.form.submit()"> <option value="">All</option> <option value="published" <%= filter === 'published' ? 'selected' : '' %>>Published</option> <option value="answered" <%= filter === 'answered' ? 'selected' : '' %>>Answered</option> <option value="unanswered" <%= filter === 'unanswered' ? 'selected' : '' %>>Unanswered</option> </select> </form>
     <div class="article-card">
       <% faqs.forEach(faq => { %>
       <div class="faq-item">
