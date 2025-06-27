@@ -21,16 +21,29 @@
         <a class="active" href="/admin/dashboard">Dashboard</a>
         <a href="/admin/articles">Articles</a>
         <a href="/admin/videos">Videos</a>
-        <a href="/admin/ministry">About Us</a>
-        <a href="/admin/faqs">FAQ</a>
-        <a href="/admin/gallery">Gallery Images</a>
-        <a href="/admin/gallery/categories">Gal Categories</a>
-        <a href="/admin/announcements">Announcement</a>
-        <a href="/admin/newsletter">Newsletter</a>
+      
+        <div class="dropdown">
+          <button class="dropbtn">Gallery ▾</button>
+          <div class="dropdown-content">
+            <a href="/admin/gallery">Gallery Images</a>
+            <a href="/admin/gallery/categories">Gallery Categories</a>
+          </div>
+        </div>
+      
+        <div class="dropdown">
+          <button class="dropbtn">Ministry ▾</button>
+          <div class="dropdown-content">
+            <a href="/admin/ministry">About Us</a>
+            <a href="/admin/faqs">FAQ</a>
+            <a href="/admin/announcements">Announcement</a>
+            <a href="/admin/newsletter">Newsletter</a>
+          </div>
+        </div>
+      
         <a href="/profile">Profile</a>
         <a href="/admin/logout" class="logout-button">Logout</a>
-        <!-- Login remains a page link -->
       </nav>
+      
     </header>
 
     <h2>Create Announcement</h2>
