@@ -31,7 +31,7 @@ exports.signup = async (req, res) => {
   const otp = Math.floor(100000 + Math.random() * 900000).toString();
   const role = "user"; // Default role for new users
   const expires = new Date(Date.now() + 10 * 60 * 1000); // 10 mins
-  // const hashed = await bcrypt.hash(password, 10);
+  const hashed = await bcrypt.hash(password, 10);
   const created_at = new Date(); // Create timestamp in JS
   console.log("📷 Filename to save in DB:", profile_picture);
 
@@ -43,7 +43,7 @@ exports.signup = async (req, res) => {
       email,
       phone,
       gender,
-      password,
+      hashed,
       otp,
       expires,
       profile_picture,

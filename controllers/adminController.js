@@ -61,12 +61,16 @@ exports.showResetPasswordForm = async (req, res) => {
 exports.handleResetPassword = async (req, res) => {
   const { token } = req.params;
   const { password, confirmPassword } = req.body;
+
   if (password !== confirmPassword) {
     return res.render("admin/resetPassword", {
       token,
       message: "Passwords do not match.",
     });
   }
+
+  hashedPassword = await bcrypt.hash(password, 10); // Hash the new password
+  hashedconfirmPassword = await bcrypt.hash(confirmPassword, 10); // Hash the confirm password
   const result = await pool.query(
     "SELECT * FROM users2 WHERE reset_token = $1 AND reset_token_expires > NOW()",
     [token]
@@ -77,7 +81,7 @@ exports.handleResetPassword = async (req, res) => {
   // const hashed = await bcrypt.hash(password, 10);
   await pool.query(
     "UPDATE users2 SET password = $1, reset_token = NULL, reset_token_expires = NULL WHERE reset_token = $2",
-    [password, token]
+    [hashedPassword, token]
   );
   res.render("admin/login", {
     error: null,
@@ -95,50 +99,110 @@ exports.showLogin = (req, res) => {
   });
 };
 
+// exports.login = async (req, res) => {
+//   const { email, password } = req.body;
+//   hashed = await bcrypt.hash(password, 10); // Hash the password for comparison
+//   const redirectUrl = req.query.redirect;
+//   console.log("Hashed password:", hashed);
+//   const result = await pool.query(
+//     "SELECT * FROM users2 WHERE email = $1 AND password = $2",
+//     [email, hashed]
+//   );
+
+//   // if (result.rows.length === 0) {
+//   //   return res.render("admin/login", { error: "Invalid credentials" });
+//   // }
+
+//   if (result.rows.length === 0) {
+//     return res.render("admin/login", {
+//       error: "Invalid credentials",
+//       title: "Login",
+//       redirect: redirectUrl || "", // Always pass redirect!
+//     });
+//   }
+
+//   const user = result.rows[0];
+
+//   // Save session
+//   req.session.user = {
+//     id: user.id,
+//     email: user.email,
+//     role: user.role,
+//     profile_pic: user.profile_picture,
+//   };
+
+//   // Redirect to intended page if present, else default
+//   if (redirectUrl) {
+//     return res.redirect(redirectUrl);
+//   }
+
+//   // Redirect based on role
+//   if (user.role === "admin") {
+//     console.log("Admin login successful");
+//     return res.redirect("/admin/dashboard");
+//   } else {
+//     console.log("User login successful");
+//     return res.redirect("/home2");
+//   }
+// };
+
 exports.login = async (req, res) => {
   const { email, password } = req.body;
   const redirectUrl = req.query.redirect;
-  const result = await pool.query(
-    "SELECT * FROM users2 WHERE email = $1 AND password = $2",
-    [email, password]
-  );
 
-  // if (result.rows.length === 0) {
-  //   return res.render("admin/login", { error: "Invalid credentials" });
-  // }
+  try {
+    // 1. Get user by email
+    const result = await pool.query("SELECT * FROM users2 WHERE email = $1", [
+      email,
+    ]);
 
-  if (result.rows.length === 0) {
-    return res.render("admin/login", {
-      error: "Invalid credentials",
-      title: "Login",
-      redirect: redirectUrl || "", // Always pass redirect!
-    });
-  }
+    if (result.rows.length === 0) {
+      return res.render("admin/login", {
+        error: "Invalid credentials",
+        title: "Login",
+        redirect: redirectUrl || "",
+      });
+    }
 
-  const user = result.rows[0];
+    const user = result.rows[0];
 
-  // Save session
-  req.session.user = {
-    id: user.id,
-    email: user.email,
-    role: user.role,
-    profile_pic: user.profile_picture,
-  };
+    // 2. Compare plain password with stored hash
+    const isMatch = await bcrypt.compare(password, user.password);
 
-  // Redirect to intended page if present, else default
-  if (redirectUrl) {
-    return res.redirect(redirectUrl);
-  }
+    if (!isMatch) {
+      return res.render("admin/login", {
+        error: "Invalid credentials",
+        title: "Login",
+        redirect: redirectUrl || "",
+      });
+    }
 
-  // Redirect based on role
-  if (user.role === "admin") {
-    console.log("Admin login successful");
-    return res.redirect("/admin/dashboard");
-  } else {
-    console.log("User login successful");
-    return res.redirect("/home2");
+    // 3. Store user info in session
+    req.session.user = {
+      id: user.id,
+      email: user.email,
+      role: user.role,
+      profile_pic: user.profile_picture,
+    };
+
+    // 4. Redirect user
+    if (redirectUrl) {
+      return res.redirect(redirectUrl);
+    }
+
+    if (user.role === "admin") {
+      console.log("Admin login successful");
+      return res.redirect("/admin/dashboard");
+    } else {
+      console.log("User login successful");
+      return res.redirect("/home2");
+    }
+  } catch (err) {
+    console.error("Login error:", err);
+    res.status(500).send("Server error");
   }
 };
+
 
 exports.logout = (req, res) => {
   req.session.destroy();
