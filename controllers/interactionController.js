@@ -1,4 +1,59 @@
 const pool = require("../models/db");
+const foulWords = [
+  "ass",
+  "asshole",
+  "bastard",
+  "bitch",
+  "bloody",
+  "bollocks",
+  "bullshit",
+  "crap",
+  "cunt",
+  "damn",
+  "dick",
+  "douche",
+  "fag",
+  "fuck",
+  "fucking",
+  "goddamn",
+  "hell",
+  "idiot",
+  "jerk",
+  "motherfucker",
+  "nigga",
+  "nigger",
+  "piss",
+  "prick",
+  "pussy",
+  "retard",
+  "shit",
+  "slut",
+  "stupid",
+  "twat",
+  "wanker",
+  "whore",
+  "mumu",
+  "ode",
+  "olodo",
+  "ashawo",
+  "yeye",
+  "idiot",
+  "nonsense",
+  "madman",
+  "craze",
+  "fool",
+  "ewu",
+  "witch",
+  "goat",
+  "thief",
+  "barawo",
+  "were",
+  "ogbanje",
+  "akpos",
+  "agbaya",
+  "shameless",
+  "bastid",
+];
 
 exports.toggleLike = async (req, res) => {
   const { contentType, contentId } = req.body;
@@ -33,17 +88,83 @@ exports.getLikes = async (req, res) => {
   res.json(result.rows);
   };
 
+// exports.addComment = async (req, res) => {
+//   const { contentType, contentId, comment } = req.body;
+//   const userId = req.session.user?.id;
+//   const created_at = new Date();
+
+//   await pool.query(
+//     "INSERT INTO comments (user_id, content_type, content_id, comment, created_at) VALUES ($1, $2, $3, $4, $5)",
+//     [userId, contentType, contentId, comment, created_at]
+//   );
+//   res.json({ success: true });
+// };
+
+// exports.addComment = async (req, res) => {
+//   const { contentType, contentId, comment } = req.body;
+//   const userId = req.session.user?.id;
+//   const created_at = new Date();
+
+//   // Normalize the comment to lowercase for checking
+//   const lowerComment = comment.toLowerCase();
+
+//   // Check if comment contains any foul word
+//   const hasFoulWord = foulWords.some((word) => lowerComment.includes(word));
+
+//   if (hasFoulWord) {
+//     return res.status(400).json({
+//       success: false,
+//       message:
+//         "Your comment contains inappropriate language and was not submitted.",
+//     });
+//   }
+
+//   try {
+//     await pool.query(
+//       "INSERT INTO comments (user_id, content_type, content_id, comment, created_at) VALUES ($1, $2, $3, $4, $5)",
+//       [userId, contentType, contentId, comment, created_at]
+//     );
+
+//     res.json({ success: true });
+//   } catch (err) {
+//     console.error(err);
+//     res.status(500).json({ success: false, message: "Server error" });
+//   }
+// };
+
 exports.addComment = async (req, res) => {
   const { contentType, contentId, comment } = req.body;
   const userId = req.session.user?.id;
   const created_at = new Date();
 
-  await pool.query(
-    "INSERT INTO comments (user_id, content_type, content_id, comment, created_at) VALUES ($1, $2, $3, $4, $5)",
-    [userId, contentType, contentId, comment, created_at]
+  const lowerComment = comment.toLowerCase();
+
+  // Detect the specific foul word used
+  const matchedFoulWord = foulWords.find((word) =>
+    new RegExp(`\\b${word}\\b`, "i").test(lowerComment)
   );
-  res.json({ success: true });
+
+  if (matchedFoulWord) {
+    return res.status(400).json({
+      success: false,
+      message: `Your comment contains the word "${matchedFoulWord}" which is not allowed.`,
+    });
+  }
+
+  try {
+    await pool.query(
+      "INSERT INTO comments (user_id, content_type, content_id, comment, created_at) VALUES ($1, $2, $3, $4, $5)",
+      [userId, contentType, contentId, comment, created_at]
+    );
+
+    res.json({ success: true });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ success: false, message: "Server error" });
+  }
 };
+
+
 
 exports.fetchComments = async (req, res) => {
   const { type, id } = req.params;

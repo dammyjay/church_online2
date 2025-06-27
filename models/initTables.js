@@ -41,6 +41,16 @@ async function createTables() {
       );
     `);
 
+    await pool.query(`
+      CREATE TABLE devotionals (
+        id SERIAL PRIMARY KEY,
+        title TEXT NOT NULL,
+        content TEXT NOT NULL,
+        scripture TEXT,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      );
+    `);
+
     console.log(
       "✅ likes, comments and push_subscriptions are ready tables are ready."
     );
