@@ -12,6 +12,33 @@ body {
     flex-direction: column;
     align-items: center;
 }
+
+.devotional-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.devotional-card {
+    background: #fff;
+    padding: 15px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+}
+
+.devotional-card img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 5px;
+}
+
+.devotional-actions {
+    margin-top: 10px;
+    display: flex;
+    gap: 10px;
+}
+
 em,
 i {
     font-style: italic; }

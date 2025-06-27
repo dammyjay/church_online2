@@ -45,8 +45,9 @@ async function createTables() {
       CREATE TABLE devotionals (
         id SERIAL PRIMARY KEY,
         title TEXT NOT NULL,
-        content TEXT NOT NULL,
         scripture TEXT,
+        content TEXT NOT NULL,
+        image_url TEXT,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       );
     `);

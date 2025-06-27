@@ -28,6 +28,12 @@ router.get("/", async (req, res) => {
     const announcement = annResult.rows[0];
     // const carouselImages = randomImagesResult.rows.map((row) => row.url);
 
+    //fetch daily devotionals 
+    const devoRes = await pool.query(
+      "SELECT * FROM devotionals ORDER BY created_at DESC LIMIT 1"
+    );
+    const devotional = devoRes.rows[0];
+
     const allImagesResult = await pool.query("SELECT url FROM gallery_images");
     const allImages = allImagesResult.rows.map((row) => row.url);
 
@@ -108,6 +114,7 @@ router.get("/", async (req, res) => {
       articles,
       videos,
       faqs,
+      devotional,
       subscribed: req.query.subscribed,
       isLoggedIn: !!req.session.user,
       profilePic,
@@ -166,6 +173,11 @@ router.get("/home2", async (req, res) => {
 
     const carouselImages = getDailyImages(allImages, 5);
 
+    //fetch daily devotionals
+    const devoRes = await pool.query(
+      "SELECT * FROM devotionals ORDER BY created_at DESC LIMIT 1"
+    );
+    const devotional = devoRes.rows[0];
 
     console.log(
       "Raw video URLs:",
@@ -221,12 +233,13 @@ router.get("/home2", async (req, res) => {
       articles,
       videos,
       faqs,
+      devotional,
       subscribed: req.query.subscribed,
       title: "Home",
       isLoggedIn,
       profilePic,
       carouselImages,
-      announcement
+      announcement,
     });
   } catch (err) {
     console.error("Error fetching homepage data:", err);

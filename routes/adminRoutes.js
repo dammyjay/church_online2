@@ -6,6 +6,7 @@ const adminController = require("../controllers/adminController");
 const ministryController = require("../controllers/ministryController");
 const articleController = require("../controllers/articleController");
 const galleryController = require('../controllers/galleryController');
+const devotionalController = require("../controllers/devotionalController");
 
 
 
@@ -121,5 +122,19 @@ router.post(
   upload.single("profile_picture"),
   adminController.updateAdminProfile
 );
+
+router.get("/devotionals", devotionalController.showUploadForm);
+router.post(
+  "/devotionals",
+  upload.single("image"),
+  devotionalController.saveDevotional
+);
+router.get("/devotionals/edit/:id", devotionalController.showEditDevotional);
+router.post(
+  "/devotionals/edit/:id",
+  upload.single("image"),
+  devotionalController.updateDevotional
+);
+router.post("/devotionals/delete/:id", devotionalController.deleteDevotional);
 
 module.exports = router;

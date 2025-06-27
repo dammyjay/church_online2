@@ -164,8 +164,6 @@ exports.addComment = async (req, res) => {
   }
 };
 
-
-
 exports.fetchComments = async (req, res) => {
   const { type, id } = req.params;
 

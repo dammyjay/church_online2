@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Announcement</title>
+    <link rel="stylesheet" href="/css/style.css" />
+    <link rel="icon" type="image/x-icon" href="/logo.png" />
+    <script src="https://cdn.ckeditor.com/4.22.1/standard/ckeditor.js"></script>
+  </head>
+  <body>
+    <!-- Header -->
+    <header class="header">
+      <div class="logo-title">
+        <% info = info || {}; %> <% if (info.logo_url) { %>
+        <img src="<%= info.logo_url %>" alt="Logo" />
+        <% } %>
+        <p><%= info?.name || 'C&S Church Online' %></p>
+      </div>
+      <button class="nav-toggle" onclick="toggleNav()">☰</button>
+      <nav id="main-nav">
+        <a class="active" href="/admin/dashboard">Dashboard</a>
+        <a href="/admin/articles">Articles</a>
+        <a href="/admin/videos">Videos</a>
+        <a href="/admin/ministry">About Us</a>
+        <a href="/admin/faqs">FAQ</a>
+        <a href="/admin/gallery">Gallery Images</a>
+        <a href="/admin/gallery/categories">Gal Categories</a>
+        <a href="/admin/announcements">Announcement</a>
+        <a href="/admin/newsletter">Newsletter</a>
+        <a href="/profile">Profile</a>
+        <a href="/admin/logout" class="logout-button">Logout</a>
+        <!-- Login remains a page link -->
+      </nav>
+    </header>
+
+    <h2>Add Daily Devotional</h2>
+    <form
+      action="/admin/devotionals"
+      method="POST"
+      enctype="multipart/form-data"
+    >
+      <input
+        type="text"
+        name="title"
+        placeholder="Title"
+        required
+      /><br /><br />
+
+      <input
+        type="text"
+        name="scripture"
+        placeholder="Scripture (e.g. John 3:16)"
+      /><br /><br />
+
+      <textarea
+        name="content"
+        placeholder="Write devotional content..."
+        
+      ></textarea
+      ><br /><br />
+
+      <!-- 📸 Image Upload Field -->
+      <label>Upload Devotional Image (optional):</label><br />
+      <input type="file" name="image" accept="image/*" /><br /><br />
+
+      <button type="submit">Save</button>
+    </form>
+
+    <!-- <h2>Add Daily Devotional</h2>
+<form action="/admin/devotionals" method="POST" enctype="multipart/form-data">
+  <input type="text" name="title" placeholder="Title" required><br><br>
+  <input type="text" name="scripture" placeholder="Scripture (e.g. John 3:16)"><br><br>
+  <textarea name="content" placeholder="Write devotional content..." required></textarea><br><br>
+  <label>Upload Image (optional):</label>
+  <input type="file" name="image"><br><br>
+  <button type="submit">Save</button>
+</form> -->
+
+<!-- <h2>Existing Devotionals</h2>
+<div class="devotional-list">
+  <% devotionals.forEach(d => { %>
+    <div class="devotional-card">
+      <h3><%= d.title %></h3>
+      <p><strong>Scripture:</strong> <%= d.scripture %></p>
+      <p><%= d.content %></p>
+      <% if (d.image_url) { %>
+        <img src="<%= d.image_url %>" alt="Devotional Image" style="max-width:200px;">
+      <% } %>
+      <button onclick="openEditModal(<%= JSON.stringify(d) %>)">Edit</button>
+
+      <form action="/admin/devotionals/delete/<%= d.id %>" method="POST" style="display:inline;">
+        <button onclick="return confirm('Delete this devotional?')" type="submit">Delete</button>
+      </form>
+    </div>
+  <% }) %>
+</div> -->
+
+<h2>Existing Devotionals</h2>
+<div class="devotional-grid">
+  <% devotionals.forEach(d => { %>
+    <div class="devotional-card">
+      <% if (d.image_url) { %>
+        <img src="<%= d.image_url %>" alt="Devotional Image">
+      <% } %>
+      <h3><%= d.title %></h3>
+      <p><strong>Scripture:</strong> <%= d.scripture %></p>
+      <p><%= d.content.substring(0, 150) %>...</p>
+      <small><%= new Date(d.created_at).toLocaleDateString() %></small>
+      <!-- Admin Buttons -->
+      <div class="devotional-actions">
+        <button onclick="openEditModal(<%= d.id %>)">Edit</button>
+        <form action="/admin/devotionals/delete/<%= d.id %>" method="POST" onsubmit="return confirm('Delete this devotional?')">
+          <button type="submit">Delete</button>
+        </form>
+      </div>
+    </div>
+  <% }) %>
+</div>
+
+
+
+<!-- Edit form  -->
+
+<div id="editModal" class="modal" style="display:none;">
+  <div class="modal-content">
+    <span onclick="closeModal()" class="close">&times;</span>
+    <h2>Edit Devotional</h2>
+    <form id="editForm" method="POST" enctype="multipart/form-data">
+      <input type="text" name="title" id="editTitle" required><br><br>
+      <input type="text" name="scripture" id="editScripture"><br><br>
+      <textarea name="content" id="editContent" required></textarea><br><br>
+      <input type="file" name="image"><br><br>
+      <input type="hidden" name="existingUrl" id="existingUrl">
+      <button type="submit">Update</button>
+    </form>
+  </div>
+</div>
+
+
+<script>
+  function openEditModal(data) {
+    document.getElementById('editModal').style.display = 'block';
+    document.getElementById('editTitle').value = data.title;
+    document.getElementById('editScripture').value = data.scripture;
+    document.getElementById('editContent').value = data.content;
+    document.getElementById('existingUrl').value = data.image_url || '';
+    document.getElementById('editForm').action = `/admin/devotionals/edit/${data.id}`;
+  }
+
+  function closeModal() {
+    document.getElementById('editModal').style.display = 'none';
+  }
+</script>
+
+
+
+    <!-- script for CKeditor -->
+    <script>
+      CKEDITOR.replace("content");
+    </script>
+  </body>
+</html>
