@@ -15,18 +15,31 @@
       </div>
       <button class="nav-toggle" onclick="toggleNav()">☰</button>
       <nav id="main-nav">
-        <a href="/admin/dashboard">Dashboard</a>
+        <a class="active" href="/admin/dashboard">Dashboard</a>
         <a href="/admin/articles">Articles</a>
-        <a class="active" href="/admin/videos">Videos</a>
-        <a href="/admin/ministry">About Us</a>
-        <a href="/admin/faqs">FAQ</a>
-        <a href="/admin/gallery">Gallery Images</a>
-        <a href="/admin/gallery/categories">Gal Categories</a>
-        <a href="/admin/announcements">Announcement</a>
-        <a href="/admin/newsletter">Newsletter</a>
+        <a href="/admin/videos">Videos</a>
+      
+        <div class="dropdown">
+          <button class="dropbtn" onclick="toggleDropdown('galleryMenu')">Gallery ▾</button>
+          <div class="dropdown-content" id="galleryMenu">
+            <a href="/admin/gallery">Images</a>
+            <a href="/admin/gallery/categories">Categories</a>
+          </div>
+        </div>
+        
+        <div class="dropdown">
+          <button class="dropbtn" onclick="toggleDropdown('ministryMenu')">Ministry ▾</button>
+          <div class="dropdown-content" id="ministryMenu">
+            <a href="/admin/ministry">About Us</a>
+            <a href="/admin/faqs">FAQ</a>
+            <a href="/admin/devotionals">Devotionals</a>
+            <a href="/admin/announcements">Announcements</a>
+            <a href="/admin/newsletter">Newsletter</a>
+          </div>
+        </div>
+      
         <a href="/profile">Profile</a>
         <a href="/admin/logout" class="logout-button">Logout</a>
-        <!-- Login remains a page link -->
       </nav>
     </header>
     <form
@@ -127,6 +140,16 @@
 
     <a href="/admin/dashboard">Back to Dashboard</a>
 
+    <!-- toggle navbar -->
+    <script>
+      function toggleNav() {
+        var nav = document.getElementById("main-nav");
+        nav.classList.toggle("open");
+      }
+    </script>
+
+
+    <!-- script to video hover -->
     <script>
       function toggleDescription(button) {
         const card = button.closest(".video-card");

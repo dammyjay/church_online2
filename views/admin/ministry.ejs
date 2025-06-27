@@ -18,18 +18,31 @@
       </div>
       <button class="nav-toggle" onclick="toggleNav()">☰</button>
       <nav id="main-nav">
-        <a href="/admin/dashboard">Dashboard</a>
+        <a class="active" href="/admin/dashboard">Dashboard</a>
         <a href="/admin/articles">Articles</a>
         <a href="/admin/videos">Videos</a>
-        <a class="active" href="/admin/ministry">About Us</a>
-        <a href="/admin/faqs">FAQ</a>
-        <a href="/admin/gallery">Gallery Images</a>
-        <a href="/admin/gallery/categories">Gal Categories</a>
-        <a href="/admin/announcements">Announcement</a>
-        <a href="/admin/newsletter">Newsletter</a>
+      
+        <div class="dropdown">
+          <button class="dropbtn" onclick="toggleDropdown('galleryMenu')">Gallery ▾</button>
+          <div class="dropdown-content" id="galleryMenu">
+            <a href="/admin/gallery">Images</a>
+            <a href="/admin/gallery/categories">Categories</a>
+          </div>
+        </div>
+        
+        <div class="dropdown">
+          <button class="dropbtn" onclick="toggleDropdown('ministryMenu')">Ministry ▾</button>
+          <div class="dropdown-content" id="ministryMenu">
+            <a href="/admin/ministry">About Us</a>
+            <a href="/admin/faqs">FAQ</a>
+            <a href="/admin/devotionals">Devotionals</a>
+            <a href="/admin/announcements">Announcements</a>
+            <a href="/admin/newsletter">Newsletter</a>
+          </div>
+        </div>
+      
         <a href="/profile">Profile</a>
         <a href="/admin/logout" class="logout-button">Logout</a>
-        <!-- Login remains a page link -->
       </nav>
     </header>
     <h2>Ministry Info</h2>
