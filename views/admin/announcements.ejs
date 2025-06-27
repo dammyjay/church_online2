@@ -23,19 +23,20 @@
         <a href="/admin/videos">Videos</a>
       
         <div class="dropdown">
-          <button class="dropbtn">Gallery ▾</button>
-          <div class="dropdown-content">
-            <a href="/admin/gallery">Gallery Images</a>
-            <a href="/admin/gallery/categories">Gallery Categories</a>
+          <button class="dropbtn" onclick="toggleDropdown('galleryMenu')">Gallery ▾</button>
+          <div class="dropdown-content" id="galleryMenu">
+            <a href="/admin/gallery">Images</a>
+            <a href="/admin/gallery/categories">Categories</a>
           </div>
         </div>
-      
+        
         <div class="dropdown">
-          <button class="dropbtn">Ministry ▾</button>
-          <div class="dropdown-content">
+          <button class="dropbtn" onclick="toggleDropdown('ministryMenu')">Ministry ▾</button>
+          <div class="dropdown-content" id="ministryMenu">
             <a href="/admin/ministry">About Us</a>
             <a href="/admin/faqs">FAQ</a>
-            <a href="/admin/announcements">Announcement</a>
+            <a href="/admin/devotionals">Devotionals</a>
+            <a href="/admin/announcements">Announcements</a>
             <a href="/admin/newsletter">Newsletter</a>
           </div>
         </div>

@@ -17,44 +17,74 @@ body {
 .dropdown {
     position: relative;
     display: inline-block;
-}
-
-/* Style the dropdown button */
-.dropbtn {
+  }
+  
+  /* Style the dropdown button */
+  .dropbtn {
     background-color: transparent;
     color: inherit;
     border: none;
     cursor: pointer;
     font-size: inherit;
     padding: 10px;
+  }
+  
+  /* Dropdown content (hidden by default) */
+  .dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: white;
+    min-width: 180px;
+    box-shadow: 0px 8px 16px rgba(0,0,0,0.2);
+    z-index: 1;
+    flex-direction: column;
+  }
+  
+  /* Links inside the dropdown */
+  .dropdown-content a {
+    color: black;
+    padding: 8px 12px;
+    text-decoration: none;
+    display: block;
+  }
+  
+  .dropdown-content a:hover {
+    background-color: #eee;
+  }
+  
+  /* Show the dropdown on hover */
+  .dropdown:hover .dropdown-content {
+    display: block;
+  }
+/* Ensure dropdown appears above the header and is not hidden */
+.dropdown {
+    position: relative;
+    display: inline-block;
+    z-index: 1000;
 }
 
-/* Dropdown content (hidden by default) */
 .dropdown-content {
     display: none;
     position: absolute;
     background-color: white;
     min-width: 180px;
     box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
-    z-index: 1;
-    flex-direction: column;
+    z-index: 2000;
+    top: 100%;
+    /* Make dropdown appear below the button */
+    left: 0;
+    padding: 5px 0;
+    border-radius: 6px;
 }
 
-/* Links inside the dropdown */
-.dropdown-content a {
-    color: black;
-    padding: 8px 12px;
-    text-decoration: none;
-    display: block;
-}
-
-.dropdown-content a:hover {
-    background-color: #eee;
-}
-
-/* Show the dropdown on hover */
 .dropdown:hover .dropdown-content {
     display: block;
+}
+
+/* Make sure dropdown does not get clipped by the header */
+header {
+    overflow: visible !important;
+    z-index: 1000 !important;
 }
 
 .devotional-grid {
