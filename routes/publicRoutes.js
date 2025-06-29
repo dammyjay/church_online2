@@ -28,7 +28,15 @@ router.get("/", async (req, res) => {
     const announcement = annResult.rows[0];
     // const carouselImages = randomImagesResult.rows.map((row) => row.url);
 
-    //fetch daily devotionals 
+    // fetch demo videos
+    // const demoVideos = await demoVideoController.getPublicDemoVideos();
+    const demoResult = await pool.query(
+      "SELECT * FROM demo_videos2 ORDER BY created_at DESC LIMIT 1"
+    );
+    const demoVideos = demoResult.rows;
+    console.log("Demo Videos:", demoVideos);
+
+    //fetch daily devotionals
     const devoRes = await pool.query(
       "SELECT * FROM devotionals ORDER BY created_at DESC LIMIT 1"
     );
@@ -58,7 +66,6 @@ router.get("/", async (req, res) => {
     }
 
     const carouselImages = getDailyImages(allImages, 5);
-
 
     console.log(
       "Raw video URLs:",
@@ -114,6 +121,7 @@ router.get("/", async (req, res) => {
       articles,
       videos,
       faqs,
+      demoVideos,
       devotional,
       subscribed: req.query.subscribed,
       isLoggedIn: !!req.session.user,
@@ -172,6 +180,13 @@ router.get("/home2", async (req, res) => {
     }
 
     const carouselImages = getDailyImages(allImages, 5);
+
+    // demo videos
+    const demoResult = await pool.query(
+      "SELECT * FROM demo_videos2 ORDER BY created_at DESC LIMIT 1"
+    );
+    const demoVideos = demoResult.rows;
+    console.log("Demo Videos:", demoVideos);
 
     //fetch daily devotionals
     const devoRes = await pool.query(
@@ -234,6 +249,7 @@ router.get("/home2", async (req, res) => {
       videos,
       faqs,
       devotional,
+      demoVideos,
       subscribed: req.query.subscribed,
       title: "Home",
       isLoggedIn,

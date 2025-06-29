@@ -1,4 +1,5 @@
 const express = require('express');
+const pool = require("../models/db");
 const router = express.Router();
 const userController = require('../controllers/userController');
 const upload = require('../middlewares/upload');

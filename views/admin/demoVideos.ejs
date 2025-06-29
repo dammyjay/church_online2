@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Announcement</title>
+    <link rel="stylesheet" href="/css/style.css" />
+    <link rel="icon" type="image/x-icon" href="/logo.png" />
+    <script src="https://cdn.ckeditor.com/4.22.1/standard/ckeditor.js"></script>
+  </head>
+  <body>
+    <!-- Header -->
+    <header class="header">
+      <div class="logo-title">
+        <% info = info || {}; %> <% if (info.logo_url) { %>
+        <img src="<%= info.logo_url %>" alt="Logo" />
+        <% } %>
+        <p><%= info?.name || 'C&S Church Online' %></p>
+      </div>
+      <button class="nav-toggle" onclick="toggleNav()">☰</button>
+      <nav id="main-nav">
+        <a href="/admin/dashboard">Dashboard</a>
+        <a href="/admin/articles">Articles</a>
+        <a href="/admin/videos">Videos</a>
+
+        <div class="dropdown">
+          <button class="dropbtn active" onclick="toggleDropdown('galleryMenu')">
+            Gallery ▾
+          </button>
+          <div class="dropdown-content" id="galleryMenu">
+            <a href="/admin/gallery">Images</a>
+            <a href="/admin/gallery/categories">Categories</a>
+            <a href="/admin/demo-videos">Demo</a>
+          </div>
+        </div>
+
+        <div class="dropdown">
+          <button class="dropbtn" onclick="toggleDropdown('ministryMenu')">
+            Ministry ▾
+          </button>
+          <div class="dropdown-content" id="ministryMenu">
+            <a href="/admin/ministry">About Us</a>
+            <a href="/admin/faqs">FAQ</a>
+            <a href="/admin/devotionals">Devotionals</a>
+            <a href="/admin/announcements">Announcements</a>
+            <a href="/admin/newsletter">Newsletter</a>
+          </div>
+        </div>
+
+        <a href="/profile">Profile</a>
+        <a href="/admin/logout" class="logout-button">Logout</a>
+      </nav>
+    </header>
+
+
+    <h2>Upload Demo Video</h2>
+    <form
+      action="/admin/demo-videos"
+      method="POST"
+      enctype="multipart/form-data"
+    >
+      <label>Title</label>
+      <input type="text" name="title" required /><br /><br />
+
+      <label>Description</label>
+      <textarea name="description"></textarea><br /><br />
+
+      <label>YouTube Embed URL (optional)</label>
+      <input type="text" name="youtube_url" /><br /><br />
+
+      <label>OR Upload Video File</label>
+      <input type="file" name="video" /><br /><br />
+
+      <button type="submit">Upload</button>
+    </form>
+
+    <h2>Uploaded Demo Videos</h2>
+    <section class="video-grid">
+        <% videos.forEach(video => { 
+          let videoId = null;
+          const url = video.youtube_url || "";
+          
+          // Extract YouTube video ID if URL exists
+          if (url.includes("watch?v=")) {
+            videoId = url.split("watch?v=")[1].split("&")[0];
+          } else if (url.includes("youtu.be/")) {
+            videoId = url.split("youtu.be/")[1].split("?")[0];
+          } else if (url.includes("/embed/")) {
+            videoId = url.split("/embed/")[1].split("?")[0];
+          } else if (url.includes("/shorts/")) {
+            videoId = url.split("/shorts/")[1].split("?")[0];
+          }
+        %>
+      
+        <div class="video-card">
+          <h3><%= video.title %></h3>
+      
+          <% if (videoId) { %>
+            <div class="video-container">
+              <iframe
+                src="https://www.youtube.com/embed/<%= videoId %>"
+                frameborder="0"
+                allowfullscreen
+              ></iframe>
+            </div>
+          <% } else if (video.cloudinary_url) { %>
+            <div class="video-container">
+              <video controls width="100%">
+                <source src="<%= video.cloudinary_url %>" type="video/mp4" />
+                Your browser does not support the video tag.
+              </video>
+            </div>
+          <% } else { %>
+            <p>Invalid video source</p>
+          <% } %>
+      
+          <% let desc = video.description || ""; %>
+          <p class="video-desc">
+            <span class="short-desc">
+              <%= desc.length > 100 ? desc.substring(0, 100) + '...' : desc %>
+            </span>
+            <% if (desc.length > 100) { %>
+              <span class="full-desc" style="display: none"><%= desc %></span>
+              <button class="toggle-desc-btn" onclick="toggleDescription(this)">Show more</button>
+            <% } %>
+          </p>
+      
+          <small>Posted on <%= new Date(video.created_at).toLocaleString() %></small>
+      
+          <div class="video-buttons">
+            <!-- <a href="/admin/demo-videos/edit/<%= video.id %>">Edit</a> -->
+            <a href="javascript:void(0);" onclick='openEditModal(<%- JSON.stringify(video) %>)'>Edit</a>
+
+            <form
+              action="/admin/demo-videos/delete/<%= video.id %>"
+              method="POST"
+              onsubmit="return confirm('Delete this video?');"
+            >
+              <button type="submit">Delete</button>
+            </form>
+          </div>
+        </div>
+        <% }) %>
+        <% if (videos.length === 0) { %>
+            <p style="color: gray;">No demo videos uploaded yet.</p>
+          <% } %>
+      </section>
+      
+      <script>
+        function toggleDescription(btn) {
+          const shortDesc = btn.previousElementSibling.previousElementSibling;
+          const fullDesc = btn.previousElementSibling;
+          const isVisible = fullDesc.style.display === "inline";
+      
+          if (isVisible) {
+            fullDesc.style.display = "none";
+            shortDesc.style.display = "inline";
+            btn.textContent = "Show more";
+          } else {
+            fullDesc.style.display = "inline";
+            shortDesc.style.display = "none";
+            btn.textContent = "Show less";
+          }
+        }
+      </script>
+      
+
+   <!-- Edit Demo Video Modal -->
+<div id="editModal" class="modal" style="display: none">
+    <div class="modal-content">
+      <span class="close" onclick="closeEditModal()">&times;</span>
+      <h2>Edit Demo Video</h2>
+      <form id="editForm" method="POST" enctype="multipart/form-data">
+        <input type="text" name="title" id="editTitle" required /><br /><br />
+        <textarea name="description" id="editDescription"></textarea><br /><br />
+        <label>YouTube Embed URL (optional)</label>
+        <input type="text" name="youtube_url" id="editYoutube" /><br /><br />
+        <label>OR Upload New Video</label>
+        <input type="file" name="video" /><br /><br />
+        <input type="hidden" id="editId" />
+        <button type="submit">Update</button>
+      </form>
+    </div>
+  </div>
+  
+    <!-- toggle navbar -->
+    <script>
+      function toggleNav() {
+        var nav = document.getElementById("main-nav");
+        nav.classList.toggle("open");
+      }
+    </script>
+
+    <!-- Modal script  for edit Demovideo info-->
+    <script>
+        function openEditModal(video) {
+          document.getElementById("editModal").style.display = "block";
+          document.getElementById("editTitle").value = video.title || "";
+          document.getElementById("editDescription").value = video.description || "";
+          document.getElementById("editYoutube").value = video.youtube_url || "";
+          document.getElementById("editForm").action = "/admin/demo-videos/edit/" + video.id;
+        }
+      
+        function closeEditModal() {
+          document.getElementById("editModal").style.display = "none";
+        }
+      </script>
+      
+
+    <!-- script for CKeditor -->
+    <script>
+      CKEDITOR.replace("content");
+    </script>
+  </body>
+</html>

@@ -8,6 +8,8 @@ const articleController = require("../controllers/articleController");
 const galleryController = require('../controllers/galleryController');
 const devotionalController = require("../controllers/devotionalController");
 
+const demoVideoController = require("../controllers/demoVideoController");
+
 
 
 const multer = require('multer');
@@ -22,8 +24,6 @@ router.get("/logout", adminController.logout);
 router.get("/users/edit/:id", adminController.editUserForm);
 router.post("/users/delete/:id", adminController.deleteUser);
 router.post("/users/edit/:id", adminController.updateUser);
-
-
 
 // Ministry Info routes
 router.get("/ministry", ministryController.showForm);
@@ -136,5 +136,15 @@ router.post(
   devotionalController.updateDevotional
 );
 router.post("/devotionals/delete/:id", devotionalController.deleteDevotional);
+
+router.get("/demo-videos", demoVideoController.showDemoVideos);
+router.post("/demo-videos", upload.single('video'), demoVideoController.saveDemoVideo);
+router.post("/demo-videos/delete/:id", demoVideoController.delete);
+router.post(
+  "/demo-videos/edit/:id",
+  upload.single("video"),
+  demoVideoController.update
+);
+
 
 module.exports = router;

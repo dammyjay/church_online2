@@ -22,7 +22,7 @@
       </div>
       <button class="nav-toggle" onclick="toggleNav()">☰</button>
       <nav id="main-nav">
-        <a class="active" href="/admin/dashboard">Dashboard</a>
+        <a href="/admin/dashboard">Dashboard</a>
         <a href="/admin/articles">Articles</a>
         <a href="/admin/videos">Videos</a>
       
@@ -31,11 +31,12 @@
           <div class="dropdown-content" id="galleryMenu">
             <a href="/admin/gallery">Images</a>
             <a href="/admin/gallery/categories">Categories</a>
+            <a href="/admin/demo-videos">Demo</a>
           </div>
         </div>
         
         <div class="dropdown">
-          <button class="dropbtn" onclick="toggleDropdown('ministryMenu')">Ministry ▾</button>
+          <button class="dropbtn active" onclick="toggleDropdown('ministryMenu')">Ministry ▾</button>
           <div class="dropdown-content" id="ministryMenu">
             <a href="/admin/ministry">About Us</a>
             <a href="/admin/faqs">FAQ</a>
