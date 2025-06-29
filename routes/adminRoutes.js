@@ -126,13 +126,13 @@ router.post(
 router.get("/devotionals", devotionalController.showUploadForm);
 router.post(
   "/devotionals",
-  upload.single("image"),
+  upload.single("image_url"),
   devotionalController.saveDevotional
 );
 router.get("/devotionals/edit/:id", devotionalController.showEditDevotional);
 router.post(
   "/devotionals/edit/:id",
-  upload.single("image"),
+  upload.single("image_url"),
   devotionalController.updateDevotional
 );
 router.post("/devotionals/delete/:id", devotionalController.deleteDevotional);
