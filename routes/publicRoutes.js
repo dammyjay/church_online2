@@ -31,7 +31,7 @@ router.get("/", async (req, res) => {
     // fetch demo videos
     // const demoVideos = await demoVideoController.getPublicDemoVideos();
     const demoResult = await pool.query(
-      "SELECT * FROM demo_videos2 ORDER BY created_at DESC LIMIT 1"
+      "SELECT * FROM demo_videos2 ORDER BY created_at DESC"
     );
     const demoVideos = demoResult.rows;
     console.log("Demo Videos:", demoVideos);
@@ -183,7 +183,7 @@ router.get("/home2", async (req, res) => {
 
     // demo videos
     const demoResult = await pool.query(
-      "SELECT * FROM demo_videos2 ORDER BY created_at DESC LIMIT 1"
+      "SELECT * FROM demo_videos2 ORDER BY created_at DESC"
     );
     const demoVideos = demoResult.rows;
     console.log("Demo Videos:", demoVideos);
