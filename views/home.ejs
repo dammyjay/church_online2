@@ -62,7 +62,12 @@
           <h1>Welcome to <%= info?.name || 'C&S Church Online' %></h1>
           <p><%= info?.vision || 'Empowering lives through the gospel of Christ.' %></p>
           <a href="/about" class="cta-btn">See Our Story & Gallery</a>
+          <!-- Optional trigger button -->
+<!-- <button onclick="askNotificationPermission()" style="margin-top: 20px;">
+  🔔 Enable Notifications
+</button> -->
         </div>
+        
       </section>
     <% } %>
 
@@ -424,34 +429,6 @@
 </script>
 
 <!-- script for carousel  -->
-<!-- <script>
-  let currentSlide = 0;
-  const slides = document.querySelectorAll('.carousel-slide');
-
-  function showSlide(idx) {
-    slides.forEach((slide, i) => {
-      slide.style.display = (i === idx) ? 'block' : 'none';
-    });
-    currentSlide = idx;
-  }
-
-  function nextSlide() {
-    let next = (currentSlide + 1) % slides.length;
-    showSlide(next);
-  }
-
-  function prevSlide() {
-    let prev = (currentSlide - 1 + slides.length) % slides.length;
-    showSlide(prev);
-  }
-
-  // Auto-play every 4 seconds
-  setInterval(nextSlide, 4000);
-
-  // Initialize
-  if (slides.length > 0) showSlide(0);
-</script> -->
-  
 <script>
   let currentSlide = 0;
   const slides = document.querySelectorAll('.carousel-slide');
@@ -556,7 +533,164 @@ function showLess(idx) {
 </script> -->
 
 
-<script> const vapidPublicKey = "<%= vapidPublicKey %>"; if ('serviceWorker' in navigator && 'PushManager' in window) { window.addEventListener('load', async () => { const previouslyAsked = localStorage.getItem("pushSubscribed"); if (!previouslyAsked) { setTimeout(async () => { const permission = await Notification.requestPermission(); if (permission !== 'granted') return; try { const registration = await navigator.serviceWorker.register('/sw.js'); const subscription = await registration.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: urlBase64ToUint8Array(vapidPublicKey) }); await fetch('/notifications/subscribe', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(subscription) }); alert("✅ Subscribed to notifications!"); localStorage.setItem("pushSubscribed", "true"); } catch (err) { console.error("Push subscription failed:", err); } }, 3000); } }); } function urlBase64ToUint8Array(base64String) { const padding = '='.repeat((4 - base64String.length % 4) % 4); const base64 = (base64String + padding).replace(/\-/g, '+').replace(/_/g, '/'); const rawData = atob(base64); return Uint8Array.from([...rawData].map(char => char.charCodeAt(0))); } </script>
+<!-- <script> 
+  const vapidPublicKey = "<%= vapidPublicKey %>"; 
+  if ('serviceWorker' in navigator && 'PushManager' in window) 
+  { window.addEventListener('load', async () => { 
+    const previouslyAsked = localStorage.getItem("pushSubscribed"); 
+    if (!previouslyAsked) { 
+      setTimeout(async () => { 
+        const permission = await Notification.requestPermission(); 
+        if (permission !== 'granted') return; try { 
+          const registration = await navigator.serviceWorker.register('/sw.js'); 
+          const subscription = await registration.pushManager.subscribe({ 
+            userVisibleOnly: true, applicationServerKey: urlBase64ToUint8Array(vapidPublicKey) }); 
+            await fetch('/notifications/subscribe', { 
+              method: 'POST', 
+              headers: { 'Content-Type': 'application/json' }, 
+              body: JSON.stringify(subscription) 
+              }); 
+              alert("✅ Subscribed to notifications!"); 
+              localStorage.setItem("pushSubscribed", "true"); 
+              } catch (err) { 
+                console.error("Push subscription failed:", err); 
+                } 
+              }, 3000); 
+            } 
+      }); 
+    } 
+            function urlBase64ToUint8Array(base64String) {
+               const padding = '='.repeat((4 - base64String.length % 4) % 4); 
+               const base64 = (base64String + padding).replace(/\-/g, '+').replace(/_/g, '/'); 
+               const rawData = atob(base64); 
+               return Uint8Array.from([...rawData].map(char => char.charCodeAt(0))); 
+               } 
+</script> -->
+
+
+<!-- <script>
+  const vapidPublicKey = "<%= vapidPublicKey %>";
+
+  if ('serviceWorker' in navigator && 'PushManager' in window) {
+    window.addEventListener('load', async () => {
+      const pushStatus = localStorage.getItem("pushStatus");
+      const lastPrompt = localStorage.getItem("lastPromptTime");
+      const now = Date.now();
+
+      // Re-prompt if 24 hours passed
+      if (pushStatus !== 'granted' && (!lastPrompt || now - Number(lastPrompt) > 86400000)) {
+        localStorage.setItem("lastPromptTime", now);
+
+        setTimeout(async () => {
+          const permission = await Notification.requestPermission();
+          localStorage.setItem("pushStatus", permission); // granted, denied, default
+
+          if (permission !== 'granted') return;
+
+          try {
+            const registration = await navigator.serviceWorker.register('/sw.js');
+            const subscription = await registration.pushManager.subscribe({
+              userVisibleOnly: true,
+              applicationServerKey: urlBase64ToUint8Array(vapidPublicKey)
+            });
+
+            await fetch('/notifications/subscribe', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(subscription)
+            });
+
+            alert("✅ Subscribed to notifications!");
+          } catch (err) {
+            console.error("Push subscription failed:", err);
+          }
+        }, 3000); // Wait 3 seconds after page load
+      }
+    });
+  }
+
+  // Helper to decode base64
+  function urlBase64ToUint8Array(base64String) {
+    const padding = "=".repeat((4 - base64String.length % 4) % 4);
+    const base64 = (base64String + padding).replace(/-/g, "+").replace(/_/g, "/");
+    const rawData = atob(base64);
+    return Uint8Array.from([...rawData].map((char) => char.charCodeAt(0)));
+  }
+
+  // Optional: Manual trigger to retry subscription
+  function askNotificationPermission() {
+    localStorage.removeItem("pushStatus");
+    localStorage.removeItem("lastPromptTime");
+    location.reload(); // retry logic runs on page load
+  }
+</script> -->
+
+<script>
+  const vapidPublicKey = "<%= vapidPublicKey %>";
+
+  if ('serviceWorker' in navigator && 'PushManager' in window) {
+    window.addEventListener('load', async () => {
+      const permission = Notification.permission;
+      const lastPrompt = localStorage.getItem("lastPromptTime");
+      const now = Date.now();
+
+      // Only show banner if not granted and enough time has passed (24h)
+      if (permission !== 'granted' && (!lastPrompt || now - Number(lastPrompt) > 86400000)) {
+        document.getElementById('notif-banner').style.display = 'block';
+      }
+    });
+  }
+
+  async function triggerSubscription() {
+    const permission = await Notification.requestPermission();
+    localStorage.setItem("lastPromptTime", Date.now());
+
+    if (permission !== 'granted') {
+      alert("❌ Notification permission denied.");
+      dismissBanner();
+      return;
+    }
+
+    try {
+      const registration = await navigator.serviceWorker.register('/sw.js');
+      const subscription = await registration.pushManager.subscribe({
+        userVisibleOnly: true,
+        applicationServerKey: urlBase64ToUint8Array("<%= vapidPublicKey %>")
+      });
+
+      await fetch('/notifications/subscribe', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(subscription)
+      });
+
+      alert("✅ Subscribed to notifications!");
+      localStorage.setItem("pushStatus", "granted");
+      dismissBanner();
+    } catch (err) {
+      console.error("Subscription error:", err);
+    }
+  }
+
+  function dismissBanner() {
+    document.getElementById('notif-banner').style.display = 'none';
+  }
+
+  function urlBase64ToUint8Array(base64String) {
+    const padding = "=".repeat((4 - base64String.length % 4) % 4);
+    const base64 = (base64String + padding).replace(/-/g, "+").replace(/_/g, "/");
+    const rawData = atob(base64);
+    return Uint8Array.from([...rawData].map((char) => char.charCodeAt(0)));
+  }
+</script>
+
+<!-- Notification Banner -->
+<div id="notif-banner" style="display: none; position: fixed; top: 0; left: 0; right: 0; background: #333; color: #fff; padding: 12px; text-align: center; z-index: 999;">
+  <span>🔔 Get updates on new devotionals & articles!</span>
+  <button onclick="triggerSubscription()" style="margin-left: 10px; padding: 6px 12px;">Enable</button>
+  <button onclick="dismissBanner()" style="margin-left: 10px; padding: 6px 12px;">Dismiss</button>
+</div>
+
 
 
 </body>
