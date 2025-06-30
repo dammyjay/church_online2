@@ -1,0 +1,226 @@
+<!-- views/public/allVideos.ejs -->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+
+    <link rel="stylesheet" href="/css/style.css" />
+    <link rel="icon" type="image/x-icon" href="/logo.png" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="sha512-..." crossorigin="anonymous" referrerpolicy="no-referrer" />
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>All Videos</title>
+  </head>
+  <body>
+    <header class="header">
+      <div class="logo-title">
+       <a href="/home2"> <img src="/logo.png" alt="Logo" /></a>
+
+        <p>C&S Church Online</p>
+      </div>
+      <button class="nav-toggle" onclick="toggleNav()">☰</button>
+      <nav id="main-nav">
+        <a href="/home2">Home</a>
+        <a href="/articles">Articles</a>
+        <a href="/videos">Videos</a>
+        <a class="active" href="/devotionals">Devotionals</a>
+        <a href="/about">About Us</a>
+        <a href="/faq">FAQ</a>
+        <a href="/profile">Profile</a>
+        <!-- Assuming About refers to Mission & Vision -->
+        <a href="/admin/logout" class="logout-button">Logout</a>
+        <!-- Login remains a page link -->
+        
+      </nav>
+    </header>
+    <form
+      class="search-form"
+      method="GET"
+      action="/devotionals"
+      style="margin-bottom: 20px"
+    >
+      <input
+        type="text"
+        name="search"
+        id="devotionalSearch"
+        placeholder="Search by title..."
+        value="<%= search || '' %>"
+        style="padding: 8px; width: 60%; max-width: 400px"
+      />
+
+      <input
+    type="date"
+    name="date"
+    id="devotionalDate"
+    value="<%= date || '' %>"
+    style="padding: 8px"
+  />
+      <!-- <button type="submit" style="padding: 8px">Search</button> -->
+      <button type="button" onclick="resetFilters()" style="padding: 8px">Reset</button>
+    </form>
+    <section class="section">
+      <h2>All Devotionls</h2>
+     
+      <!-- devotionals -->
+    <section id="devotionals" class="section">
+        <h2>Latest devotionals</h2>
+        <!-- <div class="card-grid">
+          <% devotionals.forEach((devotional, idx) => { %>
+            <div class="article-card">
+              <h3><%- devotional.title %></h3>
+              <% if (devotional.image_url) { %>
+                <img
+                  src="<%= devotional.image_url %>"
+                  alt="devotional Image"
+                  style="max-width: 100%; height: auto; object-fit: cover; border-radius: 8px;"
+                />
+              <% } %>
+              
+              <small><%- new Date(devotional.created_at).toLocaleString() %></small>
+            </div>
+          <% }) %>
+        </div> -->
+        
+        <div class="card-grid">
+            <% devotionals.forEach((devotional) => {
+              const dateStr = new Date(devotional.created_at).toISOString().split('T')[0];
+            %>
+              <!-- <div class="article-card video-card-filter" data-date="<%= dateStr %>"> -->
+                <div class="article-card video-card-filter" data-date="<%= new Date(devotional.created_at).toISOString().split('T')[0] %>">
+
+                <h3><%- devotional.title %></h3>
+                <% if (devotional.image_url) { %>
+                  <img
+                    src="<%= devotional.image_url %>"
+                    alt="Devotional Image"
+                    style="max-width: 100%; height: auto; object-fit: cover; border-radius: 8px;"
+                  />
+                <% } %>
+                <small><%= new Date(devotional.created_at).toLocaleString() %></small>
+              </div>
+            <% }) %>
+          </div>
+          
+
+      </section>
+    </section>
+
+    <footer class="site-footer">
+      <div class="footer-container"> 
+        <div class="footer-about"> 
+            <a href="/"><img src="/logo.png" alt="Logo" width="50px" height="50px"/></a>
+            
+          <h3>C&S Church Online</h3> 
+          <p>Empowering lives through the gospel of Christ. Join us to learn, grow and connect with a family of faith.</p> 
+        </div>
+
+        <div class="footer-about">
+          <P>You can also support willingly</P>
+          <h3>Account Name: Cherubim and Seraphim Church Online</h4>
+          <h1 style="color: white;">Account Number: 0126607952</h1>
+          <h3>Bank: wema bank</h3>
+        </div>
+     
+      <div class="footer-social"> <h4>Connect with us</h4> 
+        <div class="social-links"> 
+          <a href="https://chat.whatsapp.com/KDcpdDfv3kX9NDnnQZVU72" target="_blank" aria-label="WhatsApp"> 
+            <i class="fab fa-whatsapp"></i> 
+          </a> 
+
+          <a href="https://facebook.com/profile.php?id=100083934734942" target="_blank" aria-label="WhatsApp"> 
+            <i class="fab fa-facebook"></i> 
+          </a> 
+          
+          <a href="https://instagram.com/cands.online" target="_blank" aria-label="Instagram"> 
+            <i class="fab fa-instagram"></i> 
+          </a> 
+          
+          <a href="https://youtube.com/@candschurchonline" target="_blank" aria-label="YouTube"> 
+            <i class="fab fa-youtube"></i> 
+          </a>
+          
+          <a href="https://t.me/cherubimandseraphimchurchonline" target="_blank" aria-label="Telegram"> 
+            <i class="fab fa-telegram-plane"></i> 
+          </a> 
+          
+          <a href="mailto:candschurchonline@gmail.com" target="_blank" aria-label="Email"> 
+            <i class="fas fa-envelope"></i> 
+          </a>
+        </div>
+       </div>
+
+      <div class="footer-subscribe">
+        <h4>Subscribe to our newsletter</h4>
+        <form method="POST" action="/subscribe" class="subscribe-form">
+          <input
+            type="email"
+            name="email"
+            placeholder="Enter your email"
+            required
+          />
+          <button type="submit">Subscribe</button>
+        </form>
+      </div>
+    </footer>
+
+
+  <script>
+    function toggleNav() {
+      var nav = document.getElementById("main-nav");
+      nav.classList.toggle("open");
+    }
+  </script>
+
+<!-- search devotionls  -->
+<!-- <script>
+  document.getElementById('devotionalSearch').addEventListener('input', function() {
+    const searchValue = this.value.toLowerCase();
+    document.querySelectorAll('.video-card-filter').forEach(card => {
+      const title = card.querySelector('h3').innerText.toLowerCase();
+      if (title.includes(searchValue)) {
+        card.style.display = '';
+      } else {
+        card.style.display = 'none';
+      }
+    });
+  });
+</script> -->
+
+<script>
+    const searchInput = document.getElementById('devotionalSearch');
+    const dateInput = document.getElementById('devotionalDate');
+    const cards = document.querySelectorAll('.video-card-filter');
+  
+    function filterDevotionals() {
+      const searchValue = searchInput.value.toLowerCase();
+      const selectedDate = dateInput.value; // format: YYYY-MM-DD
+  
+      cards.forEach(card => {
+        const title = card.querySelector('h3').innerText.toLowerCase();
+        const cardDate = card.dataset.date; // set this in HTML
+  
+        const matchesTitle = title.includes(searchValue);
+        const matchesDate = selectedDate ? cardDate === selectedDate : true;
+  
+        if (matchesTitle && matchesDate) {
+          card.style.display = '';
+        } else {
+          card.style.display = 'none';
+        }
+      });
+    }
+
+    function resetFilters() {
+    searchInput.value = '';
+    dateInput.value = '';
+    // Reset all cards to be visible
+    filterDevotionals();
+  }
+  
+    searchInput.addEventListener('input', filterDevotionals);
+    dateInput.addEventListener('change', filterDevotionals);
+  </script>
+  
+
+  </body>
+</html>

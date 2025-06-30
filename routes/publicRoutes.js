@@ -365,6 +365,42 @@ router.get("/videos", async (req, res) => {
   }
 });
 
+router.get("/devotionals", async (req, res) => {
+  try {
+    const search = req.query.search || "";
+    const date = req.query.date || "";
+    let result;
+    if (search) {
+      result = await pool.query(
+        "SELECT * FROM devotionals WHERE LOWER(title) LIKE $1 ORDER BY created_at DESC",
+        [`%${search.toLowerCase()}%`]
+      );
+
+    } else if (date) {
+      result = await pool.query(
+        "SELECT * FROM devotionals WHERE created_at::date = $1 ORDER BY created_at DESC",
+        [date]
+      );
+
+    } else {
+      result = await pool.query(
+        "SELECT * FROM devotionals ORDER BY created_at DESC"
+      );
+    }
+
+    res.render("allDevotionals", {
+      devotionals: result.rows,
+      search, // ⬅️ pass search value to EJS
+      date, // ⬅️ pass date value to EJS
+      title: "All Devotionals",
+      subscribed: req.query.subscribed,
+    });
+  } catch (err) {
+    console.error("Error fetching public video  s:", err);
+    res.status(500).send("Server Error");
+  }
+});
+
 router.get("/signup", async (req, res) => {
   // const result = await pool.query('SELECT * FROM videos4 ORDER BY created_at3 DESC');
 
