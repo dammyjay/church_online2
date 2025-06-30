@@ -135,7 +135,7 @@ router.get("/", async (req, res) => {
   }
 });
 
-router.get("/articles/:id", articleController.showSingleArticle);
+router.get("/articles/:id",  articleController.showSingleArticle);
 
 router.get("/home2", async (req, res) => {
   try {

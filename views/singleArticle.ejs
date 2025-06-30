@@ -6,6 +6,8 @@
     <link rel="stylesheet" href="/css/style.css" />
     <link rel="icon" type="image/x-icon" href="/logo.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="sha512-..." crossorigin="anonymous" referrerpolicy="no-referrer" />
+    
   </head>
   <body>
     <% 
@@ -60,7 +62,7 @@
         style="
           max-width: 100%;
           width: 100%;
-          height: 350px;
+          height: auto;
           object-fit: cover;
           border-radius: 8px;
         "
@@ -71,24 +73,39 @@
         <%- linkify(article.content) %>
       </div>
       <div style="margin-top: 12px">
+       
         <small
           >Posted on <%= new Date(article.created_at3).toLocaleString()
           %></small
         >
       </div>
-      <!-- <button>
-        <a
-          href="/articles"
-          style="
-            display: inline-block;
-            color: white;
-            font-weight: bold;
-            text-decoration: none;
-          "
-          class="button"
-          >&larr; All Articles</a
-        >
-      </button> -->
+      <span class="copy-link-icon" 
+      title="Copy article link"
+      onclick="copyArticleLink('<%= article.id %>', this)"
+      style="cursor:pointer; margin-left:8px;">
+  <i class="fas fa-link"></i>
+</span>
+      <span class="copy-feedback" style="display:none; color:#4caf50; margin-left:6px;">Link copied!</span>
+   
+
+      <div class="interaction-buttons">
+        <i class="fas fa-thumbs-up" title="Like" onclick="likeContent('<%= article.id %>', 'article')"></i>
+        <span id="like-count-<%= article.id %>"><%= article.like_count || 0 %></span>
+      
+        <!-- <i class="fas fa-comment" title="Comment" onclick="loadComments('<%= article.id %>', 'article')"></i> -->
+        <i class="fas fa-comment" title="Comment" onclick="toggleCommentBox('<%= article.id %>')"></i>
+        <span id="comment-count-<%= article.id %>"><%= article.comment_count || 0 %></span>
+        
+        <i class="fas fa-share" title="Share" onclick="copyLink('<%= article.id %>', 'article')"></i>
+      </div>
+      <div id="comment-section-<%= article.id %>" class="comment-section" style="display:none;"> 
+        <form onsubmit="submitComment(event, '<%= article.id %>', 'article')"> 
+          <input type="text" name="comment" placeholder="Write a comment..." required /> 
+          <button type="submit">Post</button>
+         </form> 
+        <div class="comment-list" id="comments-<%= article.id %>"></div> 
+      </div>
+     
       <button onclick="return checkAllArticles();">
         <span
           style="
@@ -195,6 +212,188 @@
         return false; // Prevent default (since we handle navigation)
       }
     </script>
+
+    
+<!-- script to link in the article content -->
+<script>
+  function linkify(text) {
+    return text.replace(/(https?:\/\/[^\s<]+)/g, function (url) {
+      var cleanUrl = url.replace(/[.,!?;:)]*$/, "");
+      var trailing = url.slice(cleanUrl.length);
+      return (
+        '<a href="' +
+        cleanUrl +
+        '" target="_blank" rel="noopener noreferrer">' +
+        cleanUrl +
+        "</a>" +
+        trailing
+      );
+    });
+  }
+
+  document.querySelectorAll(".article-body").forEach(function (el) {
+    // Only linkify if not already containing <a> tags
+    if (!el.innerHTML.includes('<a ')) {
+      el.innerHTML = linkify(el.textContent);
+    }
+  });
+</script>
+
+<!-- script for link to article -->
+<script>
+  function copyArticleLink(articleId, el) {
+    const url = `${window.location.origin}/articles/${articleId}`;
+    navigator.clipboard.writeText(url).then(function() {
+      // Find the feedback span next to the icon
+      const feedback = el.nextElementSibling;
+      if (feedback) {
+        feedback.style.display = "inline";
+        setTimeout(() => {
+          feedback.style.display = "none";
+        }, 1200);
+      }
+      el.title = "Copied!";
+      el.style.color = "#4caf50";
+      setTimeout(() => {
+        el.title = "Copy article link";
+        el.style.color = "";
+      }, 1200);
+    }, function() {
+      alert('Failed to copy link');
+    });
+  }
+</script>
+
+<!-- script to like and comment on articles -->
+
+<script>
+  const currentUser = <%- JSON.stringify(user || null) %>; 
+  
+  function likeContent(id, type) { 
+    if (!currentUser) 
+    return alert("Please log in to like."); 
+  fetch("/interaction/like", {
+     method: "POST", 
+     headers: { "Content-Type": "application/json" }, 
+     body: JSON.stringify({ contentId: id, contentType: type }) 
+    }) 
+    .then(res => res.json()) 
+    .then(data => { 
+      const countSpan = document.getElementById(`like-count-${id}`); 
+      let current = parseInt(countSpan.textContent) || 0; 
+      countSpan.textContent = data.liked ? current + 1 : current - 1; 
+      }) 
+      .catch(err => { 
+        console.error("Error liking content", err); 
+        alert("Something went wrong."); 
+        }); 
+  } 
+
+  function toggleCommentBox(id) { 
+    const box = document.getElementById(`comment-section-${id}`); 
+    box.style.display = box.style.display === "none" ? "block" : "none"; 
+    loadComments(id, "article"); 
+  } 
+
+  // function submitComment(event, id, type) { 
+  //   event.preventDefault(); 
+  //   if (!currentUser) 
+  //     return alert("Please log in to comment."); 
+  //   const input = event.target.comment; 
+  //   const comment = input.value.trim(); 
+  //   if (!comment) 
+  //     return; 
+  //    // 🚫 List of blocked foul words (you can expand this list)
+  //   //  const foulWords = ['stupid', 'idiot', 'dumb', 'fool', 'nonsense', 'crazy', 'shut up'];
+
+  //    const lowerComment = comment.toLowerCase();
+  //   const hasFoul = foulWords.some(word => lowerComment.includes(word));
+
+  //   if (hasFoul) {
+  //     alert("⚠️ Your comment contains inappropriate language and was not submitted.");
+  //     return;
+  //   }
+
+  //   fetch("/interaction/comment", { 
+  //     method: "POST", 
+  //     headers: { "Content-Type": "application/json" }, 
+  //     body: JSON.stringify({ contentId: id, contentType: type, comment }) 
+  //   }) 
+  //   .then(res => res.json()) 
+  //   .then(() => { 
+  //     input.value = ""; loadComments(id, type); 
+  //     }); 
+  // }
+
+  function submitComment(event, id, type) {
+  event.preventDefault();
+
+  if (!currentUser) {
+    alert("Please log in to comment.");
+    return;
+  }
+
+  const input = event.target.comment;
+  const comment = input.value.trim();
+  if (!comment) return;
+
+  fetch("/interaction/comment", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ contentId: id, contentType: type, comment }),
+  })
+    .then(res => res.json().then(data => ({ status: res.status, data })))
+    .then(({ status, data }) => {
+      if (!data.success) {
+        alert("⚠️ " + data.message);
+        return;
+      }
+
+      input.value = "";
+      loadComments(id, type);
+    })
+    .catch(err => {
+      console.error("Comment error:", err);
+      alert("An error occurred while submitting your comment.");
+    });
+}
+
+
+  function loadComments(id, type)  {  
+    fetch(`/interaction/comments/${type}/${id}`) 
+    .then(res => res.json()) 
+    .then(comments => { 
+      const container = document.getElementById(`comments-${id}`); 
+      container.innerHTML = comments.map(c => `
+       <div class="comment"> 
+        <strong>${c.fullname}</strong>: ${c.comment} <br /> 
+        <small style="color: gray">${timeAgo(c.created_at)}</small> 
+       </div> `).join(''); }); 
+  } 
+
+  function timeAgo(dateString) { 
+    const date = new Date(dateString); 
+    const seconds = Math.floor((new Date() - date) / 1000); 
+      if (seconds < 60) 
+        return `${seconds} second${seconds !== 1 ? "s" : ""} ago`; 
+    const minutes = Math.floor(seconds / 60); 
+      if (minutes < 60) 
+        return `${minutes} minute${minutes !== 1 ? "s" : ""} ago`; 
+    const hours = Math.floor(minutes / 60); 
+    if (hours < 24)
+      return `${hours} hour${hours !== 1 ? "s" : ""} ago`; 
+    const days = Math.floor(hours / 24); 
+      return `${days} day${days !== 1 ? "s" : ""} ago`; 
+  } 
+  
+  function copyLink(id, type) { 
+    const url = `${window.location.origin}/${type}s/${id}`; 
+    navigator.clipboard.writeText(url)
+    .then(() => { 
+      alert("Link copied!"); 
+      }); 
+  }
+</script>
 
 
 
