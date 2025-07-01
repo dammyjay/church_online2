@@ -5,6 +5,7 @@ const bodyParser = require('body-parser');
 const path = require('path');
 const createTables = require("./models/initTables");
 const notificationRoutes = require("./routes/notificationRoutes");
+const runNewsletterScheduler = require("./cron/newsletterScheduler");
 
 const app = express();
 const layout = require('express-ejs-layouts');
@@ -101,6 +102,7 @@ app.use('/interaction', interactionRoutes);
 // });
 
 
+
 // Homepage Route
 app.get('/', async (req, res) => {
     try {
@@ -130,6 +132,7 @@ app.get('/', async (req, res) => {
 app.use("/notifications", notificationRoutes);
   
 
+runNewsletterScheduler();
 
 // Run table creation at startup
 createTables();

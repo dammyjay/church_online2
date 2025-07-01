@@ -465,6 +465,71 @@ exports.sendNewsletter = async (req, res) => {
   });
 };
 
+exports.saveNewsletter = async (req, res) => {
+  const { subject, message, scheduled_at } = req.body;
+  let imageUrl = null;
+
+  if (req.file) {
+    const result = await cloudinary.uploader.upload(req.file.path, {
+      folder: "newsletters",
+    });
+    imageUrl = result.secure_url;
+    if (fs.existsSync(req.file.path)) fs.unlinkSync(req.file.path);
+  }
+
+  await pool.query(
+    `INSERT INTO newsletters (subject, message, image_url, scheduled_at)
+     VALUES ($1, $2, $3, $4)`,
+    [subject, message, imageUrl, scheduled_at || null]
+  );
+
+  res.redirect("/admin/newsletter");
+};
+
+exports.showAllNewsletters = async (req, res) => {
+  const infoResult = await pool.query(
+    "SELECT * FROM ministry_info ORDER BY id DESC LIMIT 1"
+  );
+  const newslettersResult = await pool.query(
+    "SELECT * FROM newsletters ORDER BY created_at DESC"
+  );
+
+  res.render("admin/newsletter", {
+    info: infoResult.rows[0] || {},
+    newsletters: newslettersResult.rows,
+  });
+};
+
+// Send Now
+exports.sendNow = async (req, res) => {
+  const id = req.params.id;
+  const newsletter = (await pool.query("SELECT * FROM newsletters WHERE id = $1", [id])).rows[0];
+
+  if (!newsletter || newsletter.sent) return res.redirect("/admin/newsletter");
+
+  const users = await pool.query("SELECT email FROM users2 WHERE email IS NOT NULL");
+  const emails = users.rows.map(u => u.email);
+
+  let htmlMsg = `<div>${newsletter.message}</div>`;
+  if (newsletter.image_url) {
+    htmlMsg += `<div><img src="${newsletter.image_url}" style="max-width:100%;"></div>`;
+  }
+
+  for (const email of emails) {
+    await sendEmail(email, newsletter.subject, htmlMsg);
+  }
+
+  await pool.query("UPDATE newsletters SET sent = TRUE WHERE id = $1", [id]);
+  res.redirect("/admin/newsletter");
+};
+
+// Delete
+exports.deleteNewsletter = async (req, res) => {
+  await pool.query("DELETE FROM newsletters WHERE id = $1", [req.params.id]);
+  res.redirect("/admin/newsletter");
+};
+
+
 exports.getAdminProfile = async (req, res) => {
   const userId = req.session.user?.id;
   if (!userId || req.session.user.role !== "admin")

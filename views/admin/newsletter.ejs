@@ -85,6 +85,27 @@
       >
     </div>
 
+    <h2>All Newsletters</h2>
+<% newsletters.forEach(n => { %>
+  <div class="newsletter-card">
+    <h3><%= n.subject %></h3>
+    <p><%= n.message.substring(0, 150) %>...</p>
+    <small>Scheduled: <%= n.scheduled_at ? new Date(n.scheduled_at).toLocaleString() : "Not Scheduled" %></small>
+    <small>Sent: <%= n.sent ? "✅" : "❌" %></small>
+    
+    <form action="/admin/newsletter/send-now/<%= n.id %>" method="POST">
+      <% if (!n.sent && (!n.scheduled_at || new Date(n.scheduled_at) <= new Date())) { %>
+        <button type="submit">Send Now</button>
+      <% } %>
+    </form>
+
+    <form action="/admin/newsletter/delete/<%= n.id %>" method="POST" onsubmit="return confirm('Delete this newsletter?')">
+      <button type="submit">Delete</button>
+    </form>
+  </div>
+<% }) %>
+
+
     <!-- script for navigation toggle hamburger menu -->
     <script>
       function toggleNav() {

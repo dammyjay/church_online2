@@ -92,8 +92,6 @@
         <img src="<%= d.image_url %>" alt="Devotional Image">
       <% } %>
       <h3><%= d.title %></h3>
-      <p><strong>Scripture:</strong> <%= d.scripture %></p>
-      <p><%= d.content.substring(0, 150) %>...</p>
       <small><%= new Date(d.created_at).toLocaleDateString() %></small>
       <!-- Admin Buttons -->
       <div class="video-buttons">
