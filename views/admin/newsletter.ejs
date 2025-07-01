@@ -136,14 +136,14 @@
 <!-- Display all newsletters -->
 <h2>All Newsletters</h2>
 <% newsletters.forEach(n => { %>
-  <div class="newsletter-card">
+  <div class="article-card">
     <h3><%- n.subject %></h3>
     <p><%- n.message %>...</p>
     <% if (n.image_url) { %>
       <img
         src="<%= n.image_url %>"
         alt="Newsletter Image"
-        style="object-fit: cover; height: 300px"
+        style="object-fit: cover; height: auto"
       />
       <% } %> <br><br>
     <small>Scheduled: <%- n.scheduled_at ? new Date(n.scheduled_at).toLocaleString() : "Not Scheduled" %></small>
