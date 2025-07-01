@@ -113,7 +113,26 @@ router.post(
 
 // send newsletter email
 router.get("/newsletter", adminController.showNewsletterForm);
-router.post("/newsletter", upload.single('image'), adminController.sendNewsletter);
+// router.post("/newsletter", upload.single('image'), adminController.sendNewsletter);
+// router.post(
+//   "/admin/newsletter/save",
+//   upload.single("image"),
+//   adminController.saveNewsletter
+// );
+
+router.post("/newsletter/send-now/:id", adminController.sendNow);
+router.post(
+  "/newsletter/edit/:id",
+  upload.single("image"),
+  adminController.editNewsletter
+);
+
+router.post(
+  "/newsletter",
+  upload.single("image"),
+  adminController.handleNewsletterForm
+);
+
 
 
 router.get("/admin/profile", adminController.getAdminProfile);
