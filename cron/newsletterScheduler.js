@@ -66,7 +66,8 @@ const runNewsletterScheduler = () => {
         const testEmails = [
           "jaykirchtechhub@gmail.com",
           "dammykirchhoff@gmail.com",
-          "dammykirchhoff2@gmail.com",
+          "isaacbayo6@gmail.com",
+          "imoledayoimmanuel@gmail.com",
         ];
 
         let htmlMsg = `<div>${newsletter.message}</div>`;
