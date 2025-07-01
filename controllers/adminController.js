@@ -461,14 +461,14 @@ exports.handleNewsletterForm = async (req, res) => {
     const resultUsers = await pool.query(
       "SELECT email FROM users2 WHERE email IS NOT NULL"
     );
-    // const testEmails = resultUsers.rows.map((row) => row.email);
+    const testEmails = resultUsers.rows.map((row) => row.email);
 
-    const testEmails = [
-      "jaykirchtechhub@gmail.com",
-      "dammykirchhoff@gmail.com",
-      "isaacbayo6@gmail.com",
-      "imoledayoimmanuel@gmail.com",
-    ];
+    // const testEmails = [
+    //   "jaykirchtechhub@gmail.com",
+    //   "dammykirchhoff@gmail.com",
+    //   "isaacbayo6@gmail.com",
+    //   "imoledayoimmanuel@gmail.com",
+    // ];
 
     let htmlMsg = `<div>${message}</div>`;
     if (imageUrl) {
