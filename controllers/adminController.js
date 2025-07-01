@@ -420,7 +420,14 @@ exports.showNewsletterForm = async (req, res) => {
     "SELECT * FROM ministry_info ORDER BY id DESC LIMIT 1"
   );
   const info = infoResult.rows[0] || {};
-  res.render("admin/newsletter", { info });
+  const newslettersResult = await pool.query(
+    "SELECT * FROM newsletters ORDER BY created_at DESC"
+  );
+
+  res.render("admin/newsletter", {
+    info,
+    newsletters: newslettersResult.rows,
+   });
 };
 
 // Send the newsletter to all users
