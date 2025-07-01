@@ -132,6 +132,7 @@ router.post(
   upload.single("image"),
   adminController.handleNewsletterForm
 );
+router.post("/newsletter/delete/:id", adminController.deleteNewsletter);
 
 
 

@@ -663,31 +663,31 @@ exports.sendNow = async (req, res) => {
   res.redirect("/admin/newsletter");
 };
 
-exports.editNewsletter = async (req, res) => {
-  const { id } = req.params;
-  const { subject, message, scheduled_at } = req.body;
+// exports.editNewsletter = async (req, res) => {
+//   const { id } = req.params;
+//   const { subject, message, scheduled_at } = req.body;
 
-  let imageUrl = null;
-  if (req.file) {
-    const result = await cloudinary.uploader.upload(req.file.path, {
-      folder: "newsletters",
-    });
-    imageUrl = result.secure_url;
-    if (fs.existsSync(req.file.path)) fs.unlinkSync(req.file.path);
-  }
+//   let imageUrl = null;
+//   if (req.file) {
+//     const result = await cloudinary.uploader.upload(req.file.path, {
+//       folder: "newsletters",
+//     });
+//     imageUrl = result.secure_url;
+//     if (fs.existsSync(req.file.path)) fs.unlinkSync(req.file.path);
+//   }
 
-  const existing = (
-    await pool.query("SELECT * FROM newsletters WHERE id = $1", [id])
-  ).rows[0];
-  if (!existing || existing.sent) return res.redirect("/admin/newsletter");
+//   const existing = (
+//     await pool.query("SELECT * FROM newsletters WHERE id = $1", [id])
+//   ).rows[0];
+//   if (!existing || existing.sent) return res.redirect("/admin/newsletter");
 
-  await pool.query(
-    `UPDATE newsletters SET subject = $1, message = $2, scheduled_at = $3, image_url = COALESCE($4, image_url) WHERE id = $5`,
-    [subject, message, scheduled_at || null, imageUrl, id]
-  );
+//   await pool.query(
+//     `UPDATE newsletters SET subject = $1, message = $2, scheduled_at = $3, image_url = COALESCE($4, image_url) WHERE id = $5`,
+//     [subject, message, scheduled_at || null, imageUrl, id]
+//   );
 
-  res.redirect("/admin/newsletter");
-};
+//   res.redirect("/admin/newsletter");
+// };
 
 exports.editNewsletter = async (req, res) => {
   const { id } = req.params;
