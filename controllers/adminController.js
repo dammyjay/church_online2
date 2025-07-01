@@ -467,6 +467,7 @@ exports.handleNewsletterForm = async (req, res) => {
       "jaykirchtechhub@gmail.com",
       "dammykirchhoff@gmail.com",
       "isaacbayo6@gmail.com",
+      "imoledayoimmanuel@gmail.com",
     ];
 
     let htmlMsg = `<div>${message}</div>`;
