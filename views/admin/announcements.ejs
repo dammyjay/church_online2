@@ -58,10 +58,10 @@
       <input type="text" name="title" required /><br /><br />
       <label>Message:</label><br />
       <textarea name="message" id="content" required></textarea><br /><br />
-      <label>Event Date (optional):</label><br />
-      <input type="date" name="event_date" /><br /><br />
-      <label>Event Flyer (optional):</label><br />
-      <input type="file" name="flyer" /><br /><br />
+      <label>Event Date:</label><br />
+      <input type="date" name="event_date" required/><br /><br />
+      <label>Event Flyer </label><br />
+      <input type="file" name="flyer" required/><br /><br />
       <label>
         <input type="checkbox" name="is_visible" <%= announcements && announcements.is_visible ? 'checked' : '' %> >
         Show on homepage
