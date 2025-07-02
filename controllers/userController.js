@@ -36,13 +36,12 @@ exports.signup = async (req, res) => {
   console.log("📷 Filename to save in DB:", profile_picture);
 
   await pool.query(
-    "INSERT INTO pending_users (fullname, email, phone, gender, password, otp_code, otp_expires, profile_picture,role,created_at,dob) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11)",
+    "INSERT INTO pending_users (fullname, email, phone, gender, password, otp_code, otp_expires, profile_picture,role,created_at, dob) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11)",
     // 'INSERT INTO pending_users (username, email, phone)
     [
       username,
       email,
       phone,
-      dob,
       gender,
       hashed,
       otp,
@@ -50,6 +49,7 @@ exports.signup = async (req, res) => {
       profile_picture,
       role,
       created_at,
+      dob,
     ]
   );
   await sendEmail(email, "Your OTP Code", `Your code is: ${otp}`);
@@ -77,11 +77,11 @@ exports.verifyOtp = async (req, res) => {
       user.email,
       user.phone,
       user.gender,
-      user.dob,
       user.password,
       user.profile_picture,
       "user",
       created_at,
+      user.dob,
     ]
   );
 

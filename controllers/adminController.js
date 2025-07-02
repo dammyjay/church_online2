@@ -644,13 +644,13 @@ exports.getAdminProfile = async (req, res) => {
 };
 
 exports.updateAdminProfile = async (req, res) => {
-  const { fullname, phone } = req.body;
+  const { fullname, phone, dob } = req.body;
   const profile_picture = req.file
     ? req.file.path
     : req.session.user.profile_picture;
   await pool.query(
-    "UPDATE users2 SET fullname = $1, phone = $2, profile_picture = $3 WHERE id = $4",
-    [fullname, phone, profile_picture, req.session.user.id]
+    "UPDATE users2 SET fullname = $1, phone = $2, profile_picture = $3, dob = $4 WHERE id = $5",
+    [fullname, phone, profile_picture, dob, req.session.user.id]
   );
   req.session.user.profile_picture = profile_picture; // update session
   res.redirect("/admin/profile");
