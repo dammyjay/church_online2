@@ -47,8 +47,6 @@
 
 // module.exports = runNewsletterScheduler;
 
-
-
 const cron = require("node-cron");
 const pool = require("../models/db");
 const sendEmail = require("../utils/sendEmail");
@@ -62,12 +60,12 @@ const runNewsletterScheduler = () => {
         [now]
       );
 
-        for (const newsletter of result.rows) {
-          // Get all user emails
-              const resultUsers = await pool.query(
-                "SELECT email FROM users2 WHERE email IS NOT NULL"
-              );
-              const testEmails = resultUsers.rows.map((row) => row.email);
+      for (const newsletter of result.rows) {
+        // Get all user emails
+        const resultUsers = await pool.query(
+          "SELECT email FROM users2 WHERE email IS NOT NULL"
+        );
+        const testEmails = resultUsers.rows.map((row) => row.email);
         // const testEmails = [
         //   "jaykirchtechhub@gmail.com",
         //   "dammykirchhoff@gmail.com",

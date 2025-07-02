@@ -12,7 +12,7 @@ exports.showLogin = (req, res) => {
 };
 
 exports.signup = async (req, res) => {
-  const { email, username, phone, gender, password } = req.body;
+  const { email, username, phone, gender, password, dob} = req.body;
   const file = req.file;
   const exists = await pool.query("SELECT * FROM users2 WHERE email = $1", [
     email,
@@ -36,12 +36,13 @@ exports.signup = async (req, res) => {
   console.log("📷 Filename to save in DB:", profile_picture);
 
   await pool.query(
-    "INSERT INTO pending_users (fullname, email, phone, gender, password, otp_code, otp_expires, profile_picture,role,created_at) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10)",
+    "INSERT INTO pending_users (fullname, email, phone, gender, password, otp_code, otp_expires, profile_picture,role,created_at,dob) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11)",
     // 'INSERT INTO pending_users (username, email, phone)
     [
       username,
       email,
       phone,
+      dob,
       gender,
       hashed,
       otp,
@@ -70,12 +71,13 @@ exports.verifyOtp = async (req, res) => {
     return res.status(400).send("OTP expired");
 
   await pool.query(
-    "INSERT INTO users2 (fullname, email, phone, gender, password, profile_picture, role,created_at) VALUES ($1,$2,$3,$4,$5,$6,$7,$8)",
+    "INSERT INTO users2 (fullname, email, phone, gender, password, profile_picture, role,created_at, dob) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9)",
     [
       user.fullname,
       user.email,
       user.phone,
       user.gender,
+      user.dob,
       user.password,
       user.profile_picture,
       "user",
@@ -140,14 +142,14 @@ exports.updateUserProfile = async (req, res) => {
   const user = req.session.user;
   if (!user) return res.redirect("/admin/login");
 
-  const { fullname, phone } = req.body;
+  const { fullname, phone, dob } = req.body;
   const profile_picture = req.file ? req.file.path : user.profile_picture;
 
   await pool.query(
-    "UPDATE users2 SET fullname = $1, phone = $2, profile_picture = $3 WHERE id = $4",
-    [fullname, phone, profile_picture, user.id]
+    "UPDATE users2 SET fullname = $1, phone = $2, profile_picture = $3, dob = $4 WHERE id = $5",
+    [fullname, phone, profile_picture, dob, user.id]
   );
-
+  // Update session with new profile picture
   req.session.user.profile_picture = profile_picture;
 
   if (user.role === "admin") {

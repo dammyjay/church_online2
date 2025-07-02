@@ -99,53 +99,6 @@ exports.showLogin = (req, res) => {
   });
 };
 
-// exports.login = async (req, res) => {
-//   const { email, password } = req.body;
-//   hashed = await bcrypt.hash(password, 10); // Hash the password for comparison
-//   const redirectUrl = req.query.redirect;
-//   console.log("Hashed password:", hashed);
-//   const result = await pool.query(
-//     "SELECT * FROM users2 WHERE email = $1 AND password = $2",
-//     [email, hashed]
-//   );
-
-//   // if (result.rows.length === 0) {
-//   //   return res.render("admin/login", { error: "Invalid credentials" });
-//   // }
-
-//   if (result.rows.length === 0) {
-//     return res.render("admin/login", {
-//       error: "Invalid credentials",
-//       title: "Login",
-//       redirect: redirectUrl || "", // Always pass redirect!
-//     });
-//   }
-
-//   const user = result.rows[0];
-
-//   // Save session
-//   req.session.user = {
-//     id: user.id,
-//     email: user.email,
-//     role: user.role,
-//     profile_pic: user.profile_picture,
-//   };
-
-//   // Redirect to intended page if present, else default
-//   if (redirectUrl) {
-//     return res.redirect(redirectUrl);
-//   }
-
-//   // Redirect based on role
-//   if (user.role === "admin") {
-//     console.log("Admin login successful");
-//     return res.redirect("/admin/dashboard");
-//   } else {
-//     console.log("User login successful");
-//     return res.redirect("/home2");
-//   }
-// };
-
 exports.login = async (req, res) => {
   const { email, password } = req.body;
   const redirectUrl = req.query.redirect;
@@ -500,8 +453,6 @@ exports.handleNewsletterForm = async (req, res) => {
   });
 };
 
-
-
 // Send the newsletter to all users
 exports.sendNewsletter = async (req, res) => {
   const { subject, message } = req.body;
@@ -557,26 +508,6 @@ exports.sendNewsletter = async (req, res) => {
   });
 };
 
-// exports.saveNewsletter = async (req, res) => {
-//   const { subject, message, scheduled_at } = req.body;
-//   let imageUrl = null;
-
-//   if (req.file) {
-//     const result = await cloudinary.uploader.upload(req.file.path, {
-//       folder: "newsletters",
-//     });
-//     imageUrl = result.secure_url;
-//     if (fs.existsSync(req.file.path)) fs.unlinkSync(req.file.path);
-//   }
-
-//   await pool.query(
-//     `INSERT INTO newsletters (subject, message, image_url, scheduled_at)
-//      VALUES ($1, $2, $3, $4)`,
-//     [subject, message, imageUrl, scheduled_at || null]
-//   );
-
-//   res.redirect("/admin/newsletter");
-// };
 
 exports.saveNewsletter = async (req, res) => {
   const { subject, message, scheduled_at } = req.body;
@@ -615,28 +546,6 @@ exports.showAllNewsletters = async (req, res) => {
 };
 
 // Send Now
-// exports.sendNow = async (req, res) => {
-//   const id = req.params.id;
-//   const newsletter = (await pool.query("SELECT * FROM newsletters WHERE id = $1", [id])).rows[0];
-
-//   if (!newsletter || newsletter.sent) return res.redirect("/admin/newsletter");
-
-//   const users = await pool.query("SELECT email FROM users2 WHERE email IS NOT NULL");
-//   const emails = users.rows.map(u => u.email);
-
-//   let htmlMsg = `<div>${newsletter.message}</div>`;
-//   if (newsletter.image_url) {
-//     htmlMsg += `<div><img src="${newsletter.image_url}" style="max-width:100%;"></div>`;
-//   }
-
-//   for (const email of emails) {
-//     await sendEmail(email, newsletter.subject, htmlMsg);
-//   }
-
-//   await pool.query("UPDATE newsletters SET sent = TRUE WHERE id = $1", [id]);
-//   res.redirect("/admin/newsletter");
-// };
-
 exports.sendNow = async (req, res) => {
   const id = req.params.id;
   const newsletter = (
@@ -715,18 +624,11 @@ exports.editNewsletter = async (req, res) => {
   res.redirect("/admin/newsletter");
 };
 
-
 // Delete
-// exports.deleteNewsletter = async (req, res) => {
-//   await pool.query("DELETE FROM newsletters WHERE id = $1", [req.params.id]);
-//   res.redirect("/admin/newsletter");
-// };
-
 exports.deleteNewsletter = async (req, res) => {
   await pool.query("DELETE FROM newsletters WHERE id = $1", [req.params.id]);
   res.redirect("/admin/newsletter");
 };
-
 
 exports.getAdminProfile = async (req, res) => {
   const userId = req.session.user?.id;
@@ -753,3 +655,16 @@ exports.updateAdminProfile = async (req, res) => {
   req.session.user.profile_picture = profile_picture; // update session
   res.redirect("/admin/profile");
 };
+
+exports.getUserProfile = async (req, res) => {
+  const userId = req.session.user?.id;
+  if (!userId || req.session.user.role !== "admin")
+    return res.redirect("/admin/login");
+  const result = await pool.query("SELECT * FROM users2 WHERE id = $1", [
+    userId,
+  ]);
+  res.render("adminProfile", {
+    user: result.rows[0],
+    title: "User Profile",
+  });
+}
