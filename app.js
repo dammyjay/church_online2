@@ -6,6 +6,7 @@ const path = require('path');
 const createTables = require("./models/initTables");
 const notificationRoutes = require("./routes/notificationRoutes");
 const runNewsletterScheduler = require("./cron/newsletterScheduler");
+const runDevotionalScheduler = require("./cron/cronJobs");
 
 const app = express();
 const layout = require('express-ejs-layouts');
@@ -133,6 +134,9 @@ app.use("/notifications", notificationRoutes);
   
 
 runNewsletterScheduler();
+
+runDevotionalScheduler();
+
 
 // Run table creation at startup
 createTables();

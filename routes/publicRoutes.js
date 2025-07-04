@@ -37,8 +37,12 @@ router.get("/", async (req, res) => {
     console.log("Demo Videos:", demoVideos);
 
     //fetch daily devotionals
+    // const devoRes = await pool.query(
+    //   "SELECT * FROM devotionals ORDER BY created_at DESC LIMIT 1"
+    // );
+
     const devoRes = await pool.query(
-      "SELECT * FROM devotionals ORDER BY created_at DESC LIMIT 1"
+      "SELECT * FROM devotionals WHERE visible = true ORDER BY created_at DESC LIMIT 1"
     );
     const devotional = devoRes.rows[0];
 
@@ -190,7 +194,7 @@ router.get("/home2", async (req, res) => {
 
     //fetch daily devotionals
     const devoRes = await pool.query(
-      "SELECT * FROM devotionals ORDER BY created_at DESC LIMIT 1"
+      "SELECT * FROM devotionals WHERE visible = true ORDER BY created_at DESC LIMIT 1"
     );
     const devotional = devoRes.rows[0];
 

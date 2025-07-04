@@ -16,13 +16,6 @@ exports.showDevotionals = async (req, res) => {
   });
 };
 
-// exports.showUploadForm = async (req, res) => {
-//   const info =
-//     (await pool.query("SELECT * FROM ministry_info ORDER BY id DESC LIMIT 1"))
-//       .rows[0] || {};
-//   res.render("admin/devotionals", { info });
-// };
-
 exports.showUploadForm = async (req, res) => {
   try {
     const infoResult = await pool.query(
@@ -57,62 +50,89 @@ exports.showUploadForm = async (req, res) => {
 //   }
 // };
 
+
+// exports.saveDevotional = async (req, res) => {
+//   const { title, scripture, content } = req.body;
+//   let imageUrl = null;
+
+//   // Upload to Cloudinary if image was included
+//   if (req.file) {
+//     try {
+//       const result = await cloudinary.uploader.upload(req.file.path, {
+//         folder: "devotionals",
+//       });
+//       imageUrl = result.secure_url;
+
+//       // Clean up local file
+//       if (req.file.path && fs.existsSync(req.file.path)) {
+//         fs.unlinkSync(req.file.path);
+//       }
+//     } catch (uploadError) {
+//       console.error("Cloudinary upload failed:", uploadError);
+//       return res.status(500).send("Image upload failed");
+//     }
+//   }
+
+//   try {
+//     await pool.query(
+//       "INSERT INTO devotionals (title, scripture, content, image_url, created_at) VALUES ($1, $2, $3, $4, NOW())",
+//       [title, scripture, content, imageUrl]
+//     );
+
+//     // Send Push Notification to Subscribers
+//     const subsResult = await pool.query("SELECT * FROM subscriptions");
+
+//     const payload = JSON.stringify({
+//       title: title,
+//       message: "A new devotional has been posted!",
+//       url: "/#devotionals",
+//     });
+
+//     for (const sub of subsResult.rows) {
+//       const pushSubscription = {
+//         endpoint: sub.endpoint,
+//         keys: sub.keys,
+//       };
+
+//       try {
+//         await webpush.sendNotification(pushSubscription, payload);
+//       } catch (err) {
+//         console.error("Push notification failed:", err);
+//       }
+//     }
+
+//     res.redirect("/admin/devotionals");
+//   } catch (dbError) {
+//     console.error(dbError);
+//     res.status(500).send("Database error");
+//   }
+// };
+
 exports.saveDevotional = async (req, res) => {
-  const { title, scripture, content } = req.body;
+  const { title, scripture, content, scheduled_at } = req.body;
   let imageUrl = null;
 
-  // Upload to Cloudinary if image was included
   if (req.file) {
-    try {
-      const result = await cloudinary.uploader.upload(req.file.path, {
-        folder: "devotionals",
-      });
-      imageUrl = result.secure_url;
-
-      // Clean up local file
-      if (req.file.path && fs.existsSync(req.file.path)) {
-        fs.unlinkSync(req.file.path);
-      }
-    } catch (uploadError) {
-      console.error("Cloudinary upload failed:", uploadError);
-      return res.status(500).send("Image upload failed");
-    }
-  }
-
-  try {
-    await pool.query(
-      "INSERT INTO devotionals (title, scripture, content, image_url, created_at) VALUES ($1, $2, $3, $4, NOW())",
-      [title, scripture, content, imageUrl]
-    );
-
-    // Send Push Notification to Subscribers
-    const subsResult = await pool.query("SELECT * FROM subscriptions");
-
-    const payload = JSON.stringify({
-      title: title,
-      message: "A new devotional has been posted!",
-      url: "/#devotionals",
+    const result = await cloudinary.uploader.upload(req.file.path, {
+      folder: "devotionals",
     });
-
-    for (const sub of subsResult.rows) {
-      const pushSubscription = {
-        endpoint: sub.endpoint,
-        keys: sub.keys,
-      };
-
-      try {
-        await webpush.sendNotification(pushSubscription, payload);
-      } catch (err) {
-        console.error("Push notification failed:", err);
-      }
+    imageUrl = result.secure_url;
+    if (req.file.path && fs.existsSync(req.file.path)) {
+      fs.unlinkSync(req.file.path);
     }
-
-    res.redirect("/admin/devotionals");
-  } catch (dbError) {
-    console.error(dbError);
-    res.status(500).send("Database error");
   }
+
+  const visible = scheduled_at ? false : true; // Show now if not scheduled
+
+  await pool.query(
+    `INSERT INTO devotionals (title, scripture, content, image_url, scheduled_at, created_at, visible)
+     VALUES ($1, $2, $3, $4, $5, NOW(), $6)`,
+    [title, scripture, content, imageUrl, scheduled_at || null, visible]
+  );
+
+  res.redirect("/admin/devotionals");
 };
+
 
 exports.showEditDevotional = async (req, res) => {
   const id = req.params.id;

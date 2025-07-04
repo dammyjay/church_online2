@@ -73,6 +73,9 @@
       ></textarea
       ><br /><br />
 
+      <label>Schedule Date (optional):</label><br>
+      <input type="datetime-local" name="scheduled_at"><br><br>
+
       
 
       <!-- 📸 Image Upload Field -->
@@ -92,7 +95,10 @@
         <img src="<%= d.image_url %>" alt="Devotional Image">
       <% } %>
       <h3><%= d.title %></h3>
-      <small><%= new Date(d.created_at).toLocaleDateString() %></small>
+      <!-- <small><%= new Date(d.scheduled_at).toLocaleDateString() %></small> -->
+      <small><%= new Date(d.scheduled_at)%></small>
+      <small>Status: <%= d.visible ? "🟢 Displayed" : "⏳ Scheduled" %></small>
+
       <!-- Admin Buttons -->
       <div class="video-buttons">
         <!-- <a href="javascript:void(0);" onclick="openEditModal(<%= d.id %>)">Edit</a> -->
