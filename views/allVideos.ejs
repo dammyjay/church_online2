@@ -114,11 +114,56 @@
                  <p><%= video.description %>...</p> 
                  <small><%= new Date(video.created_at3).toLocaleString() %></small> 
           </a> 
+          
+          <span class="copy-link-icon" 
+          title="Copy article link"
+          onclick="copyArticleLink('<%= video.id %>', this)"
+          style="cursor:pointer; margin-left:8px;">
+      <i class="fas fa-link"></i> Click the chain to copy
+    </span>
+    
+    <span class="copy-feedback" style="display:none; color:#4caf50; margin-left:6px;">Link copied!</span>
+    
+    <!-- <div class="interaction-buttons">
+      <i class="fas fa-thumbs-up" title="Like" onclick="likeContent('<%= video.id %>', 'video')"></i>
+      <span id="like-count-<%= video.id %>"><%= video.like_count || 0 %></span>
+    
+     
+      <i class="fas fa-comment" title="Comment" onclick="toggleCommentBox('<%= video.id %>')"></i>
+      <span id="comment-count-<%= video.id %>"><%= video.comment_count || 0 %></span>
+      
+      <i class="fas fa-share" title="Share" onclick="copyLink('<%= video.id %>', 'video')"></i>
+    </div> -->
         </div>
 
         <% }) %>
       </div>
     </section>
+
+    <!-- script for link to article -->
+<script>
+  function copyArticleLink(videoId, el) {
+    const url = `${window.location.origin}/videos/${videoId}`;
+    navigator.clipboard.writeText(url).then(function() {
+      // Find the feedback span next to the icon
+      const feedback = el.nextElementSibling;
+      if (feedback) {
+        feedback.style.display = "inline";
+        setTimeout(() => {
+          feedback.style.display = "none";
+        }, 1200);
+      }
+      el.title = "Copied!";
+      el.style.color = "#4caf50";
+      setTimeout(() => {
+        el.title = "Copy video link";
+        el.style.color = "";
+      }, 1200);
+    }, function() {
+      alert('Failed to copy link');
+    });
+  }
+</script>
 
     <footer class="site-footer">
       <div class="footer-container"> 
