@@ -95,8 +95,8 @@
         <img src="<%= d.image_url %>" alt="Devotional Image">
       <% } %>
       <h3><%= d.title %></h3>
-      <!-- <small><%= new Date(d.scheduled_at).toLocaleDateString() %></small> -->
-      <small><%= new Date(d.scheduled_at)%></small>
+      <small style="color: rgb(38, 125, 38);">Uploaded at: <%= new Date(d.created_at).toLocaleDateString() %></small><br><br>
+      <small>Scheduled at: <%= new Date(d.scheduled_at)%></small>
       <small>Status: <%= d.visible ? "🟢 Displayed" : "⏳ Scheduled" %></small>
 
       <!-- Admin Buttons -->

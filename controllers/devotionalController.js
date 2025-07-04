@@ -130,6 +130,8 @@ exports.saveDevotional = async (req, res) => {
     [title, scripture, content, imageUrl, scheduled_at || null, visible]
   );
 
+  
+
   res.redirect("/admin/devotionals");
 };
 
