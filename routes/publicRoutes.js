@@ -499,7 +499,8 @@ router.post("/faq/ask", async (req, res) => {
 router.get("/testimony", async (req, res) => {
   const infoResult = await pool.query("SELECT * FROM ministry_info ORDER BY id DESC LIMIT 1");
   const testimonyResult = await pool.query(
-    "SELECT * FROM testimonies ORDER BY id"
+    "SELECT * FROM testimonies WHERE is_published = true ORDER BY id"
+    
   );
   res.render("testimony", {
     info: infoResult.rows[0] || {},
