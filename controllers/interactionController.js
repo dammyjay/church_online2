@@ -1,4 +1,6 @@
 const pool = require("../models/db");
+const webpush = require("../utils/webpushConfig");
+
 const foulWords = [
   "ass",
   "asshole",
@@ -93,29 +95,17 @@ exports.getLikes = async (req, res) => {
 //   const userId = req.session.user?.id;
 //   const created_at = new Date();
 
-//   await pool.query(
-//     "INSERT INTO comments (user_id, content_type, content_id, comment, created_at) VALUES ($1, $2, $3, $4, $5)",
-//     [userId, contentType, contentId, comment, created_at]
-//   );
-//   res.json({ success: true });
-// };
-
-// exports.addComment = async (req, res) => {
-//   const { contentType, contentId, comment } = req.body;
-//   const userId = req.session.user?.id;
-//   const created_at = new Date();
-
-//   // Normalize the comment to lowercase for checking
 //   const lowerComment = comment.toLowerCase();
 
-//   // Check if comment contains any foul word
-//   const hasFoulWord = foulWords.some((word) => lowerComment.includes(word));
+//   // Detect the specific foul word used
+//   const matchedFoulWord = foulWords.find((word) =>
+//     new RegExp(`\\b${word}\\b`, "i").test(lowerComment)
+//   );
 
-//   if (hasFoulWord) {
+//   if (matchedFoulWord) {
 //     return res.status(400).json({
 //       success: false,
-//       message:
-//         "Your comment contains inappropriate language and was not submitted.",
+//       message: `Your comment contains the word "${matchedFoulWord}" which is not allowed.`,
 //     });
 //   }
 
@@ -131,6 +121,8 @@ exports.getLikes = async (req, res) => {
 //     res.status(500).json({ success: false, message: "Server error" });
 //   }
 // };
+
+
 
 exports.addComment = async (req, res) => {
   const { contentType, contentId, comment } = req.body;
@@ -152,17 +144,65 @@ exports.addComment = async (req, res) => {
   }
 
   try {
+    // Save the comment
     await pool.query(
       "INSERT INTO comments (user_id, content_type, content_id, comment, created_at) VALUES ($1, $2, $3, $4, $5)",
       [userId, contentType, contentId, comment, created_at]
     );
 
+    // Prepare Push Notification
+    let title = "New Comment";
+    let url = "/";
+    let message = "Someone just commented!";
+
+    if (contentType === "article") {
+      const articleResult = await pool.query(
+        "SELECT title FROM articles WHERE id = $1",
+        [contentId]
+      );
+      const articleTitle = articleResult.rows[0]?.title || "an article";
+      title = "New Comment on Article";
+      message = `Someone commented on "${articleTitle}"`;
+      url = `/articles/${contentId}`;
+    } else if (contentType === "video") {
+      const videoResult = await pool.query(
+        "SELECT title FROM videos WHERE id = $1",
+        [contentId]
+      );
+      const videoTitle = videoResult.rows[0]?.title || "a video";
+      title = "New Comment on Video";
+      message = `Someone commented on "${videoTitle}"`;
+      url = `/videos/${contentId}`;
+    }
+
+    // Fetch subscribers
+    const subsResult = await pool.query("SELECT * FROM subscriptions");
+    const payload = JSON.stringify({
+      title,
+      message,
+      url,
+    });
+
+    for (const sub of subsResult.rows) {
+      const pushSubscription = {
+        endpoint: sub.endpoint,
+        keys: sub.keys,
+      };
+
+      try {
+        await webpush.sendNotification(pushSubscription, payload);
+      } catch (err) {
+        console.error("🔴 Failed to send comment push notification:", err);
+      }
+    }
+
     res.json({ success: true });
   } catch (err) {
-    console.error(err);
+    console.error("❌ Error saving comment:", err);
     res.status(500).json({ success: false, message: "Server error" });
   }
 };
+
 
 exports.fetchComments = async (req, res) => {
   const { type, id } = req.params;
