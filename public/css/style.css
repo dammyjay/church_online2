@@ -1753,12 +1753,18 @@ nav a:hover {
                 padding-top: 60px;
                 transition: left 0.3s ease;
                 box-shadow: 2px 0 8px rgba(0, 0,0, 0.2);
+                display: none;
         }
     
         #main-nav.open {
             display: flex;
             left: 0;
         }
+
+                #main-nav.close {
+                    display: none;
+                    left: 0;
+                }
     
         #main-nav a,
         #main-nav img {

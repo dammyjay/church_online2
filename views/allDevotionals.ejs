@@ -165,28 +165,28 @@
     </footer>
 
 
-  <script>
-    function toggleNav() {
-      var nav = document.getElementById("main-nav");
-      nav.classList.toggle("open");
+<!-- For the navigation toggle -->
+<script>
+  function toggleNav() {
+    const nav = document.getElementById("main-nav");
+    nav.classList.toggle("open");
+  }
+
+  // Close nav when clicking outside
+  document.addEventListener("click", function(event) {
+    const nav = document.getElementById("main-nav");
+    const toggleBtn = document.querySelector(".nav-toggle");
+
+    const clickedInsideNav = nav.contains(event.target);
+    const clickedToggle = toggleBtn.contains(event.target);
+
+    if (!clickedInsideNav && !clickedToggle) {
+      nav.classList.remove("open");
     }
-  </script>
+  });
+</script>
 
 <!-- search devotionls  -->
-<!-- <script>
-  document.getElementById('devotionalSearch').addEventListener('input', function() {
-    const searchValue = this.value.toLowerCase();
-    document.querySelectorAll('.video-card-filter').forEach(card => {
-      const title = card.querySelector('h3').innerText.toLowerCase();
-      if (title.includes(searchValue)) {
-        card.style.display = '';
-      } else {
-        card.style.display = 'none';
-      }
-    });
-  });
-</script> -->
-
 <script>
     const searchInput = document.getElementById('devotionalSearch');
     const dateInput = document.getElementById('devotionalDate');

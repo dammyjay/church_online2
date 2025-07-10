@@ -278,12 +278,26 @@
       });
     </script> -->
 
-  <script>
-    function toggleNav() {
-      var nav = document.getElementById("main-nav");
-      nav.classList.toggle("open");
+<!-- For the navigation toggle -->
+<script>
+  function toggleNav() {
+    const nav = document.getElementById("main-nav");
+    nav.classList.toggle("open");
+  }
+
+  // Close nav when clicking outside
+  document.addEventListener("click", function(event) {
+    const nav = document.getElementById("main-nav");
+    const toggleBtn = document.querySelector(".nav-toggle");
+
+    const clickedInsideNav = nav.contains(event.target);
+    const clickedToggle = toggleBtn.contains(event.target);
+
+    if (!clickedInsideNav && !clickedToggle) {
+      nav.classList.remove("open");
     }
-  </script>
+  });
+</script>
 
 <script>
   document.getElementById('videoSearch').addEventListener('input', function() {
