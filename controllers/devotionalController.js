@@ -154,7 +154,7 @@ exports.showEditDevotional = async (req, res) => {
 
 exports.updateDevotional = async (req, res) => {
   const id = req.params.id;
-  const { title, scripture, content, existingUrl } = req.body;
+  const { title, scripture, content, scheduled_at, existingUrl } = req.body;
 
   let imageUrl = existingUrl;
 
@@ -167,8 +167,8 @@ exports.updateDevotional = async (req, res) => {
   }
 
   await pool.query(
-    "UPDATE devotionals SET title = $1, scripture = $2, content = $3, image_url = $4 WHERE id = $5",
-    [title, scripture, content, imageUrl, id]
+    "UPDATE devotionals SET title = $1, scripture = $2, content = $3, schedule_at = $4, image_url = $5 WHERE id = $6",
+    [title, scripture, content, scheduled_at, imageUrl, id]
   );
 
   res.redirect("/admin/devotionals");

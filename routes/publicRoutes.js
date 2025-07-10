@@ -411,7 +411,41 @@ router.get("/signup", async (req, res) => {
   res.render("signup", { error: null, title: "Signup" });
 });
 
+router.get("/faq", async (req, res) => {
+  try {
+    const search = req.query.search || "";
+    let faqResult;
+
+    if (search) {
+      faqResult = await pool.query(
+        "SELECT * FROM faqs WHERE LOWER(question) LIKE $1 ORDER BY created_at DESC",
+        [`%${search.toLowerCase()}%`]
+      );
+    } else {
+      faqResult = await pool.query(
+        "SELECT * FROM faqs ORDER BY created_at DESC"
+      );
+    }
+
+    const infoResult = await pool.query(
+      "SELECT * FROM ministry_info ORDER BY id DESC LIMIT 1"
+    );
+
+    res.render("faq", {
+      info: infoResult.rows[0] || {},
+      faqs: faqResult.rows,
+      search, // pass current search back to the EJS view
+      user: req.session.user || null,
+    });
+  } catch (err) {
+    console.error("Error fetching FAQs:", err);
+    res.status(500).send("Error loading FAQs");
+  }
+});
+
 router.post("/faq/ask", async (req, res) => {
+
+
   const { question, email } = req.body;
 
   if (!question || question.trim() === "") {

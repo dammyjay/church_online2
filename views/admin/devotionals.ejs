@@ -128,6 +128,9 @@
       <input type="text" name="scripture" id="editScripture"><br><br>
       <label>Content</label><br />
       <textarea name="content" id="editContent" required></textarea><br><br>
+      <label >Schedule Date (optional):</label><br>
+      <p><strong>Schedule Date (optional):</strong> <span id="editSchedule_at2"></span></p>
+      <input type="datetime-local" id="editSchedule_at" name="scheduled_at"><br><br>
       <label>Uploaded Image Preview:</label><br />
       <img id="editImagePreview" src="" alt="Current Image" style="max-width: 200px; display: none;" /><br><br>
       <input type="file" id="editImageInput" name="image_url" accept="image/*" onchange="previewEditImage()" /><br><br>
@@ -153,6 +156,8 @@
     document.getElementById('editTitle').value = data.title;
     document.getElementById('editScripture').value = data.scripture;
     document.getElementById('editContent').value = data.content;
+    document.getElementById('editSchedule_at2').textContent = data.scheduled_at;
+    document.getElementById('editSchedule_at').value = data.scheduled_at ? new Date(data.scheduled_at).toISOString().slice(0, 16) : '';
     document.getElementById('existingUrl').value = data.image_url || '';
     document.getElementById('editForm').action = "/admin/devotionals/edit/" + data.id;
   

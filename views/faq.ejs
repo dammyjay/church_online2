@@ -63,22 +63,23 @@
 
       <hr style="margin: 40px 0" />
     </section>
-    <!-- <section class="section">
-      <h2>Frequently Asked Questions</h2>
-      <div class="faq-list">
-        <% faqs.forEach(faq => { %>
-        <div class="faq-item">
-          <h4>Q: <%- faq.question %></h4>
-          <% if (faq.answer) { %>
-          <p><strong>A:</strong> <%- faq.answer %></p>
-          <% } else { %>
-          <p><em>Answer coming soon...</em></p>
-          <% } %>
-        </div>
-        <% }) %>
-      </div>
-    </section> -->
-    <section class="section">
+
+
+    <!-- search for FAQ -->\
+    <form class="search-form" method="GET" action="/faq">
+      <input
+        type="text"
+        id="faqSearch"
+        name="search"
+        placeholder="Search by title..."
+        value="<%= search || '' %>"
+        style="padding: 8px; width: 60%; max-width: 400px"
+      />
+      <button type="submit" style="padding: 8px">Search</button>
+    </form>
+
+    <!-- All questions are answered by our admin team. If you have a question that is not listed here, please submit it using the form above. We will get back to you as soon as possible. -->
+   <section class="section">
       <h2>Frequently Asked Questions</h2>
       <div class="faq-list">
         <% faqs.forEach((faq, index) => { %>
@@ -98,6 +99,22 @@
         <% }) %>
       </div>
     </section>
+
+<!-- search script  -->
+<script>
+  document.getElementById('faqSearch').addEventListener('input', function() {
+    const searchValue = this.value.toLowerCase();
+    document.querySelectorAll('.article-card-filter').forEach(card => {
+      const title = card.querySelector('h3').innerText.toLowerCase();
+      if (title.includes(searchValue)) {
+        card.style.display = '';
+      } else {
+        card.style.display = 'none';
+      }
+    });
+  });
+</script>
+
 
     <footer class="site-footer">
       <div class="footer-container"> 

@@ -4,14 +4,47 @@ const pool = require('../models/db');
 const sendEmail = require("../utils/sendEmail");
 
 // Show FAQ page
-router.get('/faq', async (req, res) => {
-    const infoResult = await pool.query(
-        'SELECT * FROM ministry_info ORDER BY id DESC LIMIT 1',
+// router.get('/faq', async (req, res) => {
+//     const infoResult = await pool.query(
+//         'SELECT * FROM ministry_info ORDER BY id DESC LIMIT 1',
+//       );
+//       const info = infoResult.rows[0] || {};
+// const result = await pool.query('SELECT * FROM faqs WHERE is_published = true ORDER BY created_at DESC');
+// res.render('faq', { info, faqs: result.rows, title:'FAQS' });
+// });
+
+router.get("/faq", async (req, res) => {
+  try {
+    const search = req.query.search || "";
+    let faqResult;
+
+    if (search) {
+      faqResult = await pool.query(
+        "SELECT * FROM faqs WHERE LOWER(question) LIKE $1 ORDER BY created_at DESC",
+        [`%${search.toLowerCase()}%`]
       );
-      const info = infoResult.rows[0] || {};
-const result = await pool.query('SELECT * FROM faqs WHERE is_published = true ORDER BY created_at DESC');
-res.render('faq', { info, faqs: result.rows, title:'FAQS' });
+    } else {
+      faqResult = await pool.query(
+        "SELECT * FROM faqs ORDER BY created_at DESC"
+      );
+    }
+
+    const infoResult = await pool.query(
+      "SELECT * FROM ministry_info ORDER BY id DESC LIMIT 1"
+    );
+
+    res.render("faq", {
+      info: infoResult.rows[0] || {},
+      faqs: faqResult.rows,
+      search, // pass current search back to the EJS view
+      user: req.session.user || null,
+    });
+  } catch (err) {
+    console.error("Error fetching FAQs:", err);
+    res.status(500).send("Error loading FAQs");
+  }
 });
+
 
 // Handle question submission
 router.post('/faq/ask', async (req, res) => {
