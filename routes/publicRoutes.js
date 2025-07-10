@@ -7,6 +7,8 @@ const articleController = require("../controllers/articleController");
 
 router.get("/", async (req, res) => {
   try {
+    const today = new Date().toISOString().split("T")[0]; // 👈 Fix: define today
+
     const [infoResult, articlesResult, videosResult] = await Promise.all([
       pool.query("SELECT * FROM ministry_info ORDER BY id DESC LIMIT 1"),
       pool.query("SELECT * FROM articles ORDER BY created_at3 DESC LIMIT 3"),
@@ -16,8 +18,18 @@ router.get("/", async (req, res) => {
       "SELECT * FROM faqs WHERE is_published = true ORDER BY created_at DESC LIMIT 5"
     );
 
+    // const TestimonyResult = await pool.query(
+    //   "SELECT * FROM testimonies WHERE is_published = true ORDER BY created_at DESC LIMIT 5"
+    // );
+
     const TestimonyResult = await pool.query(
-      "SELECT * FROM testimonies WHERE is_published = true ORDER BY created_at DESC LIMIT 5"
+      `
+      SELECT * FROM testimonies 
+      WHERE is_published = true
+      ORDER BY md5($1 || id::text)
+      LIMIT 5
+    `,
+      [today]
     );
     // const randomImagesResult = await pool.query(
     //   "SELECT url FROM gallery_images ORDER BY RANDOM() LIMIT 5"
@@ -149,6 +161,8 @@ router.get("/articles/:id",  articleController.showSingleArticle);
 
 router.get("/home2", async (req, res) => {
   try {
+    const today = new Date().toISOString().split("T")[0]; // 👈 Fix: define today
+
     const [infoResult, articlesResult, videosResult] = await Promise.all([
       pool.query("SELECT * FROM ministry_info ORDER BY id DESC LIMIT 1"),
       pool.query("SELECT * FROM articles ORDER BY created_at3 DESC LIMIT 3"),
@@ -158,8 +172,18 @@ router.get("/home2", async (req, res) => {
       "SELECT * FROM faqs WHERE is_published = true ORDER BY created_at DESC LIMIT 5"
     );
 
+    // const TestimonyResult = await pool.query(
+    //   "SELECT * FROM testimonies WHERE is_published = true ORDER BY created_at DESC LIMIT 5"
+    // );
+
     const TestimonyResult = await pool.query(
-      "SELECT * FROM testimonies WHERE is_published = true ORDER BY created_at DESC LIMIT 5"
+      `
+      SELECT * FROM testimonies 
+      WHERE is_published = true
+      ORDER BY md5($1 || id::text)
+      LIMIT 5
+    `,
+      [today]
     );
 
     const info = infoResult.rows[0];

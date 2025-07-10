@@ -263,7 +263,7 @@
     </section>
 
     <!-- testimony section  -->
-    <section class="section">   
+    <!-- <section class="section">   
       <h3 style="text-align:center;">Testimonies</h3>
       <div class="testimony-grid">
         <% testimonies.forEach(t => { %>
@@ -276,7 +276,95 @@
       <div style="text-align: center; margin-top: 20px">
         <a href="/testimony" class="login-button">Ask a question</a>
       </div>
-    </section>
+    </section> -->
+    
+    <!-- <section class="section"> -->
+      <section class="testimonial-slider">
+        <h2>What People Are Saying</h2>
+        <div class="slider-container" id="testimony-slider">
+          <% for (let i = 0; i < testimonies.length; i += 1) { %>
+            <div class="testimony-row slide <%= i === 0 ? 'active' : '' %>">
+              <div class="testimony-group">
+                <% for (let j = i; j < i + 1 && j < testimonies.length; j++) { %>
+                  <div class="testimony-card" onclick="openTestimonyModal(`<%- testimonies[j].message.replace(/`/g, '\\`') %>`, '<%= testimonies[j].name %>')">
+                    <p class="testimony-message">“<%= testimonies[j].message.substring(0, 200) %>...”</p>
+                    <!-- <p class="testimony-name">— <strong><%= testimonies[j].name %></strong></p> -->
+                    <p class="testimony-name">— <strong>Anonymous</strong></p>
+                  </div>
+                <% } %>
+              </div>
+            </div>
+          <% } %>
+          <button class="prev" onclick="changeTestimonySlide(-1)">❮</button>
+          <button class="next" onclick="changeTestimonySlide(1)">❯</button>
+        </div>
+        <p>You can click on the testimony to view full details</p>
+      </section>
+
+      <!-- <div id="testimonyModal" class="modal" style="display: none;">
+        <div class="modal-content" style="max-width: 500px; margin: 10% auto; background: white; padding: 2rem; border-radius: 10px; position: relative;">
+          <span class="close" onclick="closeTestimonyModal()" style="position: absolute; top: 10px; right: 15px; font-size: 1.5rem; cursor: pointer;">&times;</span>
+          <h3 style="color: #a9712f;">Testimony</h3>
+          <p id="fullTestimonyMessage" style="margin: 1rem 0;"></p>
+          <p id="fullTestimonyName" style="text-align: right; font-weight: bold;"></p>
+        </div>
+      </div> -->
+
+      <!-- Testimony Modal -->
+<div id="testimonyModal" class="modal" style="display: none;">
+  <div class="modal-content">
+    <span class="close" onclick="closeTestimonyModal()">&times;</span>
+    <h3 style="color: #a9712f; text-align: center;">Testimony</h3>
+    <p id="fullTestimonyMessage" style="margin: 1rem 0; text-align: justify;"></p>
+    <p id="fullTestimonyName" style="text-align: right; font-weight: bold;"></p>
+  </div>
+</div>
+
+      
+    
+      <script>
+        let currentTestimonySlide = 0;
+        const testimonySlides = document.querySelectorAll('.testimony-row');
+      
+        function showTestimonySlide(index) {
+          testimonySlides.forEach((slide, i) => {
+            slide.classList.toggle('active', i === index);
+          });
+        }
+      
+        function changeTestimonySlide(step) {
+          currentTestimonySlide = (currentTestimonySlide + step + testimonySlides.length) % testimonySlides.length;
+          showTestimonySlide(currentTestimonySlide);
+        }
+      
+        // Auto switch every 15 seconds (optional)
+        setInterval(() => changeTestimonySlide(1), 15000);
+      </script>
+      
+
+      <script>
+        function openTestimonyModal(message, name) {
+          document.getElementById("fullTestimonyMessage").innerText = message;
+          document.getElementById("fullTestimonyName").innerText = `— ${name}`;
+          document.getElementById("testimonyModal").style.display = "block";
+        }
+      
+        function closeTestimonyModal() {
+          document.getElementById("testimonyModal").style.display = "none";
+        }
+      
+        // Optional: close modal when clicking outside
+        window.addEventListener("click", function (e) {
+          const modal = document.getElementById("testimonyModal");
+          if (e.target === modal) {
+            modal.style.display = "none";
+          }
+        });
+      </script>
+      
+    
+    
+
 
     <% if (carouselImages && carouselImages.length > 0) { %>
       <section class="hero-carousel">
@@ -448,28 +536,28 @@
 
 <!-- script for carousel  -->
 <script>
-  let currentSlide = 0;
-  const slides = document.querySelectorAll('.carousel-slide');
+  let carouselCurrentSlide = 0;
+  const carouselSlides = document.querySelectorAll('.carousel-slide');
 
   function showSlide(idx) {
-    slides.forEach((slide, i) => {
+    carouselSlides.forEach((slide, i) => {
       slide.style.display = (i === idx) ? 'block' : 'none';
     });
-    currentSlide = idx;
+    carouselCurrentSlide = idx;
   }
 
   function nextSlide() {
-    let next = (currentSlide + 1) % slides.length;
+    let next = (carouselCurrentSlide + 1) % carouselSlides.length;
     showSlide(next);
   }
 
   function prevSlide() {
-    let prev = (currentSlide - 1 + slides.length) % slides.length;
+    let prev = (carouselCurrentSlide - 1 + carouselSlides.length) % carouselSlides.length;
     showSlide(prev);
   }
 
   setInterval(nextSlide, 4000); // Change every 4 seconds
-  if (slides.length > 0) showSlide(0);
+  if (carouselSlides.length > 0) showSlide(0);
 </script>
 
 <!-- script to preview announcement -->

@@ -220,20 +220,47 @@
 
     
     <!-- testimony section  -->
-    <section class="section">   
-      <h3 style="text-align:center;">Testimonies</h3>
-      <div class="testimony-grid">
-        <% testimonies.forEach(t => { %>
-          <div class="testimony-card">
-            <p class="testimony-message">“<%= t.message %>”</p>
-            <p class="testimony-name">— <strong><%= t.name %></strong></p>
+    <section class="testimonial-slider">
+      <h2>What People Are Saying</h2>
+      <div class="slider-container">
+        <% testimonies.forEach((t, index) => { %>
+          <div class="slide <%= index === 0 ? 'active' : '' %>">
+            <div class="testimony-card">
+              <p class="testimony-message">“<%= t.message %>”</p>
+              <p class="testimony-name">— <strong><%= t.name %></strong></p>
+            </div>
           </div>
         <% }) %>
-      </div>
-      <div style="text-align: center; margin-top: 20px">
-        <a href="/testimony" class="login-button">Ask a question</a>
+        <button class="prev" onclick="changeSlide(-1)">❮</button>
+        <button class="next" onclick="changeSlide(1)">❯</button>
       </div>
     </section>
+
+    <script>
+      document.addEventListener('DOMContentLoaded', function () {
+        let currentSlide = 0;
+        const slides = document.querySelectorAll(".slide");
+    
+        function showSlide(index) {
+          slides.forEach((slide, i) => {
+            slide.classList.toggle("active", i === index);
+          });
+        }
+    
+        function changeSlide(step) {
+          currentSlide = (currentSlide + step + slides.length) % slides.length;
+          showSlide(currentSlide);
+        }
+    
+        // Set up buttons
+        document.querySelector(".prev").addEventListener("click", () => changeSlide(-1));
+        document.querySelector(".next").addEventListener("click", () => changeSlide(1));
+    
+        // Auto advance every 10s
+        setInterval(() => changeSlide(1), 10000);
+        showSlide(currentSlide); // Initialize first slide
+      });
+    </script>
 
     <% if (carouselImages && carouselImages.length > 0) { %>
       <section class="hero-carousel">
@@ -398,28 +425,28 @@
 
   <!-- script for carousel auto change daily -->
   <script>
-    let currentSlide = 0;
-    const slides = document.querySelectorAll('.carousel-slide');
+    let carouselCurrentSlide = 0;
+    const carouselSlides = document.querySelectorAll('.carousel-slide');
   
     function showSlide(idx) {
-      slides.forEach((slide, i) => {
+      carouselSlides.forEach((slide, i) => {
         slide.style.display = (i === idx) ? 'block' : 'none';
       });
-      currentSlide = idx;
+      carouselCurrentSlide = idx;
     }
   
     function nextSlide() {
-      let next = (currentSlide + 1) % slides.length;
+      let next = (carouselCurrentSlide + 1) % carouselSlides.length;
       showSlide(next);
     }
   
     function prevSlide() {
-      let prev = (currentSlide - 1 + slides.length) % slides.length;
+      let prev = (carouselCurrentSlide - 1 + carouselSlides.length) % carouselSlides.length;
       showSlide(prev);
     }
   
     setInterval(nextSlide, 4000); // Change every 4 seconds
-    if (slides.length > 0) showSlide(0);
+    if (carouselSlides.length > 0) showSlide(0);
   </script>
 
   <!-- script to preview announcement -->

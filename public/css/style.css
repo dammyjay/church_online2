@@ -116,6 +116,102 @@ header {
 em,
 i {
     font-style: italic; }
+        .testimonial-slider {
+            text-align: center;
+            padding: 40px 20px;
+            position: relative;
+            background: #f5f5f5;
+        }
+    
+        .testimony-group {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+    
+        .testimony-card {
+            background-color: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+            max-width: 300px;
+            flex: 1;
+        }
+    
+        .testimony-message {
+            font-style: italic;
+            margin-bottom: 10px;
+        }
+    
+        .testimony-name {
+            color: #555;
+            font-weight: bold;
+        }
+    
+        .slide {
+            display: none;
+        }
+    
+        .slide.active {
+            display: block;
+        }
+    
+        .testimonial-slider .prev,
+        .testimonial-slider .next {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: #a9712f;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            cursor: pointer;
+            font-size: 18px;
+            border-radius: 50%;
+            z-index: 10;
+        }
+    
+        .testimonial-slider .prev {
+            left: 10px;
+        }
+    
+        .testimonial-slider .next {
+            right: 10px;
+        }
+
+    .testimonial-slider {
+      max-width: 80%;
+      margin: auto;
+      text-align: center;
+      position: relative;
+    }
+    .slider-container {
+      position: relative;
+      overflow: hidden;
+    }
+    .slide {
+      display: none;
+      padding: 20px;
+      transition: opacity 0.5s;
+    }
+    .slide.active {
+      display: block;
+    }
+    .prev, .next {
+      position: absolute;
+      top: 50%;
+      background: #a9712f;
+      color: #fff;
+      border: none;
+      padding: 10px;
+      cursor: pointer;
+      transform: translateY(-50%);
+      font-size: 18px;
+    }
+    .prev { left: 0; }
+    .next { right: 0; }
+
 .hero-carousel {
     position: relative;
     width: 100%;
@@ -1434,6 +1530,9 @@ nav a:hover {
     height: 100%;
     overflow: auto;
     background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 
@@ -1621,6 +1720,9 @@ nav a:hover {
                                                             background: #a38833;
                                                             transform: scale(1.12);                             }
 /* Optional: reduce padding on very small screens */
+
+
+
 @media screen and (max-width: 480px) {
     .hero-carousel {
             position: relative;
