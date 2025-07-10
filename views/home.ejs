@@ -262,6 +262,22 @@
                   </div> 
     </section>
 
+    <!-- testimony section  -->
+    <section class="section">   
+      <h3 style="text-align:center;">Testimonies</h3>
+      <div class="testimony-grid">
+        <% testimonies.forEach(t => { %>
+          <div class="testimony-card">
+            <p class="testimony-message">“<%= t.message %>”</p>
+            <p class="testimony-name">— <strong><%= t.name %></strong></p>
+          </div>
+        <% }) %>
+      </div>
+      <div style="text-align: center; margin-top: 20px">
+        <a href="/testimony" class="login-button">Ask a question</a>
+      </div>
+    </section>
+
     <% if (carouselImages && carouselImages.length > 0) { %>
       <section class="hero-carousel">
         <h1>Here are some of our Highlight</h1>
@@ -277,6 +293,7 @@
         </div> -->
       </section>
     <% } %>
+
 
      <!-- Frequently Asked Questions -->    
     <section id="faq" class="section"> 

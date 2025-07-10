@@ -33,7 +33,7 @@ async function createTables() {
     `);
 
     await pool.query(`
-      CREATE TABLE subscriptions (
+      CREATE TABLE IF NOT EXISTS subscriptions (
         id SERIAL PRIMARY KEY,
         endpoint TEXT UNIQUE,
         keys JSONB,
@@ -42,7 +42,7 @@ async function createTables() {
     `);
 
     await pool.query(`
-      CREATE TABLE devotionals (
+      CREATE TABLE IF NOT EXISTS devotionals (
         id SERIAL PRIMARY KEY,
         title TEXT NOT NULL,
         scripture TEXT,
@@ -52,8 +52,19 @@ async function createTables() {
       );
     `);
 
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS testimonies (
+        id SERIAL PRIMARY KEY,
+        name TEXT,
+        email TEXT,
+        message TEXT,
+        is_published BOOLEAN DEFAULT FALSE,
+        created_at TIMESTAMP DEFAULT NOW()
+      );
+    `);
+
     console.log(
-      "✅ likes, comments and push_subscriptions are ready tables are ready."
+      "✅ All tables are ready now."
     );
   } catch (err) {
     console.error("❌ Error creating tables:", err.message);

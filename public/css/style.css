@@ -1242,6 +1242,44 @@ nav a:hover {
      color: #333;
  } */
 
+ .testimony-grid {
+     display: flex;
+     flex-wrap: wrap;
+     justify-content: center;
+     gap: 20px;
+     padding: 30px 10px;
+ }
+
+ .testimony-card {
+     background-color: #fffdf8;
+     border: 1px solid #e5e5e5;
+     border-radius: 10px;
+     padding: 20px;
+     width: 100%;
+     max-width: 350px;
+     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.07);
+     transition: transform 0.3s ease, box-shadow 0.3s ease;
+ }
+
+ .testimony-card:hover {
+     transform: translateY(-5px);
+     box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+ }
+
+ .testimony-message {
+     font-style: italic;
+     font-size: 1.05rem;
+     color: #444;
+     margin-bottom: 15px;
+ }
+
+ .testimony-name {
+     text-align: right;
+     font-weight: bold;
+     color: #a9712f;
+     margin-top: 10px;
+ }
+
  .faq-list {
      margin-top: 20px;
      display: flex;

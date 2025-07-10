@@ -15,12 +15,17 @@ router.get("/", async (req, res) => {
     const faqsResult = await pool.query(
       "SELECT * FROM faqs WHERE is_published = true ORDER BY created_at DESC LIMIT 5"
     );
+
+    const TestimonyResult = await pool.query(
+      "SELECT * FROM testimonies WHERE is_published = true ORDER BY created_at DESC LIMIT 5"
+    );
     // const randomImagesResult = await pool.query(
     //   "SELECT url FROM gallery_images ORDER BY RANDOM() LIMIT 5"
     // );
     const info = infoResult.rows[0];
     const articles = articlesResult.rows;
     const faqs = faqsResult.rows;
+    const testimonies = TestimonyResult.rows;
     const annResult = await pool.query(
       // "SELECT * FROM announcements ORDER BY event_date DESC LIMIT 1"
       "SELECT * FROM announcements WHERE is_visible = true ORDER BY event_date DESC LIMIT 1"
@@ -125,6 +130,7 @@ router.get("/", async (req, res) => {
       articles,
       videos,
       faqs,
+      testimonies,
       demoVideos,
       devotional,
       subscribed: req.query.subscribed,
@@ -152,8 +158,13 @@ router.get("/home2", async (req, res) => {
       "SELECT * FROM faqs WHERE is_published = true ORDER BY created_at DESC LIMIT 5"
     );
 
+    const TestimonyResult = await pool.query(
+      "SELECT * FROM testimonies WHERE is_published = true ORDER BY created_at DESC LIMIT 5"
+    );
+
     const info = infoResult.rows[0];
     const articles = articlesResult.rows;
+    const testimonies = TestimonyResult.rows;
     const faqs = faqsResult.rows;
 
     const allImagesResult = await pool.query("SELECT url FROM gallery_images");
@@ -252,6 +263,7 @@ router.get("/home2", async (req, res) => {
       articles,
       videos,
       faqs,
+      testimonies,
       devotional,
       demoVideos,
       subscribed: req.query.subscribed,
@@ -458,6 +470,56 @@ router.post("/faq/ask", async (req, res) => {
   ]);
   res.redirect("/faq");
 });
+
+// Show Testimony Form Page (optional if part of another page)
+router.get("/testimony", async (req, res) => {
+  const infoResult = await pool.query("SELECT * FROM ministry_info ORDER BY id DESC LIMIT 1");
+  const testimonyResult = await pool.query(
+    "SELECT * FROM testimonies ORDER BY id"
+  );
+  res.render("testimony", {
+    info: infoResult.rows[0] || {},
+    testimonies: testimonyResult.rows,
+    title: "Submit Testimony"
+  });
+});
+
+// Handle Testimony Submission
+router.post("/testimony", async (req, res) => {
+  const { name, email, message } = req.body;
+
+  if (!message || !name) {
+    return res.redirect("/testimony?error=Message and name are required");
+  }
+
+  await pool.query(
+    "INSERT INTO testimonies (name, email, message, created_at) VALUES ($1, $2, $3, NOW())",
+    [name, email || null, message]
+  );
+
+  // Optionally email admin
+  const adminEmail = "imoledayoimmanuel@gmail.com";
+  const subject = "New Testimony Submitted";
+  const body = `<h3>New Testimony</h3><p><strong>Name:</strong> ${name}</p><p>${message}</p>`;
+
+  try {
+    await sendEmail(adminEmail, subject, body);
+  } catch (err) {
+    console.error("Failed to send testimony alert:", err.message);
+  }
+
+  res.redirect("/testimony?success=true");
+});
+
+// Show Published Testimonies on Home or Testimony Page
+router.get("/testimonies", async (req, res) => {
+  const result = await pool.query("SELECT * FROM testimonies WHERE is_published = true ORDER BY created_at DESC");
+  res.render("testimonies", {
+    testimonies: result.rows,
+    title: "Testimonies"
+  });
+});
+
 
 // routes/publicRoutes.js
 const aboutController = require('../controllers/aboutController');

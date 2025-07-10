@@ -69,4 +69,52 @@ console.error('Failed to send FAQ notification email:', err.message);
 res.redirect('/faq?success=true');
 });
 
+
+
+// Show Testimony Form Page (optional if part of another page)
+router.get("/testimony", async (req, res) => {
+  const infoResult = await pool.query("SELECT * FROM ministry_info ORDER BY id DESC LIMIT 1");
+  res.render("testimony", {
+    info: infoResult.rows[0] || {},
+    title: "Submit Testimony"
+  });
+});
+
+// Handle Testimony Submission
+router.post("/testimony", async (req, res) => {
+  const { name, email, message } = req.body;
+
+  if (!message || !name) {
+    return res.redirect("/testimony?error=Message and name are required");
+  }
+
+  await pool.query(
+    "INSERT INTO testimonies (name, email, message, created_at) VALUES ($1, $2, $3, NOW())",
+    [name, email || null, message]
+  );
+
+  // Optionally email admin
+  const adminEmail = "imoledayoimmanuel@gmail.com";
+  const subject = "New Testimony Submitted";
+  const body = `<h3>New Testimony</h3><p><strong>Name:</strong> ${name}</p><p>${message}</p>`;
+
+  try {
+    await sendEmail(adminEmail, subject, body);
+  } catch (err) {
+    console.error("Failed to send testimony alert:", err.message);
+  }
+
+  res.redirect("/testimony?success=true");
+});
+
+// Show Published Testimonies on Home or Testimony Page
+router.get("/testimonies", async (req, res) => {
+  const result = await pool.query("SELECT * FROM testimonies WHERE is_published = true ORDER BY created_at DESC");
+  res.render("testimonies", {
+    testimonies: result.rows,
+    title: "Testimonies"
+  });
+});
+
+
 module.exports = router;

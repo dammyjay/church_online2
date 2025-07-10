@@ -88,6 +88,9 @@ app.use('/', publicFaqRoutes);
 const adminFaqRoutes = require('./routes/adminFaqRoutes');
 app.use('/', adminFaqRoutes);
 
+const adminTestimonyRoutes = require("./routes/adminTestimonyRoutes");
+app.use("/", adminTestimonyRoutes);
+
 const publicArticleRoutes = require('./routes/publicArticleRoutes');
 app.use('/', publicArticleRoutes);
 
