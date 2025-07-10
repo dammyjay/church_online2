@@ -25,6 +25,7 @@
         <a href="#articles">Articles</a>
         <a href="#videos">Videos</a>
         <a href="/about">About Us</a>
+        <a href="#testimony">Testimonies</a>
         <a href="#faq">FAQ</a>
         <% if (isLoggedIn) { %>
           <% if (profilePic) { %>
@@ -263,23 +264,8 @@
     </section>
 
     <!-- testimony section  -->
-    <!-- <section class="section">   
-      <h3 style="text-align:center;">Testimonies</h3>
-      <div class="testimony-grid">
-        <% testimonies.forEach(t => { %>
-          <div class="testimony-card">
-            <p class="testimony-message">“<%= t.message %>”</p>
-            <p class="testimony-name">— <strong><%= t.name %></strong></p>
-          </div>
-        <% }) %>
-      </div>
-      <div style="text-align: center; margin-top: 20px">
-        <a href="/testimony" class="login-button">Ask a question</a>
-      </div>
-    </section> -->
     
-    <!-- <section class="section"> -->
-      <section class="testimonial-slider">
+      <section id="testimony" class="testimonial-slider">
         <h2>What People Are Saying</h2>
         <div class="slider-container" id="testimony-slider">
           <% for (let i = 0; i < testimonies.length; i += 1) { %>
@@ -301,24 +287,16 @@
         <p>You can click on the testimony to view full details</p>
       </section>
 
-      <!-- <div id="testimonyModal" class="modal" style="display: none;">
-        <div class="modal-content" style="max-width: 500px; margin: 10% auto; background: white; padding: 2rem; border-radius: 10px; position: relative;">
-          <span class="close" onclick="closeTestimonyModal()" style="position: absolute; top: 10px; right: 15px; font-size: 1.5rem; cursor: pointer;">&times;</span>
-          <h3 style="color: #a9712f;">Testimony</h3>
-          <p id="fullTestimonyMessage" style="margin: 1rem 0;"></p>
-          <p id="fullTestimonyName" style="text-align: right; font-weight: bold;"></p>
-        </div>
-      </div> -->
 
       <!-- Testimony Modal -->
-<div id="testimonyModal" class="modal" style="display: none;">
-  <div class="modal-content">
-    <span class="close" onclick="closeTestimonyModal()">&times;</span>
-    <h3 style="color: #a9712f; text-align: center;">Testimony</h3>
-    <p id="fullTestimonyMessage" style="margin: 1rem 0; text-align: justify;"></p>
-    <p id="fullTestimonyName" style="text-align: right; font-weight: bold;"></p>
-  </div>
-</div>
+      <div id="testimonyModal" class="modal" style="display: none;">
+        <div class="modal-content">
+          <span class="close" onclick="closeTestimonyModal()">&times;</span>
+          <h3 style="color: #a9712f; text-align: center;">Testimony</h3>
+          <p id="fullTestimonyMessage" style="margin: 1rem 0; text-align: justify;"></p>
+          <p id="fullTestimonyName" style="text-align: right; font-weight: bold;"></p>
+        </div>
+      </div>
 
       
     
@@ -345,7 +323,8 @@
       <script>
         function openTestimonyModal(message, name) {
           document.getElementById("fullTestimonyMessage").innerText = message;
-          document.getElementById("fullTestimonyName").innerText = `— ${name}`;
+          // document.getElementById("fullTestimonyName").innerText = `— ${name}`;
+          document.getElementById("fullTestimonyName").innerText = "— Anonymous";
           document.getElementById("testimonyModal").style.display = "block";
         }
       

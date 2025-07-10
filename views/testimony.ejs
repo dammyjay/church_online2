@@ -29,7 +29,8 @@
         <a href="/videos">Videos</a>
         <a href="/devotionals">Devotionals</a>
         <a href="/about">About Us</a>
-        <a class="active" href="/faq">FAQ</a>
+        <a class="active" href="/testimony">Testimonies</a>
+        <a href="/faq">FAQ</a>
         <a href="/profile">Profile</a>
         <!-- Assuming About refers to Mission & Vision -->
         <a href="/admin/logout" class="logout-button">Logout</a>
@@ -64,13 +65,46 @@
       <h3 style="text-align:center;">Testimonies</h3>
       <div class="testimony-grid">
         <% testimonies.forEach(t => { %>
-          <div class="testimony-card">
-            <p class="testimony-message">“<%= t.message %>”</p>
-            <p class="testimony-name">— <strong><%= t.name %></strong></p>
+          <div class="testimony-card" onclick='openTestimonyModal(<%- JSON.stringify(t.message) %>, <%- JSON.stringify(t.name) %>)'>
+            <p class="testimony-message">“<%= t.message.substring(0, 200) %>...”</p>
+            <!-- <p class="testimony-name">— <strong><%= t.name %></strong></p> -->
+            <p class="testimony-name">— <strong>Anonymous</strong></p>
           </div>
         <% }) %>
       </div>
     </section>
+
+    <div id="testimonyModal" class="modal" style="display: none;">
+      <div class="modal-content">
+        <span class="close" onclick="closeTestimonyModal()">&times;</span>
+        <h3 style="text-align: center; color: #a9712f;">Full Testimony</h3>
+        <p id="fullTestimonyMessage" style="text-align: justify;"></p>
+        <p id="fullTestimonyName" style="text-align: right; font-weight: bold;"></p>
+      </div>
+    </div>
+
+    <!-- open and close modal script -->
+    <script>
+      function openTestimonyModal(message, name) {
+        document.getElementById("fullTestimonyMessage").innerText = message;
+        // document.getElementById("fullTestimonyName").innerText = `— ${name}`;
+        document.getElementById("fullTestimonyName").innerText = "— Anonymous";
+        document.getElementById("testimonyModal").style.display = "block";
+      }
+    
+      function closeTestimonyModal() {
+        document.getElementById("testimonyModal").style.display = "none";
+      }
+    
+      window.addEventListener("click", function (e) {
+        const modal = document.getElementById("testimonyModal");
+        if (e.target === modal) {
+          modal.style.display = "none";
+        }
+      });
+    </script>
+    
+
 <!-- search script  -->
 <script>
   document.getElementById('faqSearch').addEventListener('input', function() {
