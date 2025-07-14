@@ -7,13 +7,15 @@
     <link rel="icon" type="image/x-icon" href="/logo.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="sha512-..." crossorigin="anonymous" referrerpolicy="no-referrer" />
-    
+    <script src="https://cdn.ckeditor.com/4.22.1/standard/ckeditor.js"></script>
   </head>
   <body>
     <% 
     function linkify(text) {
       if (!text) return '';
-      return text.replace(/(https:\/\/[^\s<]+)/g, '<a href="$1" target="_blank" rel="noopener">$1</a>');
+      return text.replace(/(https?:\/\/[^\s<]+?)([.,!?;:)]?)(?=\s|$)/g, function(match, url, trailing) {
+        return '<a href="' + url + '" target="_blank" rel="noopener">' + url + '</a>' + (trailing || '');
+      });
     }
     %>
     <header class="header">
@@ -229,7 +231,7 @@
 
     
 <!-- script to link in the article content -->
-<script>
+<!-- <script>
   function linkify(text) {
     return text.replace(/(https?:\/\/[^\s<]+)/g, function (url) {
       var cleanUrl = url.replace(/[.,!?;:)]*$/, "");
@@ -251,7 +253,32 @@
       el.innerHTML = linkify(el.textContent);
     }
   });
+</script> -->
+
+<!-- linkify helper must already be in the page -->
+<script>
+  /* Turn bare URLs into <a>…</a>  */
+  function linkify(text) {
+    return text.replace(/(https?:\/\/[^\s<]+)/g, function (url) {
+      const clean   = url.replace(/[.,!?;:)]*$/, '');  // trim trailing punctuation
+      const trail   = url.slice(clean.length);        // keep punctuation outside link
+      return '<a href="' + clean +
+             '" target="_blank" rel="noopener noreferrer">' +
+             clean + '</a>' + trail;
+    });
+  }
+
+  /* ─── Run after the DOM is ready ─── */
+  document.addEventListener('DOMContentLoaded', function () {
+    document.querySelectorAll('.article-body').forEach(function (el) {
+      const original = el.innerHTML;          // keep ALL markup
+      if (!original.includes('<a ')) {        // only add links if none exist yet
+        el.innerHTML = linkify(original);     // write back with links intact
+      }
+    });
+  });
 </script>
+
 
 <!-- script for link to article -->
 <script>

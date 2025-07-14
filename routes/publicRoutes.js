@@ -157,7 +157,7 @@ router.get("/", async (req, res) => {
   }
 });
 
-router.get("/articles/:id",  articleController.showSingleArticle);
+router.get("/articles/:id", articleController.showSingleArticle);
 
 router.get("/home2", async (req, res) => {
   try {
@@ -325,7 +325,6 @@ router.get("/articles", async (req, res) => {
 
     const articles = result.rows;
 
-
     // Fetch likes for all articles
     const likesResult = await pool.query(`
   SELECT content_id, COUNT(*) as count
@@ -415,13 +414,11 @@ router.get("/devotionals", async (req, res) => {
         "SELECT * FROM devotionals WHERE LOWER(title) LIKE $1 ORDER BY created_at DESC",
         [`%${search.toLowerCase()}%`]
       );
-
     } else if (date) {
       result = await pool.query(
         "SELECT * FROM devotionals WHERE created_at::date = $1 ORDER BY created_at DESC",
         [date]
       );
-
     } else {
       result = await pool.query(
         "SELECT * FROM devotionals ORDER BY created_at DESC"
@@ -480,8 +477,6 @@ router.get("/faq", async (req, res) => {
 });
 
 router.post("/faq/ask", async (req, res) => {
-
-
   const { question, email } = req.body;
 
   if (!question || question.trim() === "") {
@@ -497,15 +492,16 @@ router.post("/faq/ask", async (req, res) => {
 
 // Show Testimony Form Page (optional if part of another page)
 router.get("/testimony", async (req, res) => {
-  const infoResult = await pool.query("SELECT * FROM ministry_info ORDER BY id DESC LIMIT 1");
+  const infoResult = await pool.query(
+    "SELECT * FROM ministry_info ORDER BY id DESC LIMIT 1"
+  );
   const testimonyResult = await pool.query(
     "SELECT * FROM testimonies WHERE is_published = true ORDER BY id"
-    
   );
   res.render("testimony", {
     info: infoResult.rows[0] || {},
     testimonies: testimonyResult.rows,
-    title: "Submit Testimony"
+    title: "Submit Testimony",
   });
 });
 
@@ -538,16 +534,17 @@ router.post("/testimony", async (req, res) => {
 
 // Show Published Testimonies on Home or Testimony Page
 router.get("/testimonies", async (req, res) => {
-  const result = await pool.query("SELECT * FROM testimonies WHERE is_published = true ORDER BY created_at DESC");
+  const result = await pool.query(
+    "SELECT * FROM testimonies WHERE is_published = true ORDER BY created_at DESC"
+  );
   res.render("testimonies", {
     testimonies: result.rows,
-    title: "Testimonies"
+    title: "Testimonies",
   });
 });
 
-
 // routes/publicRoutes.js
-const aboutController = require('../controllers/aboutController');
-router.get('/about', aboutController.showAbout);
+const aboutController = require("../controllers/aboutController");
+router.get("/about", aboutController.showAbout);
 
 module.exports = router;
