@@ -3,6 +3,23 @@
   <head>
     <meta charset="UTF-8" />
     <title><%= article.title %> | C&S Church Online</title>
+    <!-- Open Graph Metadata for Social Preview -->
+<meta property="og:title" content="<%= article.title %> | C&S Church Online" />
+
+<meta property="og:description"
+      content="<%= (article.content.replace(/(<([^>]+)>)/gi, '').substring(0, 150) + '...') %>" />
+
+<meta property="og:image" content="<%= article.image_url %>" />
+<meta property="og:url" content="https://cschurchonline.org/articles/<%= article.id %>" />
+<meta property="og:type" content="article" />
+
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="<%= article.title %>" />
+<meta name="twitter:description"
+      content="<%= (article.content.replace(/(<([^>]+)>)/gi, '').substring(0, 150) + '...') %>" />
+<meta name="twitter:image" content="<%= article.image_url %>" />
+
     <link rel="stylesheet" href="/css/style.css" />
     <link rel="icon" type="image/x-icon" href="/logo.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
