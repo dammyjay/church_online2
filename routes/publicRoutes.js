@@ -53,15 +53,22 @@ router.get("/", async (req, res) => {
     const demoVideos = demoResult.rows;
     console.log("Demo Videos:", demoVideos);
 
-    //fetch daily devotionals
-    // const devoRes = await pool.query(
-    //   "SELECT * FROM devotionals ORDER BY created_at DESC LIMIT 1"
-    // );
+const devoRes = await pool.query(
+  `
+  SELECT *
+  FROM devotionals
+  WHERE visible = true
+    AND (
+      scheduled_at = $1
+      OR (scheduled_at IS NULL AND DATE(created_at) = $1)
+    )
+  ORDER BY created_at DESC
+  LIMIT 1
+  `,
+  [today]
+);
 
-    const devoRes = await pool.query(
-      "SELECT * FROM devotionals WHERE visible = true ORDER BY created_at DESC LIMIT 1"
-    );
-    const devotional = devoRes.rows[0];
+const devotional = devoRes.rows[0] || null;
 
     const allImagesResult = await pool.query("SELECT url FROM gallery_images");
     const allImages = allImagesResult.rows.map((row) => row.url);

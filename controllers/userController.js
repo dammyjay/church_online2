@@ -89,30 +89,6 @@ exports.verifyOtp = async (req, res) => {
   res.status(200).send("Verification success");
 };
 
-// exports.getUserProfile = async (req, res) => {
-//   const userId = req.session.user?.id;
-//   if (!userId || req.session.user.role !== "user")
-//     return res.redirect("/admin/login");
-//   const result = await pool.query("SELECT * FROM users2 WHERE id = $1", [
-//     userId,
-//   ]);
-//   res.render("userProfile", { user: result.rows[0], title: "Your Profile" });
-// };
-
-// exports.updateUserProfile = async (req, res) => {
-//   const { fullname, phone } = req.body;
-//   const profile_picture = req.file
-//     ? req.file.path
-//     : req.session.user.profile_picture;
-//   await pool.query(
-//     "UPDATE users2 SET fullname = $1, phone = $2, profile_picture = $3 WHERE id = $4",
-//     [fullname, phone, profile_picture, req.session.user.id]
-//   );
-//   req.session.user.profile_picture = profile_picture; // update session
-//   res.redirect("/profile");
-// };
-
-
 exports.getUserProfile = async (req, res) => {
   const user = req.session.user;
   if (!user) return res.redirect("/admin/login");
