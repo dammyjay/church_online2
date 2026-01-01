@@ -2,7 +2,7 @@ const pool = require("../models/db");
 const bcrypt = require("bcrypt");
 const crypto = require("crypto");
 // const nodemailer = require("nodemailer");
-const sendEmail = require("../utils/sendEmail");
+const { sendEmail } = require("../utils/sendEmail");
 const cloudinary = require("../utils/cloudinary");
 const fs = require("fs");
 
@@ -454,57 +454,112 @@ exports.handleNewsletterForm = async (req, res) => {
 };
 
 // Send the newsletter to all users
+// exports.sendNewsletter = async (req, res) => {
+//   const { subject, message } = req.body;
+//   let imageUrl = null;
+
+//   // Upload image to Cloudinary if provided
+//   if (req.file) {
+//     const result = await cloudinary.uploader.upload(req.file.path, {
+//       folder: "newsletters",
+//     });
+//     imageUrl = result.secure_url;
+//     if (req.file && req.file.path && fs.existsSync(req.file.path)) {
+//       fs.unlinkSync(req.file.path); // Remove temp file
+//     }
+//   }
+//   const infoResult = await pool.query(
+//     "SELECT * FROM ministry_info ORDER BY id DESC LIMIT 1"
+//   );
+//   const info = infoResult.rows[0] || {};
+
+//   const newslettersResult = await pool.query(
+//     "SELECT * FROM newsletters ORDER BY created_at DESC"
+//   );
+
+//   // Get all user emails
+//   const resultUsers = await pool.query(
+//     "SELECT email FROM users2 WHERE email IS NOT NULL"
+//   );
+//   // const emails = resultUsers.rows.map((row) => row.email);
+
+//   // ✅ Replace with test emails
+//   const emails = [
+//     "jaykirchtechhub@gmail.com",
+//     "dammykirchhoff@gmail.com",
+//     "dammykirchhoff2@gmail.com", // Replace with your own
+//   ];
+
+//   // Compose HTML message
+//   let htmlMsg = `<div>${message}</div>`;
+//   if (imageUrl) {
+//     htmlMsg += `<div style="margin-top:20px;"><img src="${imageUrl}" alt="Newsletter Image" style="max-width:100%;border-radius:8px;"></div>`;
+//   }
+
+//   // Send to all users
+//   for (const email of emails) {
+//     await sendEmail(email, subject, htmlMsg);
+//   }
+
+//   res.render("admin/newsletter", {
+//     info,
+//     newsletters: newslettersResult.rows,
+//     success: "Newsletter sent to all members!",
+//   });
+// };
+
 exports.sendNewsletter = async (req, res) => {
   const { subject, message } = req.body;
   let imageUrl = null;
 
-  // Upload image to Cloudinary if provided
+  // Upload image if provided
   if (req.file) {
     const result = await cloudinary.uploader.upload(req.file.path, {
       folder: "newsletters",
     });
     imageUrl = result.secure_url;
-    if (req.file && req.file.path && fs.existsSync(req.file.path)) {
-      fs.unlinkSync(req.file.path); // Remove temp file
-    }
+    if (fs.existsSync(req.file.path)) fs.unlinkSync(req.file.path);
   }
+
   const infoResult = await pool.query(
     "SELECT * FROM ministry_info ORDER BY id DESC LIMIT 1"
   );
-  const info = infoResult.rows[0] || {};
 
   const newslettersResult = await pool.query(
     "SELECT * FROM newsletters ORDER BY created_at DESC"
   );
 
-  // Get all user emails
+  // ✅ Get real user emails
   const resultUsers = await pool.query(
-    "SELECT email FROM users2 WHERE email IS NOT NULL"
+    "SELECT email FROM users2 WHERE email IS NOT NULL AND email <> ''"
   );
-  // const emails = resultUsers.rows.map((row) => row.email);
+  const emails = resultUsers.rows.map(row => row.email);
 
-  // ✅ Replace with test emails
-  const emails = [
-    "jaykirchtechhub@gmail.com",
-    "dammykirchhoff@gmail.com",
-    "dammykirchhoff2@gmail.com", // Replace with your own
-  ];
-
-  // Compose HTML message
-  let htmlMsg = `<div>${message}</div>`;
-  if (imageUrl) {
-    htmlMsg += `<div style="margin-top:20px;"><img src="${imageUrl}" alt="Newsletter Image" style="max-width:100%;border-radius:8px;"></div>`;
+  if (emails.length === 0) {
+    return res.render("admin/newsletter", {
+      info: infoResult.rows[0] || {},
+      newsletters: newslettersResult.rows,
+      error: "No users with valid email addresses found.",
+    });
   }
 
-  // Send to all users
+  let htmlMsg = `<div>${message}</div>`;
+  if (imageUrl) {
+    htmlMsg += `
+      <div style="margin-top:20px;">
+        <img src="${imageUrl}" style="max-width:100%;border-radius:8px;">
+      </div>`;
+  }
+
+  // ✅ Send to all users
   for (const email of emails) {
     await sendEmail(email, subject, htmlMsg);
   }
 
   res.render("admin/newsletter", {
-    info,
+    info: infoResult.rows[0] || {},
     newsletters: newslettersResult.rows,
-    success: "Newsletter sent to all members!",
+    success: `Newsletter sent to ${emails.length} users successfully!`,
   });
 };
 
@@ -546,57 +601,67 @@ exports.showAllNewsletters = async (req, res) => {
 };
 
 // Send Now
+// exports.sendNow = async (req, res) => {
+//   const id = req.params.id;
+//   const newsletter = (
+//     await pool.query("SELECT * FROM newsletters WHERE id = $1", [id])
+//   ).rows[0];
+//   if (!newsletter || newsletter.sent) return res.redirect("/admin/newsletter");
+
+//   const testEmails = [
+//     "jaykirchtechhub@gmail.com",
+//     "dammykirchhoff@gmail.com",
+//     "dammykirchhoff2@gmail.com",
+//   ];
+
+//   let htmlMsg = `<div>${newsletter.message}</div>`;
+//   if (newsletter.image_url) {
+//     htmlMsg += `<div><img src="${newsletter.image_url}" style="max-width:100%;"></div>`;
+//   }
+
+//   for (const email of testEmails) {
+//     await sendEmail(email, newsletter.subject, htmlMsg);
+//   }
+
+//   await pool.query("UPDATE newsletters SET sent = true WHERE id = $1", [id]);
+//   res.redirect("/admin/newsletter");
+// };
+
 exports.sendNow = async (req, res) => {
   const id = req.params.id;
+
   const newsletter = (
     await pool.query("SELECT * FROM newsletters WHERE id = $1", [id])
   ).rows[0];
-  if (!newsletter || newsletter.sent) return res.redirect("/admin/newsletter");
 
-  const testEmails = [
-    "jaykirchtechhub@gmail.com",
-    "dammykirchhoff@gmail.com",
-    "dammykirchhoff2@gmail.com",
-  ];
+  if (!newsletter || newsletter.sent) {
+    return res.redirect("/admin/newsletter");
+  }
+
+  // ✅ Fetch real user emails
+  const resultUsers = await pool.query(
+    "SELECT email FROM users2 WHERE email IS NOT NULL AND email <> ''"
+  );
+  const emails = resultUsers.rows.map(row => row.email);
+
+  if (emails.length === 0) {
+    return res.redirect("/admin/newsletter");
+  }
 
   let htmlMsg = `<div>${newsletter.message}</div>`;
   if (newsletter.image_url) {
     htmlMsg += `<div><img src="${newsletter.image_url}" style="max-width:100%;"></div>`;
   }
 
-  for (const email of testEmails) {
+  for (const email of emails) {
     await sendEmail(email, newsletter.subject, htmlMsg);
   }
 
   await pool.query("UPDATE newsletters SET sent = true WHERE id = $1", [id]);
+
   res.redirect("/admin/newsletter");
 };
 
-// exports.editNewsletter = async (req, res) => {
-//   const { id } = req.params;
-//   const { subject, message, scheduled_at } = req.body;
-
-//   let imageUrl = null;
-//   if (req.file) {
-//     const result = await cloudinary.uploader.upload(req.file.path, {
-//       folder: "newsletters",
-//     });
-//     imageUrl = result.secure_url;
-//     if (fs.existsSync(req.file.path)) fs.unlinkSync(req.file.path);
-//   }
-
-//   const existing = (
-//     await pool.query("SELECT * FROM newsletters WHERE id = $1", [id])
-//   ).rows[0];
-//   if (!existing || existing.sent) return res.redirect("/admin/newsletter");
-
-//   await pool.query(
-//     `UPDATE newsletters SET subject = $1, message = $2, scheduled_at = $3, image_url = COALESCE($4, image_url) WHERE id = $5`,
-//     [subject, message, scheduled_at || null, imageUrl, id]
-//   );
-
-//   res.redirect("/admin/newsletter");
-// };
 
 exports.editNewsletter = async (req, res) => {
   const { id } = req.params;
