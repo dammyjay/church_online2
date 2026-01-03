@@ -49,6 +49,7 @@ async function createTables() {
         content TEXT NOT NULL,
         image_url TEXT,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        sheduled_at TIMESTAMP
       );
     `);
 

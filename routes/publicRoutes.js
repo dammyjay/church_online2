@@ -53,20 +53,22 @@ router.get("/", async (req, res) => {
     const demoVideos = demoResult.rows;
     console.log("Demo Videos:", demoVideos);
 
+
 const devoRes = await pool.query(
   `
   SELECT *
   FROM devotionals
   WHERE visible = true
     AND (
-      scheduled_at = $1
+      DATE(scheduled_at) = $1
       OR (scheduled_at IS NULL AND DATE(created_at) = $1)
     )
-  ORDER BY created_at DESC
+  ORDER BY scheduled_at DESC NULLS LAST, created_at DESC
   LIMIT 1
   `,
   [today]
 );
+
 
 const devotional = devoRes.rows[0] || null;
 
