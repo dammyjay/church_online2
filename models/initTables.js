@@ -48,9 +48,13 @@ async function createTables() {
         scripture TEXT,
         content TEXT NOT NULL,
         image_url TEXT,
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         sheduled_at TIMESTAMP
       );
+
+      ALTER TABLE devotionals
+      ADD COLUMN IF NOT EXISTS sent_to_telegram BOOLEAN DEFAULT false;
+
     `);
 
     await pool.query(`

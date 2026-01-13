@@ -312,11 +312,6 @@ router.get("/home2", async (req, res) => {
   }
 });
 
-// router.get('/articles', async (req, res) => {
-//   const result = await pool.query('SELECT * FROM articles ORDER BY created_at3 DESC');
-//   res.render('allArticles', { articles: result.rows });
-// });
-
 router.get("/articles", async (req, res) => {
   try {
     const search = req.query.search || "";
