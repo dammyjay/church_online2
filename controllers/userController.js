@@ -1,6 +1,6 @@
 const bcrypt = require("bcrypt");
 const pool = require("../models/db");
-const sendEmail = require("../utils/sendEmail");
+const { sendEmail } = require("../utils/sendEmail");
 
 exports.showSignup = (req, res) => {
   // res.sendFile(path.join(__dirname, 'signup.html'));

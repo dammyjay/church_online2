@@ -49,7 +49,7 @@
 
 const cron = require("node-cron");
 const pool = require("../models/db");
-const sendEmail = require("../utils/sendEmail");
+const { sendEmail }= require("../utils/sendEmail");
 
 const runNewsletterScheduler = () => {
   cron.schedule("*/5 * * * *", async () => {
