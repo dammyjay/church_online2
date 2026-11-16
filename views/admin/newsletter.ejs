@@ -294,7 +294,7 @@
     <!-- script for edit modal -->
     <script>
       function openEditModal(newsletter) {
-        document.getElementById("editModal").style.display = "block";
+        document.getElementById("editModal").style.display = "flex";
         document.getElementById("editSubject").value = newsletter.subject;
         document.getElementById("editMessage").value = newsletter.message;
         if (newsletter.scheduled_at) {

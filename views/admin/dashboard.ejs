@@ -164,10 +164,10 @@
 
     <!-- modal to view user  -->
     <div id="userModal" class="modal" style="display:none;">
-      <div class="modal-content" style="max-width: 500px; margin: auto; background: #fff; padding: 20px; border-radius: 8px; text-align: left;">
-        <span onclick="closeUserModal()" class="close" style="float:right;cursor:pointer;">&times;</span>
+      <div class="modal-content" style="max-width: 500px;">
+        <span onclick="closeUserModal()" class="close">&times;</span>
         <h2>User Details</h2>
-        <img id="modalProfilePic" src="" alt="Profile" style="width: 80px; height: 80px; border-radius: 50%; object-fit: cover;"><br><br>
+        <img id="modalProfilePic" src="" alt="Profile" style="width: 80px; height: 80px; border-radius: 50%; object-fit: cover; margin-bottom: 12px;">
         <p><strong>Full Name:</strong> <span id="modalFullName"></span></p>
         <p><strong>Email:</strong> <span id="modalEmail"></span></p>
         <p><strong>Phone:</strong> <span id="modalPhone"></span></p>
@@ -241,7 +241,7 @@
     document.getElementById("modalProfilePic").src = user.profile_picture || "/profile.webp";
     document.getElementById("modalDate").textContent = user.created_at;
 
-    document.getElementById("userModal").style.display = "block";
+    document.getElementById("userModal").style.display = "flex";
   }
 
   function closeUserModal() {

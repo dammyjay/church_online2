@@ -3,440 +3,355 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css"
-    />
-    <title>Signup</title>
+    <title>Create Account</title>
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css"
     />
-    <link rel="icon" href="/logo.png" type="image/x-icon" />
-    <link rel="stylesheet" href="/css/style.css">
-    <link rel="icon" type="image/x-icon" href="/logo.png">
-    <!-- <style>
-      body {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        /* height: 100vh; */
-        /* background-image: url(Background.png); */
-        background-size: cover;
-        background-position: 50%;
-        background-repeat: no-repeat;
-        /* background-color: #ebfafb; */
-        font-family: Arial, sans-serif;
-      }
-
-      input[type="text"],
-      input[type="password"],
-      input[type="email"],
-      input[type="number"] {
-
-        width: 100%;
-        padding: 15px 10px;
-        margin: 10px 0 20px;
-        border: 1px solid #ccc;
-        border-radius: 10px;
-        box-shadow: 0 0px 10px rgba(0, 0, 0, 0.2);
-      }
-
-      .gender-box {
-        width: 100%;
-        padding: 15px 10px;
-        /* padding-left: 0px; */
-        margin: 10px 0 20px;
-        border: 1px solid #ccc;
-        background-color: #fff;
-        border-radius: 10px;
-        box-shadow: 0 0px 10px rgba(0, 0, 0, 0.2);
-      }
-      .container {
-        position: relative;
-        width: 100%;
-        padding-right: 10px;
-      }
-      .icon {
-        position: absolute;
-        top: 50%;
-        left: 10px;
-        transform: translateY(-50%);
-        color: #000000;
-      }
-
-      .password-container {
-        position: relative;
-      }
-      .toggle-password {
-        position: absolute;
-        top: 50%;
-        right: 10px;
-        transform: translateY(-50%);
-        cursor: pointer;
-        color: #666;
-      }
-      button {
-        width: 100%;
-        padding: 15px;
-        background: #24d0d6;
-        color: white;
-        border: none;
-        border-radius: 10px;
-        font-weight: bold;
-        cursor: pointer;
-        margin: 10px 0 20px;
-      }
-      button:hover {
-        background: #20b2b7;
-      }
-      p {
-        text-align: center;
-        margin-top: 15px;
-      }
-      a {
-        color: #1270b0;
-        text-decoration: none;
-      }
-      a:hover {
-        text-decoration: underline;
-      }
-      .logo {
-        display: block;
-        margin: 0 auto 20px;
-        max-width: 40px;
-      }
-      /* eview Image */
-      .preview-container {
-        display: none;
-        justify-content: center;
-        align-items: center;
-        margin-top: 15px;
-      }
-      .Prpreview-container img {
-        max-width: 100%;
-        max-height: 150px;
-        border-radius: 8px;
-        margin-top: 10px;
-      }
-      label {
-        padding: 10px;
-        font-size: 10px;
-        color: #000000;
-        text-align: center;
-        font-weight: bold;
-      }
-      .mask {
-        position: fixed;
-        top: 0;
-        left: 0;
-        z-index: -1;
-        width: 100px;
-        height: 150px;
-      }
-
-      .log-details {
-        text-align: center;
-        margin-bottom: 20px;
-      }
-      .log-details h2 {
-        color: #295153;
-        font-size: 18px;
-        margin-bottom: 10px;
-      }
-      .log-details p {
-        color: #000000;
-        font-size: 11px;
-        margin-bottom: 10px;
-        font-weight: bold;
-      }
-      .background-image {
-        position: fixed;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        z-index: -1; /* Puts it behind everything */
-       
-        object-fit: cover;
-        opacity: 1; /* Optional: Make it faint */
-      }
-      /* label {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-    font-size: 16px;
-} */
-      .checkbox-label {
-        display: flex;
-        align-items: center;
-        margin-bottom: 5px;
-        font-weight: bold;
-        font-size: 12px;
-      }
-      .checkbox-label input {
-        margin-right: 10px;
-      }
-      .checkbox-label span {
-        font-size: 14px;
-        color: #555;
-      }
-      .otp-modal {
-        position: fixed;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        background-color: white;
-        padding: 20px;
-        border-radius: 10px;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-        z-index: 1000;
-      }
-      @media (max-width: 600px) {
-        .form-container {
-          width: 90%;
-          padding: 20px;
-        }
-        .background-image {
-          width: 50vw; /* Full width on small screens */
-          height: auto; /* Maintain aspect ratio */
-        }
-      }
-
-      .terms {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        /* margin-top: 10px; */
-      }
-      .terms label {
-        font-size: 12px;
-        color: #000000;
-        text-align: center;
-        font-weight: bold;
-      }
-      
-    </style> -->
+    <link rel="stylesheet" href="/css/style.css" />
+    <link rel="icon" type="image/x-icon" href="/logo.png" />
   </head>
   <body>
-    <!-- <img class="mask" src="logo.png" alt="" /> -->
-    <img
-      src="logo.png"
-      class="background-image"
-      alt="Background"
-      style="margin: auto;"
-    />
-    <div class="form-container">
-      <!-- <img src="/Images/calicare logo.png" alt="Logo" class="logo" /> -->
-      <div class="log-details">
-        <h2>Welcome Onboard!</h2>
-        <p>PLEASE ENTER YOUR DETAILS</p>
+    <main class="auth-page">
+      <div class="auth-card auth-card--wide">
+        <div class="auth-brand">
+          <a href="/"><img src="/logo.png" alt="Logo" /></a>
+          <h1>Create your account</h1>
+          <p>Join our community. It only takes a minute.</p>
+        </div>
+
+        <div id="signup-error" class="auth-alert auth-alert--error" role="alert" style="display: none">
+          <i class="fa-solid fa-circle-exclamation"></i>
+          <span id="signup-error-text"></span>
+        </div>
+
+        <form
+          id="signup-form"
+          class="auth-form"
+          action="/signup"
+          method="post"
+          enctype="multipart/form-data"
+        >
+          <!-- Profile picture -->
+          <div class="auth-avatar">
+            <div class="auth-avatar-preview" id="avatar-preview">
+              <i class="fa-solid fa-user"></i>
+            </div>
+            <div>
+              <label for="file-input" class="auth-file-btn">
+                <i class="fa-solid fa-camera"></i>&nbsp; Upload photo
+              </label>
+              <input
+                type="file"
+                id="file-input"
+                class="auth-file-input"
+                name="profile_picture"
+                accept="image/png, image/jpeg"
+              />
+              <p class="auth-hint">Optional. JPG or PNG.</p>
+            </div>
+          </div>
+
+          <div class="auth-field">
+            <label for="username">Full name</label>
+            <div class="auth-input-wrap">
+              <i class="fa-regular fa-user auth-icon"></i>
+              <input class="auth-input" type="text" id="username" name="username" placeholder="John Doe" autocomplete="name" required />
+            </div>
+          </div>
+
+          <div class="auth-field">
+            <label for="email">Email address</label>
+            <div class="auth-input-wrap">
+              <i class="fa-regular fa-envelope auth-icon"></i>
+              <input class="auth-input" type="email" id="email" name="email" placeholder="you@example.com" autocomplete="email" required />
+            </div>
+          </div>
+
+          <div class="auth-grid">
+            <div class="auth-field">
+              <label for="phone">Phone number</label>
+              <div class="auth-input-wrap">
+                <i class="fa-solid fa-phone auth-icon"></i>
+                <input class="auth-input" type="tel" id="phone" name="phone" placeholder="0801 234 5678" autocomplete="tel" required />
+              </div>
+            </div>
+
+            <div class="auth-field">
+              <label for="gender">Gender</label>
+              <div class="auth-input-wrap">
+                <i class="fa-solid fa-venus-mars auth-icon"></i>
+                <select class="auth-input" id="gender" name="gender" required>
+                  <option value="" disabled selected>Select</option>
+                  <option>Male</option>
+                  <option>Female</option>
+                  <option>Not Specified</option>
+                </select>
+                <i class="fa-solid fa-chevron-down auth-chevron"></i>
+              </div>
+            </div>
+          </div>
+
+          <div class="auth-field">
+            <label for="dob">Date of birth <span style="font-weight: 400; color: #8a8a8a">(optional)</span></label>
+            <div class="auth-input-wrap">
+              <i class="fa-regular fa-calendar auth-icon"></i>
+              <input class="auth-input" type="date" id="dob" name="dob" />
+            </div>
+          </div>
+
+          <div class="auth-field">
+            <label for="password">Password</label>
+            <div class="auth-input-wrap">
+              <i class="fa-solid fa-lock auth-icon"></i>
+              <input class="auth-input" id="password" type="password" name="password" placeholder="Create a password" autocomplete="new-password" minlength="6" required />
+              <button type="button" class="auth-toggle-password" id="togglePassword" aria-label="Show password">
+                <i class="fa-regular fa-eye"></i>
+              </button>
+            </div>
+            <p class="auth-hint">At least 6 characters.</p>
+          </div>
+
+          <button type="submit" class="auth-submit" id="signup-submit">
+            <span class="spinner" aria-hidden="true"></span>
+            <span class="auth-submit-label">Create account</span>
+          </button>
+          <p class="auth-status" id="signup-status" style="display: none">
+            Creating your account and sending a verification code to your email…
+          </p>
+        </form>
+
+        <p class="auth-footer">Already have an account? <a class="auth-link" href="/admin/login">Sign in</a></p>
       </div>
 
-      <form
-        id="signup-form"
-        action="/signup"
-        method="post"
-        enctype="multipart/form-data"
-      >
-        <!-- <input type="email" name="email" required placeholder="Email" /> -->
-        <div class="container">
-          <input type="text" name="email" placeholder="Email" required />
-          <span class="toggle-password">
-            <i class="fa fa-envelope"></i>
-          </span>
-        </div>
-
-        <!-- <input type="text" name="username" required placeholder="Username" />
-        -->
-        <div class="container">
-          <input type="text" name="username" placeholder="Full name" required />
-          <span class="toggle-password">
-            <i class="fa fa-user"></i>
-          </span>
-        </div>
-
-        <!-- <input type="number" name="phone" required placeholder="Phone" /> -->
-        <div class="container">
-          <input type="number" name="phone" placeholder="Phone" required />
-          <span class="toggle-password">
-            <i class="fa fa-phone"></i>
-          </span>
-        </div>
-
-        <div class="container">
-          <label for="">Date of Birth</label>
-          <input type="date" name="dob" placeholder="Date of birth"/>
-          <span class="toggle-password">
-            <i class="fa fa-calendar"></i>
-          </span>
-        </div>
-
-        <div class="gender-box">
-          <label style="font-size: 13px; color: grey; padding: 4px;" for=""
-            >Gender</label
-          >
-          <select style="margin-left: 10px; padding: 4px;" name="gender" required>
-            <option>Male</option>
-            <option>Female</option>
-            <option>Not Specified</option>
-          </select>
-        </div>
-
-        <div class="password-container">
-          <input
-            id="password"
-            type="password"
-            name="password"
-            placeholder="Password"
-            required
-          />
-          <span id="togglePassword" class="toggle-password">
-            <i class="fa fa-eye"></i>
-          </span>
-        </div>
-
-        <!-- File input for image upload -->
-        <label style="font-size: 12px" for="profile-pic"
-          >Upload Profile Picture:</label
-        >
-        <input
-          type="file"
-          id="file-input"
-          name="profile_picture"
-          accept="image/*"
-          
-        />
-
-        <!-- Preview image container -->
-        <div class="preview-container" id="preview-container">
-          <img id="preview-image" alt="Image Preview" />
-        </div>
-
-        <!-- <label class="checkbox-label">
-          <input type="checkbox" name="remember" />
-          Remember me
-        </label> -->
-        <!-- <div class="terms">
-          <label class="checkbox-label">
-            <input type="checkbox" name="remember" />
-            I agree to the
-            <a href="terms.html" style="color: #1270b0">Terms and Conditions</a>
-          </label>
-        </div> -->
-        <button type="submit">Sign Up</button>
-      </form>
-      <p style="text-align: center;">Already have an account? <a href="/admin/login">Login</a></p>
-
-      <!-- OTP Modal -->
-      <div id="otp-modal" class="otp-modal" style="display: none">
-        <div
-         
-        >
-          <p style="color: #218838">
-            Please check your email for verification OTP sent and enter it
-            below.
+      <!-- OTP verification modal -->
+      <div id="otp-modal" class="modal" style="display: none" role="dialog" aria-modal="true" aria-labelledby="otp-title">
+        <div class="modal-content" style="max-width: 440px; text-align: center">
+          <span class="close" onclick="closeOtpModal()" aria-label="Close">&times;</span>
+          <div class="otp-icon"><i class="fa-regular fa-envelope-open"></i></div>
+          <h3 id="otp-title" style="text-align: center; padding-right: 0">Check your email</h3>
+          <p style="margin: 0 0 6px">
+            We sent a 6-digit code to <strong id="otp-email"></strong>.
           </p>
-          <p style="color: #e73f07">
-            you can also check your spam folder if you don't see it in your
-            inbox.
+          <p class="auth-hint" style="margin: 0 0 22px">
+            The code expires in 10 minutes. If you can't find it, check your spam folder.
           </p>
-          <!-- <input id="email-input" type="text" name="email" placeholder="Email" required />
-          <span class="toggle-password">
-            <i class="fa fa-envelope"></i>
-          </span> -->
-          <input id="otp-input" placeholder="Enter OTP" />
-          <button onclick="verifyOtp()">Verify OTP</button>
+
+          <div id="otp-alert" class="auth-alert" role="alert" style="display: none; text-align: left">
+            <i></i>
+            <span id="otp-alert-text"></span>
+          </div>
+
+          <form id="otp-form" class="auth-form">
+            <input
+              class="auth-input otp-code-input"
+              id="otp-input"
+              inputmode="numeric"
+              autocomplete="one-time-code"
+              maxlength="6"
+              pattern="[0-9]{6}"
+              placeholder="••••••"
+              aria-label="Verification code"
+              required
+            />
+            <button type="submit" class="auth-submit" id="otp-submit" style="margin-top: 16px">
+              <span class="spinner" aria-hidden="true"></span>
+              <span class="auth-submit-label">Verify email</span>
+            </button>
+          </form>
+
+          <p class="otp-resend">
+            Didn't get a code? <button type="button" id="resend-btn">Resend code</button>
+          </p>
+          <p class="otp-resend" style="margin-top: 6px">
+            <a class="auth-link" href="javascript:void(0);" onclick="closeOtpModal()">Use a different email</a>
+          </p>
         </div>
       </div>
-    </div>
+    </main>
 
     <script>
-      // document.getElementById("signup-form").onsubmit = async (e) => {
-      //   e.preventDefault();
-      //   const formData = new FormData(e.target);
-      //   const payload = Object.fromEntries(formData.entries());
+      const signupForm = document.getElementById("signup-form");
+      const signupSubmit = document.getElementById("signup-submit");
+      const signupStatus = document.getElementById("signup-status");
+      const otpModal = document.getElementById("otp-modal");
+      const otpForm = document.getElementById("otp-form");
+      const otpInput = document.getElementById("otp-input");
+      const otpSubmit = document.getElementById("otp-submit");
+      const resendBtn = document.getElementById("resend-btn");
+      let lastSignupData = null;
+      let resendTimer = null;
 
-      //   const res = await fetch("/signup", {
-      //     method: "POST",
-      //     headers: { "Content-Type": "application/json" },
-      //     body: JSON.stringify(payload),
-      //   });
-
-      //   if (res.ok) {
-      //     document.getElementById("otp-modal").style.display = "block";
-      //   } else {
-      //     alert("Signup failed: " + await res.text());
-      //   }
-      // };
-
-      document.getElementById("signup-form").onsubmit = async (e) => {
-        e.preventDefault();
-        const formData = new FormData(e.target); // Don't convert it to JSON
-
-        const res = await fetch("/signup", {
-          method: "POST",
-          body: formData, // ✅ Send raw FormData
-        });
-
-        if (res.ok) {
-          document.getElementById("otp-modal").style.display = "block";
-          document.getElementById("signup-form").style.display = "none"; // Hide the signup form
-        } else {
-          alert("Signup failed: " + (await res.text()));
-        }
-      };
-
-      async function verifyOtp() {
-        const otp = document.getElementById("otp-input").value;
-        const email = document.querySelector("input[name='email']").value;
-
-        const res = await fetch("/verify-otp", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ email, otp }),
-        });
-
-        const result = await res.text();
-        alert(result);
-
-        if (result.includes("success")) {
-          // Wait 2 seconds and redirect to login
-          setTimeout(() => {
-            window.location.href = "/admin/login";
-          }, 1000);
-        }
+      function setLoading(button, isLoading, label) {
+        button.disabled = isLoading;
+        button.classList.toggle("is-loading", isLoading);
+        button.querySelector(".auth-submit-label").textContent = label;
       }
 
+      function showSignupError(message) {
+        const box = document.getElementById("signup-error");
+        document.getElementById("signup-error-text").textContent = message;
+        box.style.display = message ? "flex" : "none";
+        if (message) box.scrollIntoView({ behavior: "smooth", block: "center" });
+      }
+
+      function showOtpAlert(message, type) {
+        const box = document.getElementById("otp-alert");
+        box.className = "auth-alert auth-alert--" + type;
+        box.querySelector("i").className =
+          type === "success" ? "fa-solid fa-circle-check" : "fa-solid fa-circle-exclamation";
+        document.getElementById("otp-alert-text").textContent = message;
+        box.style.display = message ? "flex" : "none";
+      }
+
+      // Send the signup details; the server emails the OTP code
+      async function sendSignup(formData) {
+        const res = await fetch("/signup", { method: "POST", body: formData });
+        const text = await res.text();
+        if (!res.ok) throw new Error(text || "Something went wrong. Please try again.");
+      }
+
+      function startResendCooldown(seconds) {
+        clearInterval(resendTimer);
+        let remaining = seconds;
+        resendBtn.disabled = true;
+        resendBtn.textContent = `Resend in ${remaining}s`;
+        resendTimer = setInterval(() => {
+          remaining -= 1;
+          if (remaining <= 0) {
+            clearInterval(resendTimer);
+            resendBtn.disabled = false;
+            resendBtn.textContent = "Resend code";
+          } else {
+            resendBtn.textContent = `Resend in ${remaining}s`;
+          }
+        }, 1000);
+      }
+
+      function openOtpModal() {
+        document.getElementById("otp-email").textContent =
+          document.getElementById("email").value;
+        showOtpAlert("", "error");
+        otpInput.value = "";
+        otpModal.style.display = "flex";
+        startResendCooldown(30);
+        setTimeout(() => otpInput.focus(), 100);
+      }
+
+      function closeOtpModal() {
+        otpModal.style.display = "none";
+        clearInterval(resendTimer);
+      }
+
+      signupForm.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        showSignupError("");
+        lastSignupData = new FormData(signupForm);
+
+        setLoading(signupSubmit, true, "Creating account…");
+        signupStatus.style.display = "block";
+
+        try {
+          await sendSignup(lastSignupData);
+          openOtpModal();
+        } catch (err) {
+          showSignupError(err.message === "Failed to fetch"
+            ? "We couldn't reach the server. Check your connection and try again."
+            : err.message);
+        } finally {
+          setLoading(signupSubmit, false, "Create account");
+          signupStatus.style.display = "none";
+        }
+      });
+
+      otpInput.addEventListener("input", () => {
+        otpInput.value = otpInput.value.replace(/\D/g, "").slice(0, 6);
+      });
+
+      otpForm.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        showOtpAlert("", "error");
+        setLoading(otpSubmit, true, "Verifying…");
+
+        try {
+          const res = await fetch("/verify-otp", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              email: document.getElementById("email").value,
+              otp: otpInput.value,
+            }),
+          });
+          const text = await res.text();
+
+          if (!res.ok) {
+            const message = /expired/i.test(text)
+              ? "This code has expired. Please request a new one."
+              : "That code isn't right. Please check it and try again.";
+            showOtpAlert(message, "error");
+            setLoading(otpSubmit, false, "Verify email");
+            return;
+          }
+
+          showOtpAlert("Your email is verified. Taking you to sign in…", "success");
+          otpSubmit.querySelector(".auth-submit-label").textContent = "Verified";
+          setTimeout(() => {
+            window.location.href = "/admin/login";
+          }, 1500);
+        } catch (err) {
+          showOtpAlert("We couldn't reach the server. Please try again.", "error");
+          setLoading(otpSubmit, false, "Verify email");
+        }
+      });
+
+      resendBtn.addEventListener("click", async () => {
+        if (!lastSignupData) return;
+        resendBtn.disabled = true;
+        resendBtn.textContent = "Sending…";
+        try {
+          await sendSignup(lastSignupData);
+          showOtpAlert("A new code has been sent to your email.", "success");
+          otpInput.value = "";
+          startResendCooldown(30);
+        } catch (err) {
+          showOtpAlert(err.message, "error");
+          resendBtn.disabled = false;
+          resendBtn.textContent = "Resend code";
+        }
+      });
+
+      // Show / hide password
       const passwordInput = document.getElementById("password");
       const togglePassword = document.getElementById("togglePassword");
-      const icon = togglePassword.querySelector("i");
 
       togglePassword.addEventListener("click", () => {
         const isHidden = passwordInput.type === "password";
         passwordInput.type = isHidden ? "text" : "password";
-
-        // swap the icon
+        togglePassword.setAttribute("aria-label", isHidden ? "Hide password" : "Show password");
+        const icon = togglePassword.querySelector("i");
         icon.classList.toggle("fa-eye");
         icon.classList.toggle("fa-eye-slash");
       });
 
-      // Handle image preview
+      // Profile picture preview
       const fileInput = document.getElementById("file-input");
-      const previewContainer = document.getElementById("preview-container");
-      const previewImage = document.getElementById("preview-image");
+      const avatarPreview = document.getElementById("avatar-preview");
 
       fileInput.addEventListener("change", function () {
         const file = this.files[0];
-        if (file) {
-          const reader = new FileReader();
-          reader.onload = function (e) {
-            previewContainer.style.display = "flex"; // Display the preview container
-            previewImage.src = e.target.result; // Set the image source to the selected file
-          };
-          reader.readAsDataURL(file); // Read the file as a data URL
-        } else {
-          previewContainer.style.display = "none"; // Hide the preview if no file is selected
+        if (!file) {
+          avatarPreview.innerHTML = '<i class="fa-solid fa-user"></i>';
+          return;
         }
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          avatarPreview.innerHTML = "";
+          const img = document.createElement("img");
+          img.src = e.target.result;
+          img.alt = "Profile picture preview";
+          avatarPreview.appendChild(img);
+        };
+        reader.readAsDataURL(file);
       });
     </script>
   </body>
