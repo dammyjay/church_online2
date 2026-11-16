@@ -166,7 +166,7 @@ exports.addComment = async (req, res) => {
       url = `/articles/${contentId}`;
     } else if (contentType === "video") {
       const videoResult = await pool.query(
-        "SELECT title FROM videos WHERE id = $1",
+        "SELECT title FROM videos4 WHERE id = $1",
         [contentId]
       );
       const videoTitle = videoResult.rows[0]?.title || "a video";

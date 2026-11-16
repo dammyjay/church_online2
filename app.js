@@ -1,4 +1,5 @@
 // app.js
+require('dotenv').config();
 const express = require('express');
 const session = require('express-session');
 const bodyParser = require('body-parser');
@@ -82,17 +83,11 @@ app.use('/', userRoutes);
 const subscribeRoutes = require('./routes/subscribeRoutes');
 app.use('/', subscribeRoutes);
 
-const publicFaqRoutes = require('./routes/publicFaqRoutes.js');
-app.use('/', publicFaqRoutes);
-
 const adminFaqRoutes = require('./routes/adminFaqRoutes');
 app.use('/', adminFaqRoutes);
 
 const adminTestimonyRoutes = require("./routes/adminTestimonyRoutes");
 app.use("/", adminTestimonyRoutes);
-
-const publicArticleRoutes = require('./routes/publicArticleRoutes');
-app.use('/', publicArticleRoutes);
 
 const publicVideoRoutes = require('./routes/publicVideoRoutes');
 app.use('/', publicVideoRoutes);
@@ -107,31 +102,7 @@ app.use('/interaction', interactionRoutes);
 
 
 
-// Homepage Route
-app.get('/', async (req, res) => {
-    try {
-      const [infoResult, articlesResult, videosResult] = await Promise.all([
-        pool.query("SELECT * FROM ministry_info ORDER BY id DESC LIMIT 1"),
-        pool.query("SELECT * FROM articles ORDER BY created_at3 DESC LIMIT 3"),
-        pool.query("SELECT * FROM videos4 ORDER BY created_at3 DESC LIMIT 3"),
-      ]);
-
-      const info = infoResult.rows[0];
-      const articles = articlesResult.rows;
-      const videos = videosResult.rows;
-
-      // Add this line to pass login status to EJS
-      const isLoggedIn = !!req.session.user; // or whatever property you use for login
-      const profilePic = req.session.user ? req.session.user.profile_pic : null;
-      console.log("User session:", req.session.user);
-      console.log("Is user logged in:", isLoggedIn);
-      res.render("home", { info, articles, videos, isLoggedIn, profilePic});
-    } catch (err) {
-      console.error(err);
-      res.status(500).send('Server Error');
-    }
-});
-
+// The homepage route lives in routes/publicRoutes.js
 
 app.use("/notifications", notificationRoutes);
   

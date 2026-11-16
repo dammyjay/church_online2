@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const pool = require("../models/db");
 const articleController = require("../controllers/articleController");
+const { sendEmail, ADMIN_EMAIL } = require("../utils/sendEmail");
 
 // router.get('/videos', videoController.showVideos);
 
@@ -487,10 +488,21 @@ router.post("/faq/ask", async (req, res) => {
     return res.redirect("/faq");
   }
 
-  await pool.query("INSERT INTO faqs (question, email) VALUES ($1, $2)", [
-    question,
-    email || null,
-  ]);
+  await pool.query(
+    "INSERT INTO faqs (question, email, created_at) VALUES ($1, $2, NOW())",
+    [question, email || null]
+  );
+
+  // Email notification to admin
+  const subject = "New FAQ Question Submitted";
+  const message = `<h3>New FAQ Submitted</h3><p><strong>Question:</strong> ${question}</p><p><strong>User Email:</strong> ${email || "not given"}</p><p>Please log in to the dashboard to answer it</p>`;
+
+  try {
+    await sendEmail(ADMIN_EMAIL, subject, message);
+  } catch (err) {
+    console.error("Failed to send FAQ notification email:", err.message);
+  }
+
   res.redirect("/faq");
 });
 
@@ -523,12 +535,11 @@ router.post("/testimony", async (req, res) => {
   );
 
   // Optionally email admin
-  const adminEmail = "imoledayoimmanuel@gmail.com";
   const subject = "New Testimony Submitted";
   const body = `<h3>New Testimony</h3><p><strong>Name:</strong> ${name}</p><p>${message}</p>`;
 
   try {
-    await sendEmail(adminEmail, subject, body);
+    await sendEmail(ADMIN_EMAIL, subject, body);
   } catch (err) {
     console.error("Failed to send testimony alert:", err.message);
   }
@@ -536,15 +547,9 @@ router.post("/testimony", async (req, res) => {
   res.redirect("/testimony?success=true");
 });
 
-// Show Published Testimonies on Home or Testimony Page
-router.get("/testimonies", async (req, res) => {
-  const result = await pool.query(
-    "SELECT * FROM testimonies WHERE is_published = true ORDER BY created_at DESC"
-  );
-  res.render("testimonies", {
-    testimonies: result.rows,
-    title: "Testimonies",
-  });
+// Published testimonies are listed on the testimony page
+router.get("/testimonies", (req, res) => {
+  res.redirect("/testimony");
 });
 
 // routes/publicRoutes.js

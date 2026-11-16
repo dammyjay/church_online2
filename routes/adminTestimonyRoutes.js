@@ -39,9 +39,10 @@
 const express = require("express");
 const router = express.Router();
 const pool = require("../models/db");
+const requireAdmin = require("../middlewares/requireAdmin");
 
 // Show All Testimonies
-router.get("/admin/testimonies", async (req, res) => {
+router.get("/admin/testimonies", requireAdmin, async (req, res) => {
   const info =
     (await pool.query("SELECT * FROM ministry_info ORDER BY id DESC LIMIT 1"))
       .rows[0] || {};
@@ -52,7 +53,7 @@ router.get("/admin/testimonies", async (req, res) => {
 });
 
 // Toggle Publish Status
-router.post("/admin/testimonies/toggle/:id", async (req, res) => {
+router.post("/admin/testimonies/toggle/:id", requireAdmin, async (req, res) => {
   const { publish } = req.body;
   await pool.query("UPDATE testimonies SET is_published = $1 WHERE id = $2", [
     publish === "true",
@@ -62,7 +63,7 @@ router.post("/admin/testimonies/toggle/:id", async (req, res) => {
 });
 
 // Delete Testimony
-router.post("/admin/testimonies/delete/:id", async (req, res) => {
+router.post("/admin/testimonies/delete/:id", requireAdmin, async (req, res) => {
   await pool.query("DELETE FROM testimonies WHERE id = $1", [req.params.id]);
   res.redirect("/admin/testimonies");
 });

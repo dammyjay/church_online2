@@ -138,8 +138,8 @@ exports.login = async (req, res) => {
       profile_pic: user.profile_picture,
     };
 
-    // 4. Redirect user
-    if (redirectUrl) {
+    // 4. Redirect user (only to paths on this site)
+    if (redirectUrl && redirectUrl.startsWith("/") && !redirectUrl.startsWith("//")) {
       return res.redirect(redirectUrl);
     }
 

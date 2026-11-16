@@ -105,22 +105,7 @@ exports.saveDevotional = async (req, res) => {
 };
 
 
-exports.showEditDevotional = async (req, res) => {
-  const id = req.params.id;
-  const devotional = await pool.query(
-    "SELECT * FROM devotionals WHERE id = $1",
-    [id]
-  );
-  const infoResult = await pool.query(
-    "SELECT * FROM ministry_info ORDER BY id DESC LIMIT 1"
-  );
-
-  res.render("admin/editDevotional", {
-    info: infoResult.rows[0] || {},
-    devotional: devotional.rows[0],
-  });
-};
-
+// Editing happens in the modal on admin/devotionals, so there is no separate edit page
 exports.updateDevotional = async (req, res) => {
   const id = req.params.id;
   const { title, scripture, content, scheduled_at, existingUrl } = req.body;
@@ -136,8 +121,8 @@ exports.updateDevotional = async (req, res) => {
   }
 
   await pool.query(
-    "UPDATE devotionals SET title = $1, scripture = $2, content = $3, schedule_at = $4, image_url = $5 WHERE id = $6",
-    [title, scripture, content, scheduled_at, imageUrl, id]
+    "UPDATE devotionals SET title = $1, scripture = $2, content = $3, scheduled_at = $4, image_url = $5 WHERE id = $6",
+    [title, scripture, content, scheduled_at || null, imageUrl || null, id]
   );
 
   res.redirect("/admin/devotionals");

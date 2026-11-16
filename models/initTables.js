@@ -41,6 +41,18 @@ async function createTables() {
       );
     `);
 
+    // Push notifications are sent from `subscriptions`; copy over any
+    // browsers that were saved to the old `push_subscriptions` table
+    try {
+      await pool.query(`
+        INSERT INTO subscriptions (endpoint, keys, created_at)
+        SELECT endpoint, keys::jsonb, NOW() FROM push_subscriptions
+        ON CONFLICT (endpoint) DO NOTHING;
+      `);
+    } catch (err) {
+      console.error("❌ Error copying push_subscriptions:", err.message);
+    }
+
     await pool.query(`
       CREATE TABLE IF NOT EXISTS devotionals (
         id SERIAL PRIMARY KEY,

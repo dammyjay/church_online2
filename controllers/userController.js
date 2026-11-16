@@ -52,7 +52,16 @@ exports.signup = async (req, res) => {
       dob,
     ]
   );
-  await sendEmail(email, "Your OTP Code", `Your code is: ${otp}`);
+  try {
+    await sendEmail(email, "Your OTP Code", `Your code is: ${otp}`);
+  } catch (err) {
+    console.error("Failed to send OTP email:", err.message);
+    // Without the code the user can't finish signing up, so don't keep the pending record
+    await pool.query("DELETE FROM pending_users WHERE email = $1", [email]);
+    return res
+      .status(500)
+      .send("We couldn't send the verification email right now. Please try again later.");
+  }
   res.status(200).send("OTP sent to your email.");
 };
 

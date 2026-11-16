@@ -19,10 +19,14 @@ router.get("/vapid-public-key", (req, res) => {
   res.send(process.env.VAPID_PUBLIC_KEY);
 });
 
-router.post("/subscribe", async (req, res) => {
+// Browser push subscriptions (sent by layout.ejs). The email newsletter form
+// also posts to /subscribe, so let that fall through to subscribeRoutes.
+router.post("/subscribe", async (req, res, next) => {
   const subscription = req.body;
+  if (!subscription || !subscription.endpoint) return next();
+
   await pool.query(
-    "INSERT INTO push_subscriptions (endpoint, keys) VALUES ($1, $2)",
+    "INSERT INTO subscriptions (endpoint, keys, created_at) VALUES ($1, $2, NOW()) ON CONFLICT (endpoint) DO NOTHING",
     [subscription.endpoint, JSON.stringify(subscription.keys)]
   );
   res.sendStatus(201);

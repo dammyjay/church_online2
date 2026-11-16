@@ -1,5 +1,5 @@
 const pool = require('../models/db');
-const sendEmail = require("../utils/sendEmail");
+const { sendEmail } = require("../utils/sendEmail");
 const webpush = require("../utils/webpushConfig");
 
 

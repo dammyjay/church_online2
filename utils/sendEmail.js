@@ -65,7 +65,11 @@ const sendEmail = async (to, subject, message) => {
   });
 };
 
+// Where new FAQ / testimony alerts go; set ADMIN_EMAIL in .env to change it
+const ADMIN_EMAIL = process.env.ADMIN_EMAIL || "imoledayoimmanuel@gmail.com";
+
 module.exports = {
   sendFaqAnswerEmail,
   sendEmail,
+  ADMIN_EMAIL,
 };

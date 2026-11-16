@@ -15,11 +15,21 @@ const demoVideoController = require("../controllers/demoVideoController");
 const multer = require('multer');
 // const upload = multer({ dest: 'uploads/' }); // temp local storage
 const upload = require("../middlewares/upload");
+const requireAdmin = require("../middlewares/requireAdmin");
 
+// Public admin routes (no login needed)
 router.get("/login", adminController.showLogin);
 router.post("/login", adminController.login);
-router.get("/dashboard", adminController.dashboard);
 router.get("/logout", adminController.logout);
+router.get("/forgot-password", adminController.showForgotPasswordForm);
+router.post("/forgot-password", adminController.handleForgotPassword);
+router.get("/reset-password/:token", adminController.showResetPasswordForm);
+router.post("/reset-password/:token", adminController.handleResetPassword);
+
+// Everything below requires an admin session
+router.use(requireAdmin);
+
+router.get("/dashboard", adminController.dashboard);
 
 router.get("/users/edit/:id", adminController.editUserForm);
 router.post("/users/delete/:id", adminController.deleteUser);
@@ -76,25 +86,6 @@ router.post(
 );
 router.post("/articles/delete/:id", articleController.deleteArticle);
 
-// Temporary route to add `created_at` column
-router.get("/fix-created-at", async (req, res) => {
-  try {
-    await pool.query(`
-        ALTER TABLE articles
-        ADD COLUMN IF NOT EXISTS created_at4 TIMESTAMPTZ DEFAULT NOW();
-      `);
-    res.send("✅ created_at column added successfully!");
-  } catch (err) {
-    console.error(err);
-    res.status(500).send("❌ Failed to add column.");
-  }
-});
-
-router.get("/forgot-password", adminController.showForgotPasswordForm);
-router.post("/forgot-password", adminController.handleForgotPassword);
-router.get("/reset-password/:token", adminController.showResetPasswordForm);
-router.post("/reset-password/:token", adminController.handleResetPassword);
-
 // routes for announcements
 router.get("/announcements", adminController.showAnnouncements);
 router.post(
@@ -149,7 +140,6 @@ router.post(
   upload.single("image_url"),
   devotionalController.saveDevotional
 );
-router.get("/devotionals/edit/:id", devotionalController.showEditDevotional);
 router.post(
   "/devotionals/edit/:id",
   upload.single("image_url"),

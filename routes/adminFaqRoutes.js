@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const pool = require("../models/db");
 const { sendFaqAnswerEmail } = require("../utils/sendEmail");
+const requireAdmin = require("../middlewares/requireAdmin");
 
 // Show all FAQs
 // router.get("/admin/faqs", async (req, res) => {
@@ -15,7 +16,7 @@ const { sendFaqAnswerEmail } = require("../utils/sendEmail");
 //   res.render("admin/manageFaqs", {info, faqs: result.rows, title: "Manage FAQ" });
 // });
 
-router.get("/admin/faqs", async (req, res) => {
+router.get("/admin/faqs", requireAdmin, async (req, res) => {
   try {
     const { filter } = req.query;
 
@@ -52,7 +53,7 @@ router.get("/admin/faqs", async (req, res) => {
 });
 
 // Show edit form
-router.get("/admin/faqs/edit/:id", async (req, res) => {
+router.get("/admin/faqs/edit/:id", requireAdmin, async (req, res) => {
   const result = await pool.query("SELECT * FROM faqs WHERE id = $1", [
     req.params.id,
   ]);
@@ -60,7 +61,7 @@ router.get("/admin/faqs/edit/:id", async (req, res) => {
 });
 
 // Handle update
-router.post("/admin/faqs/update/:id", async (req, res) => {
+router.post("/admin/faqs/update/:id", requireAdmin, async (req, res) => {
   const { answer, is_published } = req.body;
   const created_at = new Date(); // Create timestamp in JS
   await pool.query(
@@ -90,7 +91,7 @@ router.post("/admin/faqs/update/:id", async (req, res) => {
 });
 
 // Handle delete
-router.post("/admin/faqs/delete/:id", async (req, res) => {
+router.post("/admin/faqs/delete/:id", requireAdmin, async (req, res) => {
   await pool.query("DELETE FROM faqs WHERE id = $1", [req.params.id]);
   res.redirect("/admin/faqs");
 });
