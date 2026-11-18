@@ -26,6 +26,7 @@ Required variables:
 - `EMAIL_USER`, `EMAIL_PASS`: Gmail SMTP credentials (app password).
 - `VAPID_PUBLIC_KEY`, `VAPID_PRIVATE_KEY`
 - `TELEGRAM_BOT_TOKEN`, `TELEGRAM_CHANNEL_ID`: optional. Telegram sending is skipped silently when they are missing.
+- `BREVO_API_KEY`: set on Railway. Railway blocks outgoing SMTP on free/hobby plans, so with this set `utils/sendEmail.js` sends through Brevo's HTTP API instead of Gmail SMTP. `EMAIL_FROM` (defaults to `EMAIL_USER`) must be a verified sender in Brevo; `EMAIL_FROM_NAME` is optional.
 - `ADMIN_EMAIL`: optional. Receives new FAQ and testimony alerts (falls back to the address in `utils/sendEmail.js`).
 - `SITE_URL`: optional, e.g. `https://cschurchonline.org`. Base for link-preview URLs. Without it, the request's protocol and host are used (`trust proxy` is on, so this gives `https` behind Railway).
 - `PORT`: optional.
