@@ -89,15 +89,23 @@
               <!-- <div class="article-card video-card-filter" data-date="<%= dateStr %>"> -->
                 <div class="article-card video-card-filter" data-date="<%= new Date(devotional.created_at).toISOString().split('T')[0] %>">
 
-                <h3><%- devotional.title %></h3>
-                <% if (devotional.image_url) { %>
-                  <img
-                    src="<%= devotional.image_url %>"
-                    alt="Devotional Image"
-                    style="max-width: 100%; height: auto; object-fit: cover; border-radius: 8px;"
-                  />
-                <% } %>
-                <small><%= new Date(devotional.created_at).toLocaleString() %></small>
+                <a class="card-link" href="/devotionals/<%= devotional.id %>">
+                  <h3><%= devotional.title %></h3>
+                  <% if (devotional.image_url) { %>
+                    <img
+                      src="<%= devotional.image_url %>"
+                      alt="Devotional Image"
+                      loading="lazy"
+                    />
+                  <% } %>
+                </a>
+                <div class="card-meta">
+                  <% const devDate = devotional.scheduled_at || devotional.created_at; %>
+                  <small><%= devDate ? new Date(devDate).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" }) : '' %></small>
+                  <button type="button" class="share-btn share-btn--sm" onclick='shareLink("/devotionals/<%= devotional.id %>", <%- JSON.stringify(devotional.title).replace(/</g, "\\u003c").replace(/'/g, "&#39;") %>)'>
+                    <i class="fas fa-share-nodes"></i> Share
+                  </button>
+                </div>
               </div>
             <% }) %>
           </div>

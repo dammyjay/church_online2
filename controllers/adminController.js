@@ -695,41 +695,4 @@ exports.deleteNewsletter = async (req, res) => {
   res.redirect("/admin/newsletter");
 };
 
-exports.getAdminProfile = async (req, res) => {
-  const userId = req.session.user?.id;
-  if (!userId || req.session.user.role !== "admin")
-    return res.redirect("/admin/login");
-  const result = await pool.query("SELECT * FROM users2 WHERE id = $1", [
-    userId,
-  ]);
-  res.render("adminProfile", {
-    user: result.rows[0],
-    title: "Admin Profile",
-  });
-};
-
-exports.updateAdminProfile = async (req, res) => {
-  const { fullname, phone, dob } = req.body;
-  const profile_picture = req.file
-    ? req.file.path
-    : req.session.user.profile_picture;
-  await pool.query(
-    "UPDATE users2 SET fullname = $1, phone = $2, profile_picture = $3, dob = $4 WHERE id = $5",
-    [fullname, phone, profile_picture, dob, req.session.user.id]
-  );
-  req.session.user.profile_picture = profile_picture; // update session
-  res.redirect("/admin/profile");
-};
-
-exports.getUserProfile = async (req, res) => {
-  const userId = req.session.user?.id;
-  if (!userId || req.session.user.role !== "admin")
-    return res.redirect("/admin/login");
-  const result = await pool.query("SELECT * FROM users2 WHERE id = $1", [
-    userId,
-  ]);
-  res.render("adminProfile", {
-    user: result.rows[0],
-    title: "User Profile",
-  });
-}
+// Admin and member profiles are both handled by userController (GET/POST /profile)

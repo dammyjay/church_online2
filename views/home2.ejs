@@ -29,7 +29,7 @@
        
         <a
           href="/signup"
-          style="background-color: rgb(0, 0, 0); color: rgb(255, 255, 255)"
+          data-variant="signup"
           class="login-button"
           >Signup</a
         >
@@ -47,12 +47,12 @@
           <% if (profilePic) { %>
            <a href="/profile"> <img src="<%= profilePic ? profilePic : '/profile.webp' %>" alt="Profile" style="width:32px;height:32px;border-radius:50%;vertical-align:middle;margin-right:8px;"></a>
           <% } %>
-          <a style="background-color: red;" href="/admin/logout" class="login-button">Logout</a>
+          <a href="/admin/logout" class="logout-button">Logout</a>
         <% } else { %>
           <a href="/admin/login" class="login-button">Login</a>
           <a
             href="/signup"
-            style="background-color: rgb(0, 0, 0); color: rgb(255, 255, 255)"
+            data-variant="signup"
             class="login-button"
           >Signup</a>
         <% } %>

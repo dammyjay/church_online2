@@ -1,0 +1,41 @@
+<%# Public site footer. Usage: include('partials/siteFooter') %>
+<footer class="site-footer">
+  <div class="footer-container">
+    <div class="footer-about">
+      <a href="/"><img src="/logo.png" alt="Logo" width="50" height="50" /></a>
+      <h3>C&amp;S Church Online</h3>
+      <p>Empowering lives through the gospel of Christ. Join us to learn, grow and connect with a family of faith.</p>
+    </div>
+
+    <div class="footer-about">
+      <h4>Support the ministry</h4>
+      <p>You can also give willingly.</p>
+      <p>
+        <strong>Account name:</strong> Cherubim and Seraphim Church Online<br />
+        <strong>Account number:</strong> 0126607952<br />
+        <strong>Bank:</strong> Wema Bank
+      </p>
+    </div>
+
+    <div class="footer-social">
+      <h4>Connect with us</h4>
+      <div class="social-links">
+        <a href="https://chat.whatsapp.com/KDcpdDfv3kX9NDnnQZVU72" target="_blank" rel="noopener" aria-label="WhatsApp"><i class="fab fa-whatsapp"></i></a>
+        <a href="https://facebook.com/profile.php?id=100083934734942" target="_blank" rel="noopener" aria-label="Facebook"><i class="fab fa-facebook"></i></a>
+        <a href="https://instagram.com/cands.online" target="_blank" rel="noopener" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+        <a href="https://youtube.com/@candschurchonline" target="_blank" rel="noopener" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+        <a href="https://t.me/cherubimandseraphimchurchonline" target="_blank" rel="noopener" aria-label="Telegram"><i class="fab fa-telegram-plane"></i></a>
+        <a href="mailto:candschurchonline@gmail.com" aria-label="Email"><i class="fas fa-envelope"></i></a>
+      </div>
+    </div>
+
+    <div class="footer-subscribe">
+      <h4>Subscribe to our newsletter</h4>
+      <form method="POST" action="/subscribe" class="subscribe-form">
+        <input type="email" name="email" placeholder="Enter your email" required />
+        <button type="submit">Subscribe</button>
+      </form>
+    </div>
+  </div>
+  <p class="footer-bottom">&copy; <%= new Date().getFullYear() %> C&amp;S Church Online. All rights reserved.</p>
+</footer>

@@ -1,4 +1,5 @@
 const pool = require('../models/db');
+const { youtubeThumbnail } = require('../middlewares/pageMeta');
 
 // exports.showVideos = async (req, res) => {
 //     const result = await pool.query('SELECT * FROM videos4 ORDER BY created_at3 DESC');
@@ -90,6 +91,13 @@ exports.showSingleVideo = async (req, res) => {
   }
   }
   
+  res.setMeta({
+  title: video.title,
+  description: video.description,
+  image: youtubeThumbnail(video.youtube_url),
+  type: 'video.other',
+  });
+
   res.render('video', {
   video,
   embedUrl,

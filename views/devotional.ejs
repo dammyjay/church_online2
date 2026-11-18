@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/css/style.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  </head>
+  <body>
+    <%- include('partials/siteHeader', { active: 'devotionals' }) %>
+
+    <main class="page">
+      <a class="page-back" href="/devotionals"><i class="fa-solid fa-arrow-left"></i> All devotionals</a>
+
+      <article class="detail-card">
+        <p class="eyebrow">Daily Devotional<%= dateLabel ? ' · ' + dateLabel : '' %></p>
+        <h1 class="detail-title"><%= devotional.title %></h1>
+
+        <% if (devotional.scripture && devotional.scripture.trim()) { %>
+          <p class="detail-scripture"><i class="fa-solid fa-book-bible"></i> <%= devotional.scripture %></p>
+        <% } %>
+
+        <% if (devotional.image_url) { %>
+          <img class="detail-image" src="<%= devotional.image_url %>" alt="<%= devotional.title %>" />
+        <% } %>
+
+        <% if (devotional.content && devotional.content.trim()) { %>
+          <div class="detail-body"><%= devotional.content %></div>
+        <% } %>
+
+        <div class="detail-actions">
+          <button type="button" class="share-btn" onclick="shareLink('/devotionals/<%= devotional.id %>', <%= JSON.stringify(devotional.title) %>)">
+            <i class="fa-solid fa-share-nodes"></i> Share this devotional
+          </button>
+        </div>
+      </article>
+
+      <% if (moreDevotionals.length) { %>
+        <section class="related">
+          <h2 class="related-title">More devotionals</h2>
+          <div class="related-grid">
+            <% moreDevotionals.forEach((d) => { %>
+              <a class="related-card" href="/devotionals/<%= d.id %>">
+                <% if (d.image_url) { %>
+                  <img src="<%= d.image_url %>" alt="" loading="lazy" />
+                <% } %>
+                <span class="related-card-body">
+                  <strong><%= d.title %></strong>
+                  <% const dDate = d.scheduled_at || d.created_at; %>
+                  <% if (dDate) { %>
+                    <small><%= new Date(dDate).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" }) %></small>
+                  <% } %>
+                </span>
+              </a>
+            <% }) %>
+          </div>
+        </section>
+      <% } %>
+    </main>
+
+    <%- include('partials/siteFooter') %>
+  </body>
+</html>

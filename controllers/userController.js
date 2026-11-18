@@ -109,18 +109,14 @@ exports.getUserProfile = async (req, res) => {
   if (result.rows.length === 0) return res.status(404).send("User not found");
 
   const currentUser = result.rows[0];
+  const isAdmin = user.role === "admin";
 
-  if (user.role === "admin") {
-    return res.render("admin/adminProfile", {
-      user: currentUser,
-      title: "Admin Profile",
-    });
-  } else {
-    return res.render("userProfile", {
-      user: currentUser,
-      title: "User Profile",
-    });
-  }
+  return res.render("userProfile", {
+    user: currentUser,
+    title: isAdmin ? "Admin Profile" : "My Profile",
+    backUrl: isAdmin ? "/admin/dashboard" : "/home2",
+    updated: req.query.updated === "1",
+  });
 };
 
 exports.updateUserProfile = async (req, res) => {
@@ -128,18 +124,15 @@ exports.updateUserProfile = async (req, res) => {
   if (!user) return res.redirect("/admin/login");
 
   const { fullname, phone, dob } = req.body;
-  const profile_picture = req.file ? req.file.path : user.profile_picture;
+  const newPicture = req.file ? req.file.path : null;
 
-  await pool.query(
-    "UPDATE users2 SET fullname = $1, phone = $2, profile_picture = $3, dob = $4 WHERE id = $5",
-    [fullname, phone, profile_picture, dob, user.id]
+  // Keep the existing photo unless a new one was uploaded
+  const result = await pool.query(
+    "UPDATE users2 SET fullname = $1, phone = $2, profile_picture = COALESCE($3, profile_picture), dob = $4 WHERE id = $5 RETURNING profile_picture",
+    [fullname, phone, newPicture, dob || null, user.id]
   );
-  // Update session with new profile picture
-  req.session.user.profile_picture = profile_picture;
+  // Update the session so the header shows the new picture
+  req.session.user.profile_pic = result.rows[0]?.profile_picture || user.profile_pic;
 
-  if (user.role === "admin") {
-    return res.redirect("/profile"); // can use same route for both
-  } else {
-    return res.redirect("/profile");
-  }
+  return res.redirect("/profile?updated=1");
 };

@@ -65,7 +65,7 @@
       <h3 style="text-align:center;">Testimonies</h3>
       <div class="testimony-grid">
         <% testimonies.forEach(t => { %>
-          <div class="testimony-card" onclick='openTestimonyModal(<%- JSON.stringify(t.message) %>, <%- JSON.stringify(t.name) %>)'>
+          <div class="testimony-card" onclick="openTestimonyModal(<%= t.id %>)">
             <p class="testimony-message">“<%= t.message.substring(0, 200) %>...”</p>
             <!-- <p class="testimony-name">— <strong><%= t.name %></strong></p> -->
             <p class="testimony-name">— <strong>Anonymous</strong></p>
@@ -78,28 +78,44 @@
       <div class="modal-content">
         <span class="close" onclick="closeTestimonyModal()">&times;</span>
         <h3 style="text-align: center; color: #a9712f;">Full Testimony</h3>
-        <p id="fullTestimonyMessage" style="text-align: justify;"></p>
+        <p id="fullTestimonyMessage" style="text-align: justify; white-space: pre-line;"></p>
         <p id="fullTestimonyName" style="text-align: right; font-weight: bold;"></p>
+        <div class="faq-actions">
+          <button type="button" class="share-btn" onclick="shareLink('/testimony/' + currentTestimonyId)">
+            <i class="fas fa-share-nodes"></i> Share this testimony
+          </button>
+        </div>
       </div>
     </div>
 
     <!-- open and close modal script -->
     <script>
-      function openTestimonyModal(message, name) {
-        document.getElementById("fullTestimonyMessage").innerText = message;
-        // document.getElementById("fullTestimonyName").innerText = `— ${name}`;
+      // Testimony text by id (kept out of onclick attributes so quotes can't break them)
+      const TESTIMONIES = <%- JSON.stringify(Object.fromEntries(testimonies.map((t) => [t.id, t.message]))).replace(/</g, '\\u003c') %>;
+      let currentTestimonyId = null;
+
+      function openTestimonyModal(id) {
+        currentTestimonyId = id;
+        document.getElementById("fullTestimonyMessage").innerText = TESTIMONIES[id] || "";
         document.getElementById("fullTestimonyName").innerText = "— Anonymous";
         document.getElementById("testimonyModal").style.display = "flex";
+        history.replaceState(null, "", "/testimony/" + id);
       }
-    
+
       function closeTestimonyModal() {
         document.getElementById("testimonyModal").style.display = "none";
+        history.replaceState(null, "", "/testimony");
       }
+
+      <% if (typeof focusId !== 'undefined' && focusId) { %>
+      // Opened from a shared link
+      openTestimonyModal(<%= focusId %>);
+      <% } %>
     
       window.addEventListener("click", function (e) {
         const modal = document.getElementById("testimonyModal");
         if (e.target === modal) {
-          modal.style.display = "none";
+          closeTestimonyModal();
         }
       });
     </script>

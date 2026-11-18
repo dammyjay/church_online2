@@ -84,21 +84,35 @@
       <h2>Frequently Asked Questions</h2>
       <div class="faq-list">
         <% faqs.forEach((faq, index) => { %>
-        <div class="faq-item">
+        <% const isFocused = typeof focusId !== 'undefined' && focusId === faq.id; %>
+        <div class="faq-item<%= isFocused ? ' is-focused' : '' %>" id="faq-<%= faq.id %>">
           <div class="faq-question" onclick="toggleFaq(<%- index %>)">
             <h4>Q: <%- faq.question %></h4>
-            <i id="icon-<%= index %>" class="fas fa-plus"></i>
+            <i id="icon-<%= index %>" class="fas <%= isFocused ? 'fa-minus' : 'fa-plus' %>"></i>
           </div>
-          <div id="answer-<%= index %>" class="faq-answer hidden">
+          <div id="answer-<%= index %>" class="faq-answer<%= isFocused ? '' : ' hidden' %>">
             <% if (faq.answer) { %>
             <p><strong>A:</strong> <%- faq.answer %></p>
             <% } else { %>
             <p><em>Answer coming soon...</em></p>
             <% } %>
+            <div class="faq-actions">
+              <button type="button" class="share-btn share-btn--sm" onclick="shareLink('/faq/<%= faq.id %>')">
+                <i class="fas fa-share-nodes"></i> Share this question
+              </button>
+            </div>
           </div>
         </div>
         <% }) %>
       </div>
+      <% if (typeof focusId !== 'undefined' && focusId) { %>
+        <script>
+          // Opened from a shared link: bring the shared question into view
+          window.addEventListener("load", () => {
+            document.getElementById("faq-<%= focusId %>")?.scrollIntoView({ behavior: "smooth", block: "center" });
+          });
+        </script>
+      <% } %>
     </section>
 
 <!-- search script  -->

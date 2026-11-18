@@ -8,8 +8,12 @@ const createTables = require("./models/initTables");
 const notificationRoutes = require("./routes/notificationRoutes");
 const runNewsletterScheduler = require("./cron/newsletterScheduler");
 const runDevotionalScheduler = require("./cron/cronJobs");
+const pageMeta = require("./middlewares/pageMeta");
 
 const app = express();
+
+// Behind Railway's proxy: lets req.protocol report https for link previews
+app.set('trust proxy', 1);
 const layout = require('express-ejs-layouts');
 
 // Set EJS as view engine
@@ -61,7 +65,10 @@ app.use((req, res, next) => {
     res.locals.title = 'Ministry'; // Default title
     next();
   });
-    
+
+// Default link-preview tags for every page (see middlewares/pageMeta.js)
+app.use(pageMeta);
+
 // Routes
 // app.get('/', (req, res) => {
 //   res.render('home');

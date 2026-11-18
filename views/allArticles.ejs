@@ -98,14 +98,9 @@
                 </div>
                 
               </a> 
-              <span class="copy-link-icon" 
-      title="Copy article link"
-      onclick="copyArticleLink('<%= article.id %>', this)"
-      style="cursor:pointer; margin-left:8px;">
-  <i class="fas fa-link"></i>
-</span>
-
-<span class="copy-feedback" style="display:none; color:#4caf50; margin-left:6px;">Link copied!</span>
+              <button type="button" class="share-btn share-btn--sm" onclick="copyArticleLink('<%= article.id %>')">
+                <i class="fas fa-share-nodes"></i> Share
+              </button>
 
 
 <div class="interaction-buttons">
@@ -274,26 +269,9 @@
 
 <!-- script for link to article -->
 <script>
-  function copyArticleLink(articleId, el) {
-    const url = `${window.location.origin}/articles/${articleId}`;
-    navigator.clipboard.writeText(url).then(function() {
-      // Find the feedback span next to the icon
-      const feedback = el.nextElementSibling;
-      if (feedback) {
-        feedback.style.display = "inline";
-        setTimeout(() => {
-          feedback.style.display = "none";
-        }, 1200);
-      }
-      el.title = "Copied!";
-      el.style.color = "#4caf50";
-      setTimeout(() => {
-        el.title = "Copy article link";
-        el.style.color = "";
-      }, 1200);
-    }, function() {
-      alert('Failed to copy link');
-    });
+  // shareLink() is defined in layout.ejs
+  function copyArticleLink(articleId) {
+    shareLink(`/articles/${articleId}`);
   }
 </script>
 
@@ -421,12 +399,8 @@
       return `${days} day${days !== 1 ? "s" : ""} ago`; 
   } 
   
-  function copyLink(id, type) { 
-    const url = `${window.location.origin}/${type}s/${id}`; 
-    navigator.clipboard.writeText(url)
-    .then(() => { 
-      alert("Link copied!"); 
-      }); 
+  function copyLink(id, type) {
+    shareLink(`/${type}s/${id}`);
   }
 </script>
 

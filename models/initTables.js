@@ -69,6 +69,18 @@ async function createTables() {
 
     `);
 
+    // Older code inserted devotionals without created_at (and the live column had
+    // no default). Add the default and fill gaps from scheduled_at where possible.
+    try {
+      await pool.query(`
+        ALTER TABLE devotionals ALTER COLUMN created_at SET DEFAULT CURRENT_TIMESTAMP;
+        UPDATE devotionals SET created_at = scheduled_at
+        WHERE created_at IS NULL AND scheduled_at IS NOT NULL;
+      `);
+    } catch (err) {
+      console.error("❌ Error fixing devotionals.created_at:", err.message);
+    }
+
     await pool.query(`
       CREATE TABLE IF NOT EXISTS testimonies (
         id SERIAL PRIMARY KEY,

@@ -1,13 +1,82 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
-    <title><%= typeof title !== 'undefined' ? title : 'Website' %></title>
-
-    <link rel="icon" type="image/x-icon" href="/logo.png" />
+    <meta charset="UTF-8" />
+    <%
+      // Browser tab title: page-specific link-preview title first, then the page's own title
+      const pageTitle = meta.title !== meta.siteName
+        ? meta.fullTitle
+        : (typeof title !== 'undefined' && title && title !== 'Ministry' ? title + ' | ' + meta.siteName : meta.siteName);
+    %>
+    <title><%= pageTitle %></title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="<%= meta.description %>" />
+    <link rel="canonical" href="<%= meta.url %>" />
+    <link rel="icon" type="image/x-icon" href="/logo.png" />
+
+    <!-- Link previews (WhatsApp, Facebook, Telegram, LinkedIn, ...) -->
+    <meta property="og:site_name" content="<%= meta.siteName %>" />
+    <meta property="og:type" content="<%= meta.type %>" />
+    <meta property="og:title" content="<%= meta.title %>" />
+    <meta property="og:description" content="<%= meta.description %>" />
+    <meta property="og:url" content="<%= meta.url %>" />
+    <meta property="og:image" content="<%= meta.image %>" />
+    <meta property="og:image:alt" content="<%= meta.title %>" />
+    <% if (meta.publishedTime) { %>
+    <meta property="article:published_time" content="<%= meta.publishedTime %>" />
+    <% } %>
+
+    <!-- X / Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="<%= meta.title %>" />
+    <meta name="twitter:description" content="<%= meta.description %>" />
+    <meta name="twitter:image" content="<%= meta.image %>" />
   </head>
   <body>
     <%- body %>
+
+    <div id="share-toast" class="share-toast" role="status" aria-live="polite"></div>
+
+    <script>
+      // Share a link: native share sheet on phones, copy to clipboard elsewhere.
+      // Usage: shareLink("/articles/12", "Article title")
+      async function shareLink(path, title) {
+        const url = new URL(path || window.location.pathname, window.location.origin).href;
+
+        if (navigator.share && /Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+          try {
+            await navigator.share({ title: title || document.title, url });
+            return;
+          } catch (err) {
+            if (err.name === "AbortError") return; // user closed the share sheet
+          }
+        }
+
+        try {
+          await navigator.clipboard.writeText(url);
+        } catch (err) {
+          // Older browsers / non-HTTPS: fall back to a hidden textarea
+          const area = document.createElement("textarea");
+          area.value = url;
+          area.setAttribute("readonly", "");
+          area.style.position = "fixed";
+          area.style.opacity = "0";
+          document.body.appendChild(area);
+          area.select();
+          document.execCommand("copy");
+          area.remove();
+        }
+        showToast("Link copied. Paste it anywhere to share.");
+      }
+
+      function showToast(message) {
+        const toast = document.getElementById("share-toast");
+        toast.textContent = message;
+        toast.classList.add("is-visible");
+        clearTimeout(showToast.timer);
+        showToast.timer = setTimeout(() => toast.classList.remove("is-visible"), 2600);
+      }
+    </script>
 
     <script>
       if ("serviceWorker" in navigator && "PushManager" in window) {

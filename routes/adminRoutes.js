@@ -127,12 +127,8 @@ router.post("/newsletter/delete/:id", adminController.deleteNewsletter);
 
 
 
-router.get("/admin/profile", adminController.getAdminProfile);
-router.post(
-  "/admin/profile",
-  upload.single("profile_picture"),
-  adminController.updateAdminProfile
-);
+// Admin profile lives at /profile (userController)
+router.get("/profile", (req, res) => res.redirect("/profile"));
 
 router.get("/devotionals", devotionalController.showUploadForm);
 router.post(

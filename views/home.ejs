@@ -31,12 +31,12 @@
           <% if (profilePic) { %>
             <img src="<%= profilePic %>" alt="Profile" style="width:32px;height:32px;border-radius:50%;vertical-align:middle;margin-right:8px;">
           <% } %>
-          <a style="background-color: red;" href="/admin/logout" class="login-button">Logout</a>
+          <a href="/admin/logout" class="logout-button">Logout</a>
         <% } else { %>
           <a href="/admin/login" class="login-button">Login</a>
           <a
             href="/signup"
-            style="background-color: rgb(0, 0, 0); color: rgb(255, 255, 255)"
+            data-variant="signup"
             class="login-button"
           >Signup</a>
         <% } %>
@@ -195,6 +195,13 @@
     <% } %>
 
     <p><%= devotional.content %></p>
+
+    <div class="detail-actions">
+      <a class="login-button" href="/devotionals/<%= devotional.id %>">Open devotional</a>
+      <button type="button" class="share-btn" onclick='shareLink("/devotionals/<%= devotional.id %>", <%- JSON.stringify(devotional.title).replace(/</g, "\\u003c").replace(/'/g, "&#39;") %>)'>
+        <i class="fas fa-share-nodes"></i> Share
+      </button>
+    </div>
   <% } else { %>
     <p>Devotional coming soon.</p>
   <% } %>
@@ -787,10 +794,12 @@ function showLess(idx) {
 </script>
 
 <!-- Notification Banner -->
-<div id="notif-banner" style="display: none; position: fixed; top: 0; left: 0; right: 0; background: #333; color: #fff; padding: 12px; text-align: center; z-index: 999;">
-  <span>🔔 Get updates on new devotionals & articles!</span>
-  <button onclick="triggerSubscription()" style="margin-left: 10px; padding: 6px 12px;">Enable</button>
-  <button onclick="dismissBanner()" style="margin-left: 10px; padding: 6px 12px;">Dismiss</button>
+<div id="notif-banner" class="notif-banner" style="display: none;">
+  <span class="notif-banner-text">🔔 Get updates on new devotionals &amp; articles!</span>
+  <span class="notif-banner-actions">
+    <button type="button" class="notif-enable" onclick="triggerSubscription()">Enable</button>
+    <button type="button" class="notif-dismiss" onclick="dismissBanner()">Not now</button>
+  </span>
 </div>
 
 

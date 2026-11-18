@@ -9,7 +9,7 @@ exports.showDevotionals = async (req, res) => {
     "SELECT * FROM ministry_info ORDER BY id DESC LIMIT 1"
   );
   const devotionals = await pool.query(
-    "SELECT * FROM devotionals ORDER BY created_at DESC"
+    "SELECT * FROM devotionals ORDER BY created_at DESC NULLS LAST, id DESC"
   );
   res.render("admin/devotionals", {
     info: infoResult.rows[0] || {},
@@ -23,7 +23,7 @@ exports.showUploadForm = async (req, res) => {
       "SELECT * FROM ministry_info ORDER BY id DESC LIMIT 1"
     );
     const devotionalResult = await pool.query(
-      "SELECT * FROM devotionals ORDER BY created_at DESC"
+      "SELECT * FROM devotionals ORDER BY created_at DESC NULLS LAST, id DESC"
     );
 
     const info = infoResult.rows[0] || {};
@@ -82,8 +82,8 @@ exports.saveDevotional = async (req, res) => {
   const result = await pool.query(
     `
     INSERT INTO devotionals
-    (title, scripture, content, image_url, scheduled_at, visible)
-    VALUES ($1, $2, $3, $4, $5, $6)
+    (title, scripture, content, image_url, scheduled_at, visible, created_at)
+    VALUES ($1, $2, $3, $4, $5, $6, NOW())
     RETURNING *
     `,
     [title, scripture, content, imageUrl, scheduled_at || null, visible]

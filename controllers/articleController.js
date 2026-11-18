@@ -266,6 +266,14 @@ exports.showEditForm = async (req, res) => {
         });
     
 
+    res.setMeta({
+      title: article.title,
+      description: article.content,
+      image: article.image_url,
+      type: "article",
+      publishedTime: article.created_at3,
+    });
+
     res.render("singleArticle", {
       article,
       relatedArticles,

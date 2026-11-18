@@ -26,6 +26,12 @@ exports.showAbout = async (req, res) => {
     // Newsletter subscription status (optional)
     const subscribed = req.session.subscribed || false;
 
+    res.setMeta({
+      title: "About Us",
+      description: [info?.mission, info?.vision].filter(Boolean).join(" ") || undefined,
+      image: imagesResult.rows[0]?.url,
+    });
+
     res.render("about", {
       info,
       categories: categoriesResult.rows,

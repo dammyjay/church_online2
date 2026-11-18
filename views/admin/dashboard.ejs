@@ -121,17 +121,11 @@
             <td><%= user.phone %></td>
             <td><%= user.gender %></td>
             <td><%= user.role %></td>
-            <td
-              style="
-                display: flex;
-                gap: 10px;
-                justify-content: center;
-                align-items: center;
-              "
-            >
+            <td>
+              <div class="table-actions">
               <!-- <a href="/admin/users/edit/<%= user.id %>">Edit</a> | -->
-              <button class="btn-edit" style="background-color: black;" onclick='openUserModal(<%- JSON.stringify(user) %>)'>
-                👁️
+              <button class="btn-edit" title="View details" onclick="openUserModal(<%= user.id %>)">
+                View
               </button>
               
               <button
@@ -155,6 +149,7 @@
               >
                 Delete
               </button>
+              </div>
             </td>
           </tr>
           <% }) %>
@@ -231,7 +226,15 @@
 
 
 <script>
-  function openUserModal(user) {
+  // Only the fields the details modal shows (never the password hash or reset token)
+  const USERS = <%- JSON.stringify(Object.fromEntries(users.map((u) => [u.id, {
+    fullname: u.fullname, email: u.email, phone: u.phone, dob: u.dob, gender: u.gender,
+    role: u.role, profile_picture: u.profile_picture, created_at: u.created_at,
+  }]))).replace(/</g, '\\u003c') %>;
+
+  function openUserModal(id) {
+    const user = USERS[id];
+    if (!user) return;
     document.getElementById("modalFullName").textContent = user.fullname;
     document.getElementById("modalEmail").textContent = user.email;
     document.getElementById("modalPhone").textContent = user.phone;

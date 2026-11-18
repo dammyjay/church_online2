@@ -1,0 +1,44 @@
+<%#
+  Public site header. Usage: include('partials/siteHeader', { active: 'devotionals' })
+  Login state comes from res.locals.currentUser (middlewares/pageMeta.js).
+%>
+<% const navUser = typeof currentUser !== 'undefined' ? currentUser : null; %>
+<% const activeNav = typeof active !== 'undefined' ? active : ''; %>
+<header class="header">
+  <div class="logo-title">
+    <a href="<%= navUser ? '/home2' : '/' %>"><img src="/logo.png" alt="Logo" /></a>
+    <p>C&amp;S Church Online</p>
+  </div>
+  <button class="nav-toggle" onclick="toggleNav()" aria-label="Open menu">☰</button>
+  <nav id="main-nav">
+    <a class="<%= activeNav === 'home' ? 'active' : '' %>" href="<%= navUser ? '/home2' : '/' %>">Home</a>
+    <a class="<%= activeNav === 'articles' ? 'active' : '' %>" href="/articles">Articles</a>
+    <a class="<%= activeNav === 'videos' ? 'active' : '' %>" href="/videos">Videos</a>
+    <a class="<%= activeNav === 'devotionals' ? 'active' : '' %>" href="/devotionals">Devotionals</a>
+    <a class="<%= activeNav === 'about' ? 'active' : '' %>" href="/about">About Us</a>
+    <a class="<%= activeNav === 'testimony' ? 'active' : '' %>" href="/testimony">Testimonies</a>
+    <a class="<%= activeNav === 'faq' ? 'active' : '' %>" href="/faq">FAQ</a>
+    <% if (navUser) { %>
+      <a class="<%= activeNav === 'profile' ? 'active' : '' %>" href="/profile">Profile</a>
+      <a href="/admin/logout" class="logout-button">Logout</a>
+    <% } else { %>
+      <a href="/admin/login" class="login-button">Login</a>
+      <a href="/signup" class="login-button signup-button">Sign up</a>
+    <% } %>
+  </nav>
+</header>
+
+<script>
+  function toggleNav() {
+    document.getElementById("main-nav").classList.toggle("open");
+  }
+
+  // Close the mobile menu when tapping outside it
+  document.addEventListener("click", function (event) {
+    const nav = document.getElementById("main-nav");
+    const toggleBtn = document.querySelector(".nav-toggle");
+    if (!nav.contains(event.target) && !toggleBtn.contains(event.target)) {
+      nav.classList.remove("open");
+    }
+  });
+</script>

@@ -1,35 +1,113 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
-    <title><%= title %></title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" />
     <link rel="stylesheet" href="/css/style.css" />
   </head>
   <body>
-    <h2>Your Profile</h2>
-    <form action="/profile" method="POST" enctype="multipart/form-data">
-      <img src="<%= user.profile_picture || '/default.jpg' %>" width="100" />
-      <input type="file" name="profile_picture" value="<%= user.profile_picture || '/default.jpg' %>"/>
-      
-      <label for="">Email</label>
-      <input type="text" value="<%= user.email %>" disabled />
+    <%
+      // <input type="date"> needs YYYY-MM-DD; pg returns a Date object
+      let dobValue = '';
+      if (user.dob instanceof Date && !isNaN(user.dob)) {
+        // pg gives a local-midnight Date; shift so toISOString keeps the same calendar day
+        dobValue = new Date(user.dob.getTime() - user.dob.getTimezoneOffset() * 60000).toISOString().slice(0, 10);
+      } else if (typeof user.dob === 'string') {
+        dobValue = user.dob.slice(0, 10);
+      }
+      const photo = user.profile_picture || '/profile.webp';
+    %>
+    <main class="auth-page">
+      <div class="auth-card auth-card--wide">
+        <a class="page-back" href="<%= backUrl %>"><i class="fa-solid fa-arrow-left"></i> Back</a>
 
-      <label for="">Fullname</label>
-      <input
-        type="text"
-        name="fullname"
-        value="<%= user.fullname %>"
-        required
-      />
-      <label for="">Phone Number</label>
-      <input type="text" name="phone" value="<%= user.phone %>" />
+        <div class="auth-brand">
+          <h1><%= title %></h1>
+          <p>Keep your details up to date.</p>
+        </div>
 
-      <label for="">Date of Birth</label>
-      <!-- Display the date of birth as text and as a date input -->
-      <input type="text" value="<%= user.dob %>" disabled />
-      <input type="date" name="dob" value="<%= user.dob %>" />>
-      
-      <button type="submit">Update Profile</button>
-    </form>
-    <p><a href="/home2">← Back</a></p>
+        <% if (updated) { %>
+          <div class="auth-alert auth-alert--success" role="status">
+            <i class="fa-solid fa-circle-check"></i>
+            <span>Your profile has been updated.</span>
+          </div>
+        <% } %>
+
+        <form id="profile-form" class="auth-form" action="/profile" method="POST" enctype="multipart/form-data">
+          <div class="auth-avatar">
+            <div class="auth-avatar-preview" id="avatar-preview">
+              <img src="<%= photo %>" alt="Profile picture" />
+            </div>
+            <div>
+              <label for="file-input" class="auth-file-btn">
+                <i class="fa-solid fa-camera"></i>&nbsp; Change photo
+              </label>
+              <input type="file" id="file-input" class="auth-file-input" name="profile_picture" accept="image/png, image/jpeg" />
+              <p class="auth-hint">JPG or PNG. Leave empty to keep your current photo.</p>
+            </div>
+          </div>
+
+          <div class="auth-field">
+            <label for="email">Email address</label>
+            <div class="auth-input-wrap">
+              <i class="fa-regular fa-envelope auth-icon"></i>
+              <input class="auth-input" type="email" id="email" value="<%= user.email %>" disabled />
+            </div>
+            <p class="auth-hint">Your email can't be changed.</p>
+          </div>
+
+          <div class="auth-field">
+            <label for="fullname">Full name</label>
+            <div class="auth-input-wrap">
+              <i class="fa-regular fa-user auth-icon"></i>
+              <input class="auth-input" type="text" id="fullname" name="fullname" value="<%= user.fullname %>" autocomplete="name" required />
+            </div>
+          </div>
+
+          <div class="auth-grid">
+            <div class="auth-field">
+              <label for="phone">Phone number</label>
+              <div class="auth-input-wrap">
+                <i class="fa-solid fa-phone auth-icon"></i>
+                <input class="auth-input" type="tel" id="phone" name="phone" value="<%= user.phone || '' %>" autocomplete="tel" />
+              </div>
+            </div>
+
+            <div class="auth-field">
+              <label for="dob">Date of birth</label>
+              <div class="auth-input-wrap">
+                <i class="fa-regular fa-calendar auth-icon"></i>
+                <input class="auth-input" type="date" id="dob" name="dob" value="<%= dobValue %>" />
+              </div>
+            </div>
+          </div>
+
+          <button type="submit" class="auth-submit" id="profile-submit">
+            <span class="spinner" aria-hidden="true"></span>
+            <span class="auth-submit-label">Save changes</span>
+          </button>
+        </form>
+      </div>
+    </main>
+
+    <script>
+      document.getElementById("file-input").addEventListener("change", function () {
+        const file = this.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          document.querySelector("#avatar-preview img").src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+      });
+
+      document.getElementById("profile-form").addEventListener("submit", () => {
+        const submit = document.getElementById("profile-submit");
+        submit.disabled = true;
+        submit.classList.add("is-loading");
+        submit.querySelector(".auth-submit-label").textContent = "Saving…";
+      });
+    </script>
   </body>
 </html>
