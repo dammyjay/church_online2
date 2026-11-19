@@ -37,28 +37,31 @@
         <!-- Login remains a page link -->
       </nav>
     </header>
-    <section class="section">
+    <section class="section" id="ask">
       <h3>Have a Question?</h3>
-      <form action="/faq/ask" method="POST" class="faq-form">
+      <form action="/faq/ask" method="POST" class="faq-form" id="faqAskForm">
+        <!-- No "required" here: CKEditor hides this textarea, and a hidden required
+             field blocks the form. The submit handler below checks it instead. -->
         <textarea
           name="question"
           id="content"
           placeholder="Type your question..."
-          required
         ></textarea>
-        <!-- <input
-          type="text"
-          name="question"
-          placeholder="Type your question..."
-          required
-        /> -->
+        <label for="faqEmail" style="display:block; margin-top:12px; font-weight:600;">
+          Your email address <span style="color:#b3261e">*</span>
+        </label>
         <input
           style="width: 100%; height: auto"
           type="email"
+          id="faqEmail"
           name="email"
-          placeholder="Your email "
+          placeholder="you@example.com"
           required
         />
+        <p style="margin:6px 0 12px; font-size:0.85rem; opacity:0.75;">
+          We'll email you as soon as our team answers your question.
+        </p>
+        <p id="faqAskError" style="display:none; color:#b3261e; margin:0 0 10px;"></p>
         <button type="submit">Submit</button>
       </form>
 
@@ -188,8 +191,69 @@
         </form>
       </div>
     </footer>
+    <!-- Popup shown after asking a question -->
+    <div id="faqSentModal" class="modal" style="display:none;">
+      <div class="modal-content" style="max-width:440px; text-align:center;">
+        <span class="close" onclick="closeFaqModal()">&times;</span>
+        <div style="font-size:48px; line-height:1; margin:8px 0 12px;">✅</div>
+        <h2 style="margin:0 0 10px;">Your question has been sent!</h2>
+        <p style="margin:0 0 8px;">Thank you for asking. Our team has been notified and will reply soon.</p>
+        <p style="margin:0 0 20px;">When they answer, <strong>you'll get an email</strong> with the reply. Remember to check your spam folder too.</p>
+        <button type="button" onclick="closeFaqModal()">Okay, got it</button>
+      </div>
+    </div>
+
     <script>
       CKEDITOR.replace("content");
+
+      const faqForm = document.getElementById("faqAskForm");
+      const faqError = document.getElementById("faqAskError");
+
+      function showFaqError(message) {
+        faqError.textContent = message;
+        faqError.style.display = message ? "block" : "none";
+      }
+
+      faqForm.addEventListener("submit", (event) => {
+        const editor = CKEDITOR.instances.content;
+        const text = editor ? editor.document.getBody().getText().trim() : faqForm.question.value.trim();
+        if (!text) {
+          event.preventDefault();
+          showFaqError("Please type your question.");
+          editor && editor.focus();
+          return;
+        }
+        if (editor) editor.updateElement();
+        showFaqError("");
+        const btn = faqForm.querySelector("button[type=submit]");
+        btn.disabled = true;
+        btn.textContent = "Sending…";
+      });
+
+      function closeFaqModal() {
+        document.getElementById("faqSentModal").style.display = "none";
+      }
+      document.getElementById("faqSentModal").addEventListener("click", (e) => {
+        if (e.target.id === "faqSentModal") closeFaqModal();
+      });
+
+      // Result of the last submission (set by POST /faq/ask)
+      (function () {
+        const params = new URLSearchParams(location.search);
+        const status = params.get("ask");
+        if (!status) return;
+        if (status === "sent") {
+          document.getElementById("faqSentModal").style.display = "flex";
+        } else if (status === "missing-email") {
+          showFaqError("Please enter a valid email address so we can send you the answer.");
+        } else if (status === "missing-question") {
+          showFaqError("Please type your question.");
+        }
+        // Clean the URL so a refresh doesn't show the message again
+        params.delete("ask");
+        const query = params.toString();
+        history.replaceState(null, "", location.pathname + (query ? "?" + query : "") + location.hash);
+      })();
     </script>
     <script>
       function toggleFaq(index) {

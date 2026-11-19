@@ -49,7 +49,8 @@
 
 const cron = require("node-cron");
 const pool = require("../models/db");
-const { sendEmail }= require("../utils/sendEmail");
+const { sendToAll } = require("../utils/sendEmail");
+const emailTemplates = require("../utils/emailTemplates");
 
 const runNewsletterScheduler = () => {
   cron.schedule("*/5 * * * *", async () => {
@@ -73,14 +74,10 @@ const runNewsletterScheduler = () => {
         //   "imoledayoimmanuel@gmail.com",
         // ];
 
-        let htmlMsg = `<div>${newsletter.message}</div>`;
-        if (newsletter.image_url) {
-          htmlMsg += `<div><img src="${newsletter.image_url}" style="max-width:100%;border-radius:8px;"></div>`;
-        }
-
-        for (const email of testEmails) {
-          await sendEmail(email, newsletter.subject, htmlMsg);
-        }
+        await sendToAll(
+          testEmails,
+          emailTemplates.newsletter(newsletter.subject, newsletter.message, newsletter.image_url)
+        );
 
         await pool.query("UPDATE newsletters SET sent = true WHERE id = $1", [
           newsletter.id,

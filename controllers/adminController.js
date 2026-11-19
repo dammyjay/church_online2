@@ -2,7 +2,8 @@ const pool = require("../models/db");
 const bcrypt = require("bcrypt");
 const crypto = require("crypto");
 // const nodemailer = require("nodemailer");
-const { sendEmail } = require("../utils/sendEmail");
+const { sendEmail, sendToAll } = require("../utils/sendEmail");
+const emailTemplates = require("../utils/emailTemplates");
 const cloudinary = require("../utils/cloudinary");
 const fs = require("fs");
 
@@ -37,11 +38,14 @@ exports.handleForgotPassword = async (req, res) => {
     ? process.env.SITE_URL.replace(/\/+$/, "")
     : `${req.protocol}://${req.get("host")}`;
   const resetUrl = `${origin}/admin/reset-password/${token}`;
-  await sendEmail(
-    email,
-    "Password Reset",
-    `Click <a href="${resetUrl}">here</a> to reset your password.`
-  );
+  const { subject, html } = emailTemplates.passwordReset(resetUrl);
+  try {
+    await sendEmail(email, subject, html);
+  } catch (err) {
+    return res.render("admin/forgotPassword", {
+      message: "We couldn't send the reset email right now. Please try again later.",
+    });
+  }
 
   res.render("admin/forgotPassword", {
     message: "a reset link has been sent.",
@@ -426,14 +430,8 @@ exports.handleNewsletterForm = async (req, res) => {
     //   "imoledayoimmanuel@gmail.com",
     // ];
 
-    let htmlMsg = `<div>${message}</div>`;
-    if (imageUrl) {
-      htmlMsg += `<div><img src="${imageUrl}" style="max-width:100%;border-radius:8px;"></div>`;
-    }
-
-    for (const email of testEmails) {
-      await sendEmail(email, subject, htmlMsg);
-    }
+    const mail = emailTemplates.newsletter(subject, message, imageUrl);
+    await sendToAll(testEmails, mail);
   }
 
   await pool.query(
@@ -546,23 +544,15 @@ exports.sendNewsletter = async (req, res) => {
     });
   }
 
-  let htmlMsg = `<div>${message}</div>`;
-  if (imageUrl) {
-    htmlMsg += `
-      <div style="margin-top:20px;">
-        <img src="${imageUrl}" style="max-width:100%;border-radius:8px;">
-      </div>`;
-  }
-
-  // ✅ Send to all users
-  for (const email of emails) {
-    await sendEmail(email, subject, htmlMsg);
-  }
+  const { sent, failed } = await sendToAll(
+    emails,
+    emailTemplates.newsletter(subject, message, imageUrl)
+  );
 
   res.render("admin/newsletter", {
     info: infoResult.rows[0] || {},
     newsletters: newslettersResult.rows,
-    success: `Newsletter sent to ${emails.length} users successfully!`,
+    success: `Newsletter sent to ${sent} users${failed ? ` (${failed} failed, see the logs)` : " successfully"}!`,
   });
 };
 
@@ -651,14 +641,10 @@ exports.sendNow = async (req, res) => {
     return res.redirect("/admin/newsletter");
   }
 
-  let htmlMsg = `<div>${newsletter.message}</div>`;
-  if (newsletter.image_url) {
-    htmlMsg += `<div><img src="${newsletter.image_url}" style="max-width:100%;"></div>`;
-  }
-
-  for (const email of emails) {
-    await sendEmail(email, newsletter.subject, htmlMsg);
-  }
+  await sendToAll(
+    emails,
+    emailTemplates.newsletter(newsletter.subject, newsletter.message, newsletter.image_url)
+  );
 
   await pool.query("UPDATE newsletters SET sent = true WHERE id = $1", [id]);
 

@@ -250,6 +250,17 @@
   function closeUserModal() {
     document.getElementById("userModal").style.display = "none";
   }
+
+  // /admin/dashboard?viewUser=ID (linked from the "new member" email) opens that member
+  (function () {
+    const id = new URLSearchParams(location.search).get("viewUser");
+    if (!id) return;
+    if (USERS[id]) {
+      openUserModal(id);
+    } else {
+      alert("That member could not be found. They may have been deleted, or a filter is hiding them.");
+    }
+  })();
 </script>
 
   </body>

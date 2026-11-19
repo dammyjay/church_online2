@@ -99,12 +99,9 @@ if (BREVO_API_KEY) {
     .catch((err) => console.error(`❌ Email (Gmail SMTP) is NOT working [${err.code || "unknown"}]: ${err.message}\n   → ${explainEmailError(err)}`));
 }
 
-const sendFaqAnswerEmail = async (to, question, answer) => {
-  await deliver({
-    to,
-    subject: "Your question has been answered",
-    text: `Q: ${question}\nA: ${answer}\n\nThank you for reaching out to us.`,
-  });
+const sendFaqAnswerEmail = async (to, question, answer, faqId) => {
+  const { subject, html } = require("./emailTemplates").faqAnswered(question, answer, faqId);
+  await deliver({ to, subject, html });
 };
 
 const sendEmail = async (to, subject, message) => {
@@ -115,11 +112,27 @@ const sendEmail = async (to, subject, message) => {
   });
 };
 
+// Send one { subject, html } to many addresses; a failed address is logged and skipped
+const sendToAll = async (emails, { subject, html }) => {
+  let sent = 0;
+  let failed = 0;
+  for (const to of emails) {
+    try {
+      await deliver({ to, subject, html });
+      sent++;
+    } catch {
+      failed++; // deliver() already logged why
+    }
+  }
+  return { sent, failed };
+};
+
 // Where new FAQ / testimony alerts go; set ADMIN_EMAIL in .env to change it
 const ADMIN_EMAIL = process.env.ADMIN_EMAIL || "imoledayoimmanuel@gmail.com";
 
 module.exports = {
   sendFaqAnswerEmail,
   sendEmail,
+  sendToAll,
   ADMIN_EMAIL,
 };

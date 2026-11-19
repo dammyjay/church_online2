@@ -63,25 +63,28 @@ router.get("/admin/faqs/edit/:id", requireAdmin, async (req, res) => {
 // Handle update
 router.post("/admin/faqs/update/:id", requireAdmin, async (req, res) => {
   const { answer, is_published } = req.body;
-  const created_at = new Date(); // Create timestamp in JS
-  await pool.query(
-    "UPDATE faqs SET answer = $1, is_published = $2, created_at = $3 WHERE id = $4",
-    [answer, is_published === "on", created_at, req.params.id]
-  );
-
-  // Get email of question submitter
   const id = req.params.id;
-  const result = await pool.query(
-    "SELECT question, email FROM faqs WHERE id = $1",
+  const created_at = new Date(); // Create timestamp in JS
+
+  // Read the old answer first, so the asker is only emailed when the answer changes
+  // (not every time an admin toggles "published")
+  const before = await pool.query(
+    "SELECT question, email, answer FROM faqs WHERE id = $1",
     [id]
   );
-  if (result.rows.length > 0) {
-    const faq = result.rows[0];
 
-    // If there's an email and a new answer, send notification
-    if (faq.email && answer?.trim()) {
+  await pool.query(
+    "UPDATE faqs SET answer = $1, is_published = $2, created_at = $3 WHERE id = $4",
+    [answer, is_published === "on", created_at, id]
+  );
+
+  if (before.rows.length > 0) {
+    const faq = before.rows[0];
+    const answerChanged = (answer || "").trim() !== (faq.answer || "").trim();
+
+    if (faq.email && answer?.trim() && answerChanged) {
       try {
-        await sendFaqAnswerEmail(faq.email, faq.question, answer);
+        await sendFaqAnswerEmail(faq.email, faq.question, answer, id);
       } catch (err) {
         console.error("Email send error:", err.message);
       }

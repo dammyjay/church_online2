@@ -1,6 +1,7 @@
 const bcrypt = require("bcrypt");
 const pool = require("../models/db");
-const { sendEmail } = require("../utils/sendEmail");
+const { sendEmail, ADMIN_EMAIL } = require("../utils/sendEmail");
+const emailTemplates = require("../utils/emailTemplates");
 
 exports.showSignup = (req, res) => {
   // res.sendFile(path.join(__dirname, 'signup.html'));
@@ -53,7 +54,8 @@ exports.signup = async (req, res) => {
     ]
   );
   try {
-    await sendEmail(email, "Your OTP Code", `Your code is: ${otp}`);
+    const { subject, html } = emailTemplates.otp(otp);
+    await sendEmail(email, subject, html);
   } catch (err) {
     console.error("Failed to send OTP email:", err.message);
     // Without the code the user can't finish signing up, so don't keep the pending record
@@ -79,8 +81,8 @@ exports.verifyOtp = async (req, res) => {
   if (new Date(user.otp_expires) < new Date())
     return res.status(400).send("OTP expired");
 
-  await pool.query(
-    "INSERT INTO users2 (fullname, email, phone, gender, password, profile_picture, role,created_at, dob) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9)",
+  const inserted = await pool.query(
+    "INSERT INTO users2 (fullname, email, phone, gender, password, profile_picture, role,created_at, dob) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9) RETURNING id",
     [
       user.fullname,
       user.email,
@@ -96,6 +98,17 @@ exports.verifyOtp = async (req, res) => {
 
   await pool.query("DELETE FROM pending_users WHERE email = $1", [email]);
   res.status(200).send("Verification success");
+
+  // Emails go out after the response, so a slow or failed send never blocks sign-up
+  const newUser = { ...user, id: inserted.rows[0].id };
+  const welcome = emailTemplates.welcome(newUser.fullname);
+  sendEmail(newUser.email, welcome.subject, welcome.html).catch((err) =>
+    console.error("Failed to send welcome email:", err.message)
+  );
+  const alert = emailTemplates.adminNewUser(newUser);
+  sendEmail(ADMIN_EMAIL, alert.subject, alert.html).catch((err) =>
+    console.error("Failed to send new-member alert:", err.message)
+  );
 };
 
 exports.getUserProfile = async (req, res) => {

@@ -3,6 +3,7 @@ const router = express.Router();
 const pool = require("../models/db");
 const articleController = require("../controllers/articleController");
 const { sendEmail, ADMIN_EMAIL } = require("../utils/sendEmail");
+const emailTemplates = require("../utils/emailTemplates");
 const { youtubeThumbnail } = require("../middlewares/pageMeta");
 
 // router.get('/videos', videoController.showVideos);
@@ -576,28 +577,31 @@ router.get("/faq", showFaqPage);
 router.get("/faq/:id", showFaqPage);
 
 router.post("/faq/ask", async (req, res) => {
-  const { question, email } = req.body;
+  const question = (req.body.question || "").trim();
+  const email = (req.body.email || "").trim();
 
-  if (!question || question.trim() === "") {
-    return res.redirect("/faq");
+  // The question comes from a rich-text editor, so check there are real words in it
+  if (!question.replace(/<[^>]*>|&nbsp;/g, "").trim()) {
+    return res.redirect("/faq?ask=missing-question#ask");
+  }
+  // An email is required: it's how the asker gets the answer
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    return res.redirect("/faq?ask=missing-email#ask");
   }
 
-  await pool.query(
-    "INSERT INTO faqs (question, email, created_at) VALUES ($1, $2, NOW())",
-    [question, email || null]
+  const inserted = await pool.query(
+    "INSERT INTO faqs (question, email, created_at) VALUES ($1, $2, NOW()) RETURNING id",
+    [question, email]
   );
 
-  // Email notification to admin
-  const subject = "New FAQ Question Submitted";
-  const message = `<h3>New FAQ Submitted</h3><p><strong>Question:</strong> ${question}</p><p><strong>User Email:</strong> ${email || "not given"}</p><p>Please log in to the dashboard to answer it</p>`;
-
   try {
-    await sendEmail(ADMIN_EMAIL, subject, message);
+    const { subject, html } = emailTemplates.adminNewFaq(question, email, inserted.rows[0].id);
+    await sendEmail(ADMIN_EMAIL, subject, html);
   } catch (err) {
     console.error("Failed to send FAQ notification email:", err.message);
   }
 
-  res.redirect("/faq");
+  res.redirect("/faq?ask=sent");
 });
 
 // Testimony page; /testimony/:id opens one testimony (shareable link)
@@ -653,12 +657,9 @@ router.post("/testimony", async (req, res) => {
     [name, email || null, message]
   );
 
-  // Optionally email admin
-  const subject = "New Testimony Submitted";
-  const body = `<h3>New Testimony</h3><p><strong>Name:</strong> ${name}</p><p>${message}</p>`;
-
   try {
-    await sendEmail(ADMIN_EMAIL, subject, body);
+    const { subject, html } = emailTemplates.adminNewTestimony(name, email, message);
+    await sendEmail(ADMIN_EMAIL, subject, html);
   } catch (err) {
     console.error("Failed to send testimony alert:", err.message);
   }
