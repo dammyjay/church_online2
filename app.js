@@ -12,6 +12,9 @@ const pageMeta = require("./middlewares/pageMeta");
 
 const app = express();
 
+// Views show visitor-typed text (FAQ questions) with <%- plainText(value) %>
+app.locals.plainText = require("./utils/safeText").plainText;
+
 // Behind Railway's proxy: lets req.protocol report https for link previews
 app.set('trust proxy', 1);
 const layout = require('express-ejs-layouts');

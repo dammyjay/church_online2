@@ -379,12 +379,19 @@
       const container = document.getElementById(`comments-${id}`); 
       container.innerHTML = comments.map(c => `
        <div class="comment"> 
-        <strong>${c.fullname}</strong>: ${c.comment} <br /> 
+        <strong>${escapeHtml(c.fullname)}</strong>: ${escapeHtml(c.comment)} <br />
         <small style="color: gray">${timeAgo(c.created_at)}</small> 
        </div> `).join(''); }); 
   } 
 
-  function timeAgo(dateString) { 
+  // Comments are typed by members: show them as text, never as HTML
+  function escapeHtml(value) {
+    return String(value ?? "").replace(/[&<>"']/g, (ch) =>
+      ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[ch]
+    );
+  }
+
+  function timeAgo(dateString) {
     const date = new Date(dateString); 
     const seconds = Math.floor((new Date() - date) / 1000); 
       if (seconds < 60) 

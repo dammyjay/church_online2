@@ -90,7 +90,7 @@
         <% const isFocused = typeof focusId !== 'undefined' && focusId === faq.id; %>
         <div class="faq-item<%= isFocused ? ' is-focused' : '' %>" id="faq-<%= faq.id %>">
           <div class="faq-question" onclick="toggleFaq(<%- index %>)">
-            <h4>Q: <%- faq.question %></h4>
+            <h4>Q: <%- plainText(faq.question) %></h4>
             <i id="icon-<%= index %>" class="fas <%= isFocused ? 'fa-minus' : 'fa-plus' %>"></i>
           </div>
           <div id="answer-<%= index %>" class="faq-answer<%= isFocused ? '' : ' hidden' %>">
@@ -197,7 +197,7 @@
         <span class="close" onclick="closeFaqModal()">&times;</span>
         <div style="font-size:48px; line-height:1; margin:8px 0 12px;">✅</div>
         <h2 style="margin:0 0 10px;">Your question has been sent!</h2>
-        <p style="margin:0 0 8px;">Thank you for asking. Our team has been notified and will reply soon.</p>
+        <p style="margin:0 0 8px;">Thank you for asking. Our admin has been notified and will reply soon.</p>
         <p style="margin:0 0 20px;">When they answer, <strong>you'll get an email</strong> with the reply. Remember to check your spam folder too.</p>
         <button type="button" onclick="closeFaqModal()">Okay, got it</button>
       </div>

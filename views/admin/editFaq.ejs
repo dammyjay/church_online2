@@ -31,7 +31,7 @@
     </header>
     <h2>Edit FAQ</h2>
     <form action="/admin/faqs/update/<%= faq.id %>" method="POST">
-      <p><strong>Question:</strong> <%- faq.question %></p>
+      <p><strong>Question:</strong> <%- plainText(faq.question) %></p>
       <label for="answer">Answer:</label><br />
       <textarea name="answer" id="content" rows="5"><%- faq.answer || '' %></textarea
       ><br /><br />

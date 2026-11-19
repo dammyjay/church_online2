@@ -116,7 +116,7 @@
           <div class="faq-item">
              
             <div class="faq-question" onclick="toggleFaq(<%- index %>)">
-              <h4>Q: <%- faq.question %></h4> 
+              <h4>Q: <%- plainText(faq.question) %></h4> 
               <i id="icon-<%= index %>" class="fas fa-plus"></i> 
             </div> 
             <div id="answer-<%= index %>" class="faq-answer hidden"> 

@@ -17,29 +17,8 @@ const C = {
 
 const FONT = "font-family:'Segoe UI',Roboto,Helvetica,Arial,sans-serif;";
 
-function escapeHtml(value) {
-  return String(value ?? "")
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#39;");
-}
-
 // Text typed by visitors (FAQ questions come from a rich-text editor): keep the words, drop the markup
-function plain(html) {
-  return escapeHtml(
-    String(html ?? "")
-      .replace(/<(script|style)[\s\S]*?<\/\1>/gi, " ")
-      .replace(/<br\s*\/?>|<\/p>/gi, "\n")
-      .replace(/<[^>]+>/g, " ")
-      .replace(/&nbsp;/g, " ")
-      .replace(/&amp;/g, "&")
-      .replace(/[ \t]+/g, " ")
-      .replace(/\n\s*\n+/g, "\n")
-      .trim()
-  ).replace(/\n/g, "<br>");
-}
+const { escapeHtml, plainText: plain } = require("./safeText");
 
 const url = (path) => SITE_URL + path;
 

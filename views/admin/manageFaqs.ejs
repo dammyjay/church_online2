@@ -50,7 +50,7 @@
     <div class="article-card">
       <% faqs.forEach(faq => { %>
       <div class="faq-item">
-        <p><strong>Q:</strong> <%- faq.question %></p>
+        <p><strong>Q:</strong> <%- plainText(faq.question) %></p>
         <p><strong>A:</strong> <%- faq.answer || 'No answer yet' %></p>
         <p><small>Published: <%- faq.is_published ? 'Yes' : 'No' %></small></p>
         <div class="article-buttons">
