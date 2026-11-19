@@ -32,7 +32,11 @@ exports.handleForgotPassword = async (req, res) => {
     [token, expires, user.id]
   );
 
-  const resetUrl = `http://${req.headers.host}/admin/reset-password/${token}`;
+  // trust proxy is on, so req.protocol is https behind Railway; SITE_URL wins if set
+  const origin = process.env.SITE_URL
+    ? process.env.SITE_URL.replace(/\/+$/, "")
+    : `${req.protocol}://${req.get("host")}`;
+  const resetUrl = `${origin}/admin/reset-password/${token}`;
   await sendEmail(
     email,
     "Password Reset",
