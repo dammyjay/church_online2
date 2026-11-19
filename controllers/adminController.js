@@ -73,8 +73,7 @@ exports.handleResetPassword = async (req, res) => {
     });
   }
 
-  hashedPassword = await bcrypt.hash(password, 10); // Hash the new password
-  hashedconfirmPassword = await bcrypt.hash(confirmPassword, 10); // Hash the confirm password
+  const hashedPassword = await bcrypt.hash(password, 10);
   const result = await pool.query(
     "SELECT * FROM users2 WHERE reset_token = $1 AND reset_token_expires > NOW()",
     [token]
